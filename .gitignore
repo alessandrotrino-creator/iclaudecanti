@@ -16,3 +16,5 @@ __pycache__/
 dist/
 build/
 .env
+# Dati riservati (es. il foglio vero del conteggio ore con i nomi dei docenti): mai su GitHub
+privato/

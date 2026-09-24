@@ -4,6 +4,18 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**24/09/2026 – In prova: Sostituzioni docenti** (Chiara) – *da approvare insieme*
+
+Nuova parte **separata** dalle app esistenti (non le modifica):
+[sostituzioni/](https://alessandrotrino-creator.github.io/iclaudecanti/sostituzioni/) ([istruzioni](sostituzioni/LEGGIMI.md)).
+
+- si carica il **foglio del conteggio ore** (.ods, .xlsx o .csv): viene letto solo sul computer, **non viene pubblicato**;
+- si segna il docente assente e, per ogni ora, la pagina propone i docenti liberi **a partire da chi ha più ore a debito**;
+- tiene il conto delle ore di sostituzione da riportare nel foglio, stampa le sostituzioni del giorno ed esporta in CSV;
+- per provarla: facsimili con nomi inventati in `sostituzioni/esempio/`.
+
+Se il gruppo è d'accordo, la colleghiamo alla pagina iniziale e all'app Orario DADA.
+
 **24/09/2026 – Aule e orario completo in Orario Facile** (Alessandro)
 
 - caricato il backup 2026/27 aggiornato (cattedre di Mensa e Laboratorio comprese);
@@ -59,5 +71,6 @@ Regole e convenzioni complete in [CLAUDE.md](CLAUDE.md).
 - `index.html` – pagina iniziale
 - `app/` – **Orario DADA**, per vedere l'orario da telefono, tablet e monitor di classe ([istruzioni](app/LEGGIMI.md))
 - `orario-facile/` – l'app Orario Facile, per creare l'orario
+- `sostituzioni/` – **Sostituzioni docenti**, in prova ([istruzioni](sostituzioni/LEGGIMI.md))
 - `dati/orario.json` – l'orario mostrato dall'app
 - `img/` – immagini
