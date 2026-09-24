@@ -2,6 +2,24 @@
 
 Repo collaborativo del gruppo **iclaudecanti**.
 
+## Ultimi aggiornamenti
+
+**24/09/2026 – Orario Facile già compilato con i dati 2026/27** (Alessandro)
+
+Aprendo [Orario Facile](https://alessandrotrino-creator.github.io/iclaudecanti/orario-facile/)
+si trova già la nostra scuola, ricavata dall'elenco "Docenti con materie e classi" 2026/27:
+
+- 15 classi (1A–3E) e 43 docenti con 174 cattedre;
+- i docenti sono indicati **con le iniziali** (es. "F. A.", "Mi. Bo." quando due docenti hanno le stesse):
+  il repository è pubblico, quindi i nomi completi non vanno messi qui;
+- orario dal lunedì al venerdì, 6 ore al mattino; 1C, 2C e 3C anche martedì, mercoledì e giovedì pomeriggio (2 ore);
+- Approfondimento a 0 ore; nuove discipline **Mensa** e **Laboratorio** (per ora a 0 ore);
+- nuovo pulsante in alto **"Dati scuola 2026/27"**: chi aveva già aperto Orario Facile vede ancora i suoi dati salvati
+  e con questo pulsante carica quelli nuovi;
+- nella griglia dell'orario si vedono entrambe le iniziali del docente.
+
+Da completare: ore e docenti di Mensa e Laboratorio per le classi C; Arte in 1C, 2C, 3C, 1D, 2D, 3D non ha ancora un docente.
+
 ## Come lavoriamo (tutti su `main`)
 
 Per evitare conflitti:

@@ -21,6 +21,10 @@ Le parti del progetto:
   `localStorage` (chiave `orariofacile.v2`) e si aggiorna con l'evento `storage`. Non cambiare quella chiave
   senza aggiornare `CHIAVE_BOZZA` in `app/js/dati.js`. Orario Facile ha il pulsante "Vedi nell'app" e, in Esporta,
   "Scarica orario.json" per pubblicare (il file va caricato in `dati/`).
+- **Dati della scuola in Orario Facile**: `orario-facile/index.html` contiene i dati 2026/27
+  (`CSV_SCUOLA_CLASSI`, `CSV_SCUOLA_DOCENTI` e `datiScuola()`), caricati alla prima apertura e con il pulsante
+  "Dati scuola 2026/27". **Privacy**: il repo è pubblico, quindi i docenti compaiono solo con le iniziali
+  ("F. A.", due lettere se ambigue); non pubblicare mai nomi completi, PDF o fogli con i nomi dei docenti.
 
 ## Il gruppo
 - Gruppo **iclaudecanti**, studenti **principianti** in programmazione e git.
