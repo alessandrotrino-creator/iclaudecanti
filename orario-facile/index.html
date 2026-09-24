@@ -153,6 +153,7 @@ td input[type=number]{width:64px}
 .lesson.clash{box-shadow:inset 0 0 0 2px var(--bad)}
 .lesson.locked::after{content:"lucchetto";position:absolute}
 .lesson .lk{position:absolute;top:2px;right:3px;font-size:10px;opacity:.7}
+.lesson .co{font-size:10.5px;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tt td.empty-hint::after{content:"+";position:absolute;inset:0;display:grid;place-items:center;color:var(--text-3);opacity:0;font-size:18px}
 .tt td:hover.empty-hint::after{opacity:.6}
 .legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
@@ -179,6 +180,7 @@ td input[type=number]{width:64px}
 .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);border-radius:999px;padding:3px 10px;font-size:12px;
   background:var(--surface);cursor:grab}
 .chip.bad{border-color:var(--bad);color:var(--bad);background:var(--bad-soft)}
+.chip.sel{outline:2px solid var(--accent);outline-offset:1px}
 
 /* ---------- overlay ---------- */
 .overlay{position:fixed;inset:0;background:rgba(10,14,20,.5);display:grid;place-items:center;z-index:100;padding:16px}
@@ -219,8 +221,6 @@ td input[type=number]{width:64px}
   </div>
   <div class="bar-actions">
     <span class="savestate" id="saveState"></span>
-    <!-- apre l'app di visualizzazione: legge questo orario dal browser e si aggiorna in tempo reale -->
-    <a class="btn ghost sm" href="../app/" target="orariodada" style="text-decoration:none">📱 Vedi nell'app</a>
     <button class="btn ghost sm" id="btnTema" title="Chiaro / scuro">◐ Tema</button>
     <button class="btn ghost sm" id="btnEsempio">Dati di esempio</button>
     <button class="btn ghost sm" id="btnAzzera">Azzera tutto</button>
@@ -289,7 +289,8 @@ td input[type=number]{width:64px}
   <section class="panel" id="p-aule" role="tabpanel" hidden>
     <div class="phead">
       <h2>Aule</h2>
-      <p>Le classi si spostano a ogni cambio d'ora: ogni docente lavora in una o più aule. Un'aula può essere condivisa da più docenti, mai nella stessa ora. Il numero dell'aula compare in ogni casella dell'orario.</p>
+      <p>Le classi si spostano a ogni cambio d'ora: ogni docente lavora in una o più aule. Un'aula può essere condivisa da più docenti, mai nella stessa ora, salvo le aule
+        segnate come «più classi insieme» (palestra, aula magna, laboratorio grande), che possono ospitare più lezioni contemporaneamente. Il numero dell'aula compare in ogni casella dell'orario.</p>
     </div>
     <div class="card">
       <h3>Quante aule</h3>
@@ -363,6 +364,8 @@ td input[type=number]{width:64px}
     <div class="card no-print">
       <div class="toolbar">
         <button class="btn" id="btnGenera">Genera orario</button>
+        <button class="btn ghost sm danger" id="btnFerma" hidden title="Ferma il calcolo e tieni il miglior orario trovato finora">Interrompi</button>
+        <button class="btn ghost sm" id="btnFattibilita" title="Verifica se con i dati e i vincoli attuali un orario senza criticità è possibile">Controlla fattibilità</button>
         <label class="fl" style="flex-direction:row;align-items:center;gap:6px">Qualità
           <select id="selQualita" style="width:auto">
             <option value="24">Veloce</option>
@@ -377,7 +380,7 @@ td input[type=number]{width:64px}
       <div class="stats" id="statsOrario"></div>
       <div id="reportOrario" class="report"></div>
       <div id="poolWrap" style="margin-top:12px" hidden>
-        <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);margin-bottom:6px">Ore non collocate — trascinale in una casella libera</h3>
+        <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);margin-bottom:6px">Ore non collocate — trascinale in una casella libera, anche nelle viste Docente e Aula (oppure fai clic sull'ora e poi sulla casella)</h3>
         <div class="pool" id="pool"></div>
       </div>
     </div>
@@ -408,18 +411,6 @@ td input[type=number]{width:64px}
     <div class="phead">
       <h2>Salvataggio ed esportazione</h2>
       <p>Il lavoro viene salvato automaticamente in questo browser. Per spostarlo su un altro computer, o per conservarne una copia, usa il file di backup.</p>
-    </div>
-    <div class="card">
-      <h3>Pubblica nell'app Orario DADA</h3>
-      <p class="hint">Su questo dispositivo l'app <a href="../app/" target="orariodada">Orario DADA</a> mostra già questo orario e si aggiorna mentre lo modifichi.
-        Per farlo vedere a <b>tutti</b> (telefoni, tablet, monitor di classe):</p>
-      <ol class="hint">
-        <li>premi «Scarica orario.json»;</li>
-        <li>apri la <a href="https://github.com/alessandrotrino-creator/iclaudecanti/upload/main/dati" target="_blank" rel="noopener">cartella dati su GitHub</a>,
-          trascina il file (sostituisce quello vecchio) e premi «Commit changes»;</li>
-        <li>dopo un paio di minuti l'app mostra il nuovo orario a tutti.</li>
-      </ol>
-      <div class="row"><button class="btn" id="btnPubblicaApp">Scarica orario.json</button></div>
     </div>
     <div class="card">
       <h3>Backup completo (.json)</h3>
@@ -494,7 +485,7 @@ function statoVuoto(){
     quadro:{}, orario:{},
     vincoli:{
       maxConsec:2, maxConsecDoc:3, maxOreGiorno:5, maxOreDiscGiorno:2,
-      rispettaIndisp:true, unaAula:true, giornoLibero:true,
+      rispettaIndisp:true, giornoLibero:true,
       pesoBuchi:6, pesoMattino:5, pesoUnaOra:4, pesoDistribuzione:5,
       pesoBlocchi:3, pesoAulaStabile:3, pesoUltimaOra:3, pesoCarico:3
     },
@@ -527,10 +518,12 @@ function nuovaDisciplina(nome){
     sigla: nome ? (norma(nome).replace(/[^a-z]/g,'').slice(0,3).toUpperCase() || 'XXX') : 'XXX',
     hue: Math.round(Math.random()*360), principale:false, blocchi2:false, ultimaOra:false, oreStd:1 };
 }
+// contemporanea: l'aula può ospitare più classi nella stessa ora (palestra, aula magna, laboratorio grande)
 function nuovaAula(nome, tipo){
   const n = norma(nome);
   return { id:uid('a'), nome: nome||'Nuova aula',
-    tipo: tipo || (n.includes('palestra') ? 'Palestra' : n.startsWith('lab') ? 'Laboratorio' : 'Aula') };
+    tipo: tipo || (n.includes('palestra') ? 'Palestra' : n.startsWith('lab') ? 'Laboratorio' : 'Aula'),
+    contemporanea: false };
 }
 
 function nuovaClasse(anno, sez){
@@ -565,6 +558,9 @@ const doc  = id => S.docenti.find(t => t.id===id);
 const aula = id => S.aule.find(a => a.id===id);
 function oreDocente(t){ return t.cattedre.reduce((s,k) => s + (k.ore||0), 0); }
 function cella(cid, g, s){ const r = S.orario[cid]; return r && r[g] ? (r[g][s]||null) : null; }
+// una cella può avere docenti in compresenza: v.co = [{ doc, att }] (att = attività, facoltativa)
+const compresenti = v => (v && v.co) || [];
+const inCella = (v, docId) => !!v && (v.doc === docId || compresenti(v).some(x => x.doc === docId));
 function setCella(cid, g, s, v){
   if(!S.orario[cid]) S.orario[cid] = {};
   if(!S.orario[cid][g]) S.orario[cid][g] = new Array(totSlot()).fill(null);
@@ -593,6 +589,7 @@ function normalizza(){
         const ok = attivo(c,g,s) && S.giorni.includes(g) && doc(v.doc) && disc(v.dis);
         if(!ok) r[s] = null;
         else if(v.aula && !aula(v.aula)) v.aula = '';
+        if(ok && v.co){ v.co = v.co.filter(x => doc(x.doc) && x.doc !== v.doc); if(!v.co.length) delete v.co; }
       }
       S.orario[c.id][g] = r;
     });
@@ -604,6 +601,10 @@ function normalizza(){
     t.aule = (t.aule||[]).filter(a => aula(a));
     if(t.giornoLibero && !S.giorni.includes(t.giornoLibero) && t.giornoLibero!=='auto') t.giornoLibero = '';
   });
+  // uso contemporaneo, aula per aula. Dati salvati prima di questa opzione: vale la vecchia regola
+  // generale «un'aula ospita una sola lezione per volta» (se era disattivata, tutte le aule sono condivisibili)
+  S.aule.forEach(a => { if(typeof a.contemporanea !== 'boolean') a.contemporanea = S.vincoli.unaAula === false; });
+  delete S.vincoli.unaAula;
 }
 
 /* ---------------- salvataggio ---------------- */
@@ -779,14 +780,16 @@ function costruisciIstanza(keepLocks){
   if(keepLocks){
     CL.forEach(c => G.forEach((gn,gi) => { for(let s=0;s<T;s++){
       const v = cella(c.id, gn, s);
-      if(v && v.lock) fissi.push({ c:ci[c.id], gi, s, doc:v.doc, dis:v.dis, aula:v.aula||'' });
+      if(v && v.lock) fissi.push({ c:ci[c.id], gi, s, doc:v.doc, dis:v.dis, aula:v.aula||'', co:compresenti(v).map(x => x.doc) });
     }}));
   }
   return { G, T, V, CL, DC, AU, nG, NS, kk, ci, ti, ai, act, lastSlot, avail, units, fissi, autoDay };
 }
 
 /* ---- un tentativo completo ---- */
-function tentativo(I, rnd){
+// opz.ls: quanti scambi prova il miglioramento locale; opz.da: riparte da un orario già trovato (per rifinirlo)
+function tentativo(I, rnd, opz){
+  opz = opz || {};
   const { T, V, CL, DC, AU, nG, kk, ti, ai, act, lastSlot, avail, units, fissi } = I;
   const NS = I.NS;
   const occC = CL.map(() => new Int32Array(NS));
@@ -809,6 +812,8 @@ function tentativo(I, rnd){
     const key = f.dis + '|' + f.gi;
     discCG[f.c][key] = (discCG[f.c][key]||0) + 1;
     fissiMap[f.c + '|' + k] = tIdx;
+    // docenti in compresenza: occupati in quell'ora come il titolare
+    f.co.forEach(id => { const x = ti[id]; if(x !== undefined && !occT[x][k]){ occT[x][k] = -1; oreTG[x][f.gi]++; } });
   });
 
   const docDiSlot = (v, cIdx, gi, s) => v === -1
@@ -853,9 +858,9 @@ function tentativo(I, rnd){
   }
   function aulaLibera(u, gi, s0, size){
     if(!u.rooms.length) return { idx:-1, rank:0 };
-    if(!V.unaAula) return { idx:u.rooms[0], rank:0 };
     for(let r=0;r<u.rooms.length;r++){
       const a = u.rooms[r]; let ok = true;
+      if(AU[a].contemporanea) return { idx:a, rank:r };   // ospita più classi insieme: sempre libera
       for(let j=0;j<size;j++) if(occA[a][kk(gi,s0+j)]){ ok = false; break; }
       if(ok) return { idx:a, rank:r };
     }
@@ -954,7 +959,11 @@ function tentativo(I, rnd){
   const ord = units.map((u,i) => i).sort((a,b) => (diff[b] - diff[a]) + (rnd() - .5) * 8);
 
   let nonMesse = [];
-  ord.forEach(ui => { if(colloca(ui, null) > 0) nonMesse.push(ui); });
+  if(opz.da){
+    opz.da.forEach((ps, ui) => (ps||[]).forEach(p => metti(ui, p.gi, p.s0, p.a, p.size)));
+    units.forEach((u, ui) => { if(resto[ui] > 0) nonMesse.push(ui); });
+  }
+  else ord.forEach(ui => { if(colloca(ui, null) > 0) nonMesse.push(ui); });
 
   // ---- riparazione: sposta chi occupa il posto ----
   for(let pass=0; pass<3 && nonMesse.length; pass++){
@@ -1032,46 +1041,268 @@ function tentativo(I, rnd){
     });
   }
 
-  let pen = 0, mancanti = 0;
-  resto.forEach(r => mancanti += r);
-  for(let t=0;t<DC.length;t++) for(let gi=0; gi<nG; gi++){
-    pen += gapsDay(t, gi) * V.pesoBuchi * 2;
-    if(oreTG[t][gi] === 1) pen += V.pesoUnaOra * 2;
-  }
-  units.forEach((u,ui) => pos[ui].forEach(p => {
-    for(let j=0;j<p.size;j++){
-      const s = p.s0 + j;
-      if(u.dObj.principale) pen += isPom(s) ? V.pesoMattino * 3 : V.pesoMattino * (s / Math.max(1, S.oreM-1));
-      if(u.dObj.ultimaOra && s !== lastSlot[u.c][p.gi]) pen += V.pesoUltimaOra;
+  // ---- penalità: per giorno del docente (buchi, giornate di un'ora) e per posizione di un pezzo ----
+  const penGiorno = (t, gi) => gapsDay(t, gi) * V.pesoBuchi * 2 + (oreTG[t][gi] === 1 ? V.pesoUnaOra * 2 : 0);
+  const penPos = (u, gi, s0, size) => {
+    let p = 0;
+    for(let j=0;j<size;j++){
+      const s = s0 + j;
+      if(u.dObj.principale) p += isPom(s) ? V.pesoMattino * 3 : V.pesoMattino * (s / Math.max(1, S.oreM-1));
+      if(u.dObj.ultimaOra && s !== lastSlot[u.c][gi]) p += V.pesoUltimaOra;
     }
-    // blocco obbligatorio spezzato: pesa più di qualunque altro criterio soft, meno di un'ora non collocata
-    if(u.size === 2 && p.size === 1) pen += u.obbl ? 1000 : V.pesoBlocchi;
-  }));
+    return p;
+  };
+  // blocco obbligatorio spezzato: pesa più di qualunque altro criterio soft, meno di un'ora non collocata
+  const penBlocco = (u, p) => (u.size === 2 && p.size === 1) ? (u.obbl ? 1000 : V.pesoBlocchi) : 0;
+  function penTotale(){
+    let pen = 0;
+    for(let t=0;t<DC.length;t++) for(let gi=0; gi<nG; gi++) pen += penGiorno(t, gi);
+    units.forEach((u,ui) => pos[ui].forEach(p => { pen += penPos(u, p.gi, p.s0, p.size) + penBlocco(u, p); }));
+    return pen;
+  }
+
+  // ---- miglioramento locale: spostamenti e scambi di ore che non violano i vincoli e abbassano la penalità ----
+  // (a parità di penalità la mossa si accetta a volte, per uscire dai «pianori»; con opz.temp, nella rifinitura,
+  //  si accetta ogni tanto anche una mossa che peggiora, sempre più di rado: «raffreddamento simulato»)
+  let temp = 0;
+  const accetta = (dopo, prima) => {
+    const d = dopo - prima;
+    if(d < -1e-9) return true;
+    if(temp > 0) return rnd() < Math.exp(-d / temp);
+    return Math.abs(d) < 1e-9 && rnd() < .3;
+  };
+  function togliPezzo(ui, p){
+    const u = units[ui];
+    for(let j=0;j<p.size;j++){
+      const k = kk(p.gi, p.s0+j);
+      occC[u.c][k] = 0; occT[u.t][k] = 0;
+      if(p.a >= 0) occA[p.a][k] = 0;
+    }
+    oreTG[u.t][p.gi] -= p.size;
+    discCG[u.c][u.d + '|' + p.gi] -= p.size;
+    pos[ui].splice(pos[ui].indexOf(p), 1);
+    resto[ui] += p.size;
+  }
+  const ultimo = ui => pos[ui][pos[ui].length - 1];
+  // sposta il pezzo p dell'unità ui in un posto libero della classe
+  function provaSposta(ui, p, gi1, s1, sempre){
+    const u = units[ui], t = u.t, gi0 = p.gi, s0 = p.s0, a0 = p.a, size = p.size;
+    const pg = () => penGiorno(t, gi0) + (gi1 !== gi0 ? penGiorno(t, gi1) : 0);
+    const prima = pg() + penPos(u, gi0, s0, size);
+    togliPezzo(ui, p);
+    const a = fattibile(u, gi1, s1, size) ? aulaLibera(u, gi1, s1, size) : null;
+    if(a){
+      metti(ui, gi1, s1, a.idx, size);
+      if(sempre || accetta(pg() + penPos(u, gi1, s1, size), prima)) return true;
+      togliPezzo(ui, ultimo(ui));
+    }
+    metti(ui, gi0, s0, a0, size);
+    return false;
+  }
+  // scambia due pezzi della stessa classe con la stessa durata
+  function provaScambia(ui, p, wi, q, sempre){
+    const u = units[ui], w = units[wi], P = Object.assign({}, p), Q = Object.assign({}, q);
+    const giorni = P.gi === Q.gi ? [P.gi] : [P.gi, Q.gi];
+    const pg = () => giorni.reduce((x, gi) => x + penGiorno(u.t, gi) + (w.t !== u.t ? penGiorno(w.t, gi) : 0), 0);
+    const prima = pg() + penPos(u, P.gi, P.s0, P.size) + penPos(w, Q.gi, Q.s0, Q.size);
+    togliPezzo(ui, p); togliPezzo(wi, q);
+    const a1 = fattibile(u, Q.gi, Q.s0, P.size) ? aulaLibera(u, Q.gi, Q.s0, P.size) : null;
+    if(a1){
+      metti(ui, Q.gi, Q.s0, a1.idx, P.size);
+      const a2 = fattibile(w, P.gi, P.s0, Q.size) ? aulaLibera(w, P.gi, P.s0, Q.size) : null;
+      if(a2){
+        metti(wi, P.gi, P.s0, a2.idx, Q.size);
+        if(sempre || accetta(pg() + penPos(u, Q.gi, Q.s0, P.size) + penPos(w, P.gi, P.s0, Q.size), prima)) return true;
+        togliPezzo(wi, ultimo(wi));
+      }
+      togliPezzo(ui, ultimo(ui));
+    }
+    metti(ui, P.gi, P.s0, P.a, P.size); metti(wi, Q.gi, Q.s0, Q.a, Q.size);
+    return false;
+  }
+  // blocco da 2 spezzato: avvicina le due ore e le riunisce in un blocco, se la penalità totale scende
+  const copia = uis => uis.map(ui => ({ ui, p: pos[ui].map(x => Object.assign({}, x)) }));
+  const ripristina = snap => { snap.forEach(x => { while(pos[x.ui].length) togliPezzo(x.ui, pos[x.ui][0]); }); snap.forEach(x => x.p.forEach(p => metti(x.ui, p.gi, p.s0, p.a, p.size))); };
+  function provaUnisci(ui){
+    const u = units[ui], singoli = pos[ui].filter(p => p.size === 1);
+    if(u.size !== 2 || singoli.length < 2) return;
+    const p = singoli[0], q = singoli[1];
+    for(const s of [p.s0 - 1, p.s0 + 1]){
+      if(s < 0 || s >= T || isPom(s) !== isPom(p.s0) || !act[u.c][kk(p.gi, s)]) continue;
+      const v = occC[u.c][kk(p.gi, s)];
+      const wi = v > 0 ? v - 1 : -1, r = wi >= 0 && wi !== ui ? pos[wi].find(x => x.gi === p.gi && x.s0 === s && x.size === 1) : null;
+      if(v !== 0 && !r) continue;
+      const snap = copia(wi >= 0 && wi !== ui ? [ui, wi] : [ui]), prima = penTotale();
+      if(!(v === 0 ? provaSposta(ui, q, p.gi, s, true) : provaScambia(ui, q, wi, r, true))){ ripristina(snap); continue; }
+      const q2 = pos[ui].find(x => x.gi === p.gi && x.s0 === s && x.size === 1), p2 = pos[ui].find(x => x.gi === p.gi && x.s0 === p.s0 && x.size === 1);
+      const s0 = Math.min(s, p.s0);
+      togliPezzo(ui, q2); togliPezzo(ui, p2);
+      const a = aulaLibera(u, p.gi, s0, 2);
+      if(a){ metti(ui, p.gi, s0, a.idx, 2); if(penTotale() < prima) return; }
+      ripristina(snap);
+    }
+  }
+  // porta il pezzo p (unità ui) all'ora (gi, s) della sua classe: spostamento se è libera, scambio se c'è un pezzo uguale
+  function provaVerso(ui, p, gi, s){
+    const u = units[ui];
+    if(s < 0 || s >= T || !act[u.c][kk(gi, s)] || (gi === p.gi && s === p.s0)) return;
+    const v = occC[u.c][kk(gi, s)];
+    if(v === 0) provaSposta(ui, p, gi, s);
+    else if(v > 0 && v - 1 !== ui){
+      const wi = v - 1, q = pos[wi].find(x => x.gi === gi && x.s0 === s);
+      if(q && q.size === p.size) provaScambia(ui, p, wi, q);
+    }
+  }
+  const unitaDoc = DC.map(() => []);
+  units.forEach((u, ui) => unitaDoc[u.t].push(ui));
+  // mossa mirata su un docente: riempie un'ora buca con la prima o l'ultima lezione della mezza giornata,
+  // oppure sposta l'unica lezione di una giornata accanto alle lezioni di un altro giorno
+  function mossaMirata(){
+    const t = (rnd() * DC.length) | 0, gi = (rnd() * nG) | 0;
+    if(!oreTG[t][gi]) return;
+    const pezzi = [];
+    unitaDoc[t].forEach(ui => pos[ui].forEach(p => { if(p.gi === gi) pezzi.push([ui, p]); }));
+    if(!pezzi.length) return;   // ore del giorno tutte fisse
+    if(oreTG[t][gi] === 1){
+      const [ui, p] = pezzi[0], altri = [];
+      for(let g2=0; g2<nG; g2++) if(g2 !== gi && oreTG[t][g2]) altri.push(g2);
+      if(!altri.length) return;
+      const g2 = altri[(rnd() * altri.length) | 0];
+      let first = -1, last = -1;
+      for(let s=0;s<T;s++) if(occT[t][kk(g2, s)]){ if(first < 0) first = s; last = s; }
+      provaVerso(ui, p, g2, rnd() < .5 ? first - p.size : last + 1);
+      return;
+    }
+    for(const [a, b] of [[0, S.oreM - 1], [S.oreM, T - 1]]){
+      let first = -1, last = -1;
+      for(let s=a;s<=b;s++) if(occT[t][kk(gi, s)]){ if(first < 0) first = s; last = s; }
+      if(first < 0) continue;
+      const buchi = [];
+      for(let s=first+1;s<last;s++) if(!occT[t][kk(gi, s)]) buchi.push(s);
+      if(!buchi.length) continue;
+      const sb = buchi[(rnd() * buchi.length) | 0];
+      const bordo = pezzi.filter(([ui, p]) => p.size === 1 && (p.s0 === first || p.s0 === last));
+      if(bordo.length){ const [ui, p] = bordo[(rnd() * bordo.length) | 0]; provaVerso(ui, p, gi, sb); }
+      return;
+    }
+  }
+  const nLS = opz.ls || 0, tutte = units.map((u, ui) => ui);
+  let migliorPen = opz.temp ? penTotale() : 0, miglior = opz.temp ? copia(tutte) : null;
+  for(let it=0; it<nLS; it++){
+    if(opz.temp){
+      temp = opz.temp * Math.pow(0.02, it / nLS);
+      if(it % 1000 === 999){ const pt = penTotale(); if(pt < migliorPen){ migliorPen = pt; miglior = copia(tutte); } }
+    }
+    const r = rnd();
+    if(r < .5){ mossaMirata(); continue; }
+    const ui = (rnd() * units.length) | 0;
+    if(!pos[ui].length) continue;
+    if(units[ui].size === 2 && pos[ui].length > 1 && r < .6){ provaUnisci(ui); continue; }
+    const p = pos[ui][(rnd() * pos[ui].length) | 0];
+    provaVerso(ui, p, (rnd() * nG) | 0, (rnd() * T) | 0);
+  }
+  temp = 0;
+  if(miglior && penTotale() > migliorPen) ripristina(miglior);   // il raffreddamento può finire peggio del meglio visto
+  // dopo gli spostamenti possono essersi liberati posti per le ore rimaste fuori
+  if(nLS) units.forEach((u, ui) => { if(resto[ui] > 0) colloca(ui, null); });
+
+  let mancanti = 0;
+  resto.forEach(r => mancanti += r);
+  const pen = penTotale();
   return { pos, mancanti, pen, costo: mancanti * 10000 + pen };
 }
 
-/* ---- ciclo con riavvii, non bloccante ---- */
+/* ---- miglioramento locale: quanto spingerlo (misurato sulla scuola di esempio: −30% ore buche) ---- */
+const OPZ_TENTATIVO = { ls:1000 };
+const OPZ_RIFINITURA = { ls:60000, temp:6 };
+// rifinitura del miglior orario trovato: riparte da lì e prova molti più scambi
+function rifinisci(I, best, rnd){
+  if(!best) return best;
+  const r = tentativo(I, rnd, Object.assign({ da: best.pos }, OPZ_RIFINITURA));
+  return r.costo <= best.costo ? r : best;
+}
+
+/* ---- ciclo con riavvii ----
+   Di norma gira in un Web Worker (un calcolo parallelo alla pagina, che resta usabile e si può interrompere).
+   Se il browser non lo permette, gira nella pagina a piccoli lotti come prima.
+   onProgress(n, tot, best, fase) · onDone(best, I, interrotta) · restituisce { ferma(), modo } */
 function generaAsync(tentativi, keepLocks, onProgress, onDone){
   const I = costruisciIstanza(keepLocks);
-  if(!I.units.length && !I.fissi.length){ onDone(null, I); return; }
-  let best = null, n = 0;
-  const t0 = performance.now();
+  if(!I.units.length && !I.fissi.length){ onDone(null, I, false); return { ferma(){}, modo:'nessuno' }; }
   const budget = tentativi >= 300 ? 20000 : tentativi >= 100 ? 9000 : 3000;
-  let seed = (Date.now() % 100000) + 7;
+  const seed = (Date.now() % 100000) + 7;
+  let w = null;
+  try{ w = new Worker(URL.createObjectURL(new Blob([sorgenteWorker()], { type:'text/javascript' }))); }catch(e){ w = null; }
+  if(!w) return generaNellaPagina(I, tentativi, budget, seed, onProgress, onDone);
+  let best = null, finito = false, ripiego = null;
+  const chiudi = (b, interrotta) => { if(finito) return; finito = true; w.terminate(); onDone(b, I, interrotta); };
+  w.onmessage = e => {
+    const m = e.data;
+    if(m.tipo === 'progresso'){ best = m.best; onProgress(m.n, tentativi, best, 'tentativi'); }
+    else if(m.tipo === 'rifinitura') onProgress(m.n, tentativi, best, 'rifinitura');
+    else if(m.tipo === 'fine') chiudi(m.best, false);
+  };
+  // se il Worker non parte (alcuni browser lo vietano per le pagine aperte da disco) si ripiega sulla pagina
+  w.onerror = ev => { if(ev.preventDefault) ev.preventDefault(); if(finito) return; finito = true; w.terminate();
+    ripiego = generaNellaPagina(I, tentativi, budget, seed, onProgress, onDone); };
+  const dati = Object.assign({}, I); delete dati.kk;   // le funzioni non si possono inviare al Worker
+  w.postMessage({ I:dati, tentativi, budget, seed, oreM:S.oreM });
+  return { modo:'worker', ferma(){ if(ripiego) ripiego.ferma(); else chiudi(best, true); } };
+}
+// il Worker riceve una copia del generatore: tentativo() e le poche funzioni che usa
+function sorgenteWorker(){
+  return `let S = { oreM: 0 };
+const isPom = ${isPom.toString()};
+${oreDocente.toString()}
+${tentativo.toString()}
+const OPZ_TENTATIVO = ${JSON.stringify(OPZ_TENTATIVO)}, OPZ_RIFINITURA = ${JSON.stringify(OPZ_RIFINITURA)};
+${rifinisci.toString()}
+onmessage = e => {
+  const m = e.data, I = m.I;
+  S.oreM = m.oreM;
+  I.kk = (gi, s) => gi * I.T + s;
+  let seed = m.seed;
   const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
-  function step(){
-    const lotto = Math.max(1, Math.round(tentativi / 12));
+  const lotto = Math.max(1, Math.round(m.tentativi / 12)), t0 = performance.now();
+  let best = null, n = 0;
+  for(;;){
     for(let i=0;i<lotto;i++){
-      const r = tentativo(I, rnd);
+      const r = tentativo(I, rnd, OPZ_TENTATIVO);
       n++;
       if(!best || r.costo < best.costo) best = r;
       if(best.costo === 0) break;
     }
-    onProgress(n, tentativi, best);
-    if(n >= tentativi || performance.now() - t0 > budget || best.costo === 0) onDone(best, I);
+    postMessage({ tipo:'progresso', n, best });
+    if(n >= m.tentativi || performance.now() - t0 > m.budget || best.costo === 0) break;
+  }
+  postMessage({ tipo:'rifinitura', n });
+  postMessage({ tipo:'fine', n, best: rifinisci(I, best, rnd) });
+};`;
+}
+// ripiego: stesso ciclo nella pagina, a lotti, con possibilità di interrompere tra un lotto e l'altro
+function generaNellaPagina(I, tentativi, budget, seed0, onProgress, onDone){
+  let best = null, n = 0, stop = false, seed = seed0;
+  const t0 = performance.now();
+  const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+  const fine = (b, interrotta) => { if(stop) return; stop = true; onDone(b, I, interrotta); };
+  function step(){
+    if(stop) return;
+    const lotto = Math.max(1, Math.round(tentativi / 12));
+    for(let i=0;i<lotto;i++){
+      const r = tentativo(I, rnd, OPZ_TENTATIVO);
+      n++;
+      if(!best || r.costo < best.costo) best = r;
+      if(best.costo === 0) break;
+    }
+    onProgress(n, tentativi, best, 'tentativi');
+    if(n >= tentativi || performance.now() - t0 > budget || best.costo === 0){
+      onProgress(n, tentativi, best, 'rifinitura');
+      setTimeout(() => { if(!stop) fine(rifinisci(I, best, rnd), false); }, 0);
+    }
     else setTimeout(step, 0);
   }
   setTimeout(step, 0);
+  return { modo:'pagina', ferma(){ fine(best, true); } };
 }
 
 /* ---- scrittura del risultato nello stato ---- */
@@ -1100,6 +1331,7 @@ function applicaSoluzione(best, I, keepLocks){
 function aulaPerCella(docId, g, s, escludiClasse){
   const t = doc(docId); if(!t || !(t.aule||[]).length) return '';
   for(const aId of t.aule){
+    if(aula(aId) && aula(aId).contemporanea) return aId;
     let libera = true;
     for(const c of S.classi){
       if(c.id === escludiClasse) continue;
@@ -1211,23 +1443,27 @@ function aulaUsata(id){
 }
 function renderAule(){
   const need = auleServono();
-  $('#auleMsg').innerHTML = S.aule.length >= need
-    ? `<div class="msg ok">${S.aule.length} aule inserite. Con ${S.classi.length} classi ne servono almeno ${need} per coprire l'ora di punta.</div>`
+  const condivise = S.aule.filter(a => a.contemporanea).length;
+  $('#auleMsg').innerHTML = S.aule.length >= need || condivise
+    ? `<div class="msg ok">${S.aule.length} aule inserite${condivise ? `, di cui ${condivise} per più classi insieme` : ''}. Con ${S.classi.length} classi ne servono almeno ${need} per coprire l'ora di punta${condivise && S.aule.length < need ? ': le aule condivise possono ospitare le classi in più' : ''}.</div>`
     : `<div class="msg ${S.aule.length?'warn':'bad'}">${S.aule.length} aule inserite: ne servono almeno ${need}, perché nell'ora di punta ${need} classi fanno lezione insieme.</div>`;
   const inp = $('#nAule');
   if(inp && document.activeElement !== inp) inp.value = S.aule.length || need;
-  let h = `<thead><tr><th>Aula</th><th>Tipo</th><th>Docenti assegnati</th><th>Ore occupate</th><th></th></tr></thead><tbody>`;
+  let h = `<thead><tr><th>Aula</th><th>Tipo</th><th title="Una classe per volta, oppure più classi nella stessa ora (palestra, aula magna…)">Uso</th><th>Docenti assegnati</th><th>Ore occupate</th><th></th></tr></thead><tbody>`;
   const uso = {};
   S.classi.forEach(c => S.giorni.forEach(g => (S.orario[c.id]?.[g]||[]).forEach(v => { if(v && v.aula) uso[v.aula] = (uso[v.aula]||0)+1; })));
   S.aule.forEach((a,i) => {
     const dn = S.docenti.filter(t => (t.aule||[]).includes(a.id)).map(t => cognome(t.nome));
     h += `<tr><td><input type="text" data-i="${i}" data-f="nome" value="${esc(a.nome)}"></td>
       <td><select data-i="${i}" data-f="tipo" style="width:130px">${['Aula','Laboratorio','Palestra','Altro'].map(t=>`<option ${t===a.tipo?'selected':''}>${t}</option>`).join('')}</select></td>
+      <td><select data-i="${i}" data-f="contemporanea" style="width:auto">
+        <option value="0">una classe per volta</option>
+        <option value="1" ${a.contemporanea?'selected':''}>più classi insieme</option></select></td>
       <td class="mini">${dn.length ? esc(dn.join(', ')) : '—'}</td>
       <td class="num">${uso[a.id]||0}</td>
       <td><button class="iconbtn" data-del="${i}">✕</button></td></tr>`;
   });
-  if(!S.aule.length) h += `<tr><td colspan="5" class="mini">Nessuna aula inserita: le caselle dell'orario resteranno senza numero.</td></tr>`;
+  if(!S.aule.length) h += `<tr><td colspan="6" class="mini">Nessuna aula inserita: le caselle dell'orario resteranno senza numero.</td></tr>`;
   $('#tbAule').innerHTML = h + '</tbody>';
 }
 
@@ -1302,7 +1538,14 @@ function renderDocenti(){
         ${nInd ? `<span class="tag warn">${nInd} ore non disponibili</span>` : ''}
         <button class="iconbtn" data-i="${i}" data-deldoc="1" title="Elimina docente" style="margin-left:auto">✕</button>
       </summary>
-      <div style="padding:0 16px 16px">
+      ${APERTI.has(i) ? corpoDocente(t, i) : ''}</details>`;
+  }).join('') || '<p class="hint">Nessun docente inserito.</p>';
+}
+// contenuto del riquadro di un docente: costruito solo quando il riquadro è aperto
+// (con molti docenti costruirli tutti significava decine di migliaia di elementi a ogni modifica)
+function corpoDocente(t, i){
+  const aule = (t.aule||[]).map(a => aula(a)).filter(Boolean);
+  return `<div class="corpo-doc" style="padding:0 16px 16px">
         <div class="grid2" style="margin-bottom:10px">
           <label class="fl">Nome e cognome<input type="text" data-i="${i}" data-f="nome" value="${esc(t.nome)}"></label>
           <label class="fl">Giorno libero
@@ -1340,8 +1583,7 @@ function renderDocenti(){
           <span class="fl">Ore di indisponibilità — clicca per bloccarle</span>
           ${indispGrid(t,i)}
         </div>
-      </div></details>`;
-  }).join('') || '<p class="hint">Nessun docente inserito.</p>';
+      </div>`;
 }
 function indispGrid(t,i){
   const T = totSlot();
@@ -1362,8 +1604,7 @@ const SPEC_HARD = [
   ['maxConsecDoc','n','Massimo ore consecutive per docente, anche in classi diverse','La pausa fra mattino e pomeriggio interrompe sempre la serie.'],
   ['maxOreGiorno','n','Massimo ore giornaliere per docente','Vale per tutti; il singolo docente può avere limiti propri nella sua scheda.'],
   ['rispettaIndisp','b','Rispetta le indisponibilità dei docenti','Le ore segnate nella scheda del docente non vengono mai usate.'],
-  ['giornoLibero','b','Rispetta il giorno libero dei docenti',''],
-  ['unaAula','b','Un\'aula ospita una sola lezione per volta','Disattivalo se più gruppi possono condividere lo stesso spazio.']
+  ['giornoLibero','b','Rispetta il giorno libero dei docenti','']
 ];
 const SPEC_SOFT = [
   ['pesoMattino','Discipline principali nelle prime ore e mai al pomeriggio'],
@@ -1411,14 +1652,14 @@ function analizza(){
     const perDoc = {}, perAula = {};
     S.classi.forEach(c => {
       const v = cella(c.id,g,s); if(!v) return;
-      (perDoc[v.doc] = perDoc[v.doc]||[]).push(c);
+      [v.doc].concat(compresenti(v).map(x => x.doc)).forEach(d => (perDoc[d] = perDoc[d]||[]).push(c));
       if(v.aula) (perAula[v.aula] = perAula[v.aula]||[]).push(c);
     });
     Object.keys(perDoc).forEach(d => { if(perDoc[d].length>1){
       perDoc[d].forEach(c => clash.add(c.id+'|'+g+'|'+s));
       errori.push(`${doc(d)?doc(d).nome:'?'} — ${g} ${slotLabel(s)}: in ${perDoc[d].length} classi contemporaneamente (${perDoc[d].map(c=>c.nome).join(', ')})`);
     }});
-    if(S.vincoli.unaAula) Object.keys(perAula).forEach(a => { if(perAula[a].length>1){
+    Object.keys(perAula).forEach(a => { if(perAula[a].length>1 && !(aula(a) && aula(a).contemporanea)){
       perAula[a].forEach(c => clash.add(c.id+'|'+g+'|'+s));
       errori.push(`${aula(a)?aula(a).nome:'?'} — ${g} ${slotLabel(s)}: occupata da ${perAula[a].length} classi (${perAula[a].map(c=>c.nome).join(', ')})`);
     }});
@@ -1466,13 +1707,21 @@ function analizza(){
         avvisi.push(`${c.nome} — ${d.nome}: ${singole - inevitabili} ore singole invece che in blocchi da 2 (blocchi obbligatori)`);
     });
   });
-  // docenti
+  // docenti — indice «chi è dove» calcolato una volta sola: docente|giorno|ora → classe,
+  // e ore collocate per docente|classe|disciplina (prima: una ricerca su tutte le classi per ogni docente e ogni ora)
+  const dove = {}, piazzate = {};
+  S.classi.forEach(c => S.giorni.forEach(g => (S.orario[c.id]?.[g]||[]).forEach((v, s) => {
+    if(!v) return;
+    dove[v.doc + '|' + g + '|' + s] = c;
+    compresenti(v).forEach(x => dove[x.doc + '|' + g + '|' + s] = c);
+    const k = v.doc + '|' + c.id + '|' + v.dis; piazzate[k] = (piazzate[k]||0) + 1;
+  })));
   S.docenti.forEach(t => {
     const perGiorno = {};
     S.giorni.forEach(g => {
       const occ = [];
       for(let s=0;s<T;s++){
-        const c = S.classi.find(c => { const v = cella(c.id,g,s); return v && v.doc===t.id; });
+        const c = dove[t.id + '|' + g + '|' + s];
         if(c) occ.push(s);
       }
       perGiorno[g] = occ;
@@ -1498,18 +1747,148 @@ function analizza(){
         errori.push(`${t.nome}: ha lezione nel suo giorno libero (${g})`);
     });
     t.cattedre.forEach(k => {
-      const n = orePiazzate(t.id,k.cl,k.di);
+      const n = piazzate[t.id + '|' + k.cl + '|' + k.di] || 0;
       if(n < k.ore && cls(k.cl)) avvisi.push(`${t.nome} — ${cls(k.cl).nome} ${disc(k.di)?disc(k.di).sigla:''}: ${n} ore su ${k.ore} collocate`);
     });
   });
-  // aule sufficienti?
-  const maxSim = Math.max(0, ...S.giorni.map(g => { let m = 0;
-    for(let s=0;s<T;s++){ let n = 0; S.classi.forEach(c => { if(attivo(c,g,s)) n++; }); m = Math.max(m,n); } return m; }));
-  if(S.aule.length && S.aule.length < maxSim)
+  // aule sufficienti? (un'aula «più classi insieme» basta da sola a ospitare l'ora di punta)
+  const maxSim = auleServono();
+  if(S.aule.length && S.aule.length < maxSim && !S.aule.some(a => a.contemporanea))
     avvisi.push(`Servono almeno ${maxSim} aule per far lezione contemporaneamente a tutte le classi: ne risultano ${S.aule.length}.`);
 
   ANALISI = { errori, avvisi, clash, collocate, vuote, buchi };
   return ANALISI;
+}
+
+/* ---------------- diagnosi di fattibilità ----------------
+   Controlli strutturali, eseguibili anche prima di generare. Ogni «impossibile» è una certezza
+   matematica: nessun tentativo potrà collocare tutte le ore senza conflitti. I «difficili» hanno
+   margini minimi: il generatore può farcela, ma servono più tentativi. Superare i controlli non
+   garantisce un orario perfetto (i vincoli possono scontrarsi tra loro in modi più complessi). */
+function fattibilita(){
+  const V = S.vincoli, T = totSlot(), G = S.giorni;
+  const impossibili = [], difficili = [];
+  const maxD = V.maxOreDiscGiorno > 0 ? V.maxOreDiscGiorno : 99;
+  const maxC = V.maxConsec > 0 ? V.maxConsec : 99;
+  const nomeD = id => disc(id) ? disc(id).nome : '?';
+  const ore = n => n === 1 ? '1 ora' : n + ' ore';
+  const segnalate = new Set();   // classe|disciplina già impossibile: non ripeterla per il docente
+  const glFisso = t => V.giornoLibero && t.giornoLibero && t.giornoLibero !== 'auto' ? t.giornoLibero : '';
+  const glAuto = t => V.giornoLibero && t.giornoLibero === 'auto';
+  const disponibile = (t, g, s) => !(V.rispettaIndisp && ((t.indisp||{})[g]||[]).includes(s));
+  const limGiorno = t => t.maxGiorno > 0 ? t.maxGiorno : (V.maxOreGiorno > 0 ? V.maxOreGiorno : 99);
+  const limConsec = t => t.maxConsec > 0 ? t.maxConsec : (V.maxConsecDoc > 0 ? V.maxConsecDoc : 99);
+  // ore collocabili in un giorno negli slot ok(s) con al più m ore di fila (la pausa pranzo spezza la serie)
+  const capGiorno = (ok, m) => {
+    let tot = 0, run = 0;
+    for(let s=0; s<=T; s++){
+      if(s < T && ok(s) && (run === 0 || isPom(s) === isPom(s-1))) run++;
+      else { tot += m >= 99 ? run : run - Math.floor(run / (m + 1)); run = (s < T && ok(s)) ? 1 : 0; }
+    }
+    return tot;
+  };
+  // capacità settimanale del docente: senza il giorno libero (se lo sceglie il programma, nel caso migliore)
+  const capSettimana = (t, perGiorno) => {
+    const caps = G.map(g => g === glFisso(t) ? 0 : perGiorno(g));
+    return caps.reduce((a,b) => a + b, 0) - (glAuto(t) && caps.length ? Math.min(...caps) : 0);
+  };
+  const orePerClasse = cid => S.docenti.reduce((s,t) => s + t.cattedre.filter(k => k.cl === cid).reduce((a,k) => a + (k.ore||0), 0), 0);
+
+  // 1. classi: ore richieste contro ore dello schema; ore di una disciplina contro il limite giornaliero
+  S.classi.forEach(c => {
+    const slot = oreClasse(c), rich = orePerClasse(c.id), q = oreQuadro(c);
+    if(rich > slot) impossibili.push(`La classe ${c.nome} richiede ${rich} ore di cattedre ma lo schema orario ne prevede solo ${slot}: riduci le ore di una cattedra o aumenta le ore della classe (Impostazioni).`);
+    else if(q > slot) impossibili.push(`Il quadro orario di ${c.nome} prevede ${q} ore ma lo schema orario ne prevede solo ${slot}: riduci le ore nel Quadro orario o aumenta le ore della classe (Impostazioni).`);
+    const perDisc = {};
+    S.docenti.forEach(t => t.cattedre.forEach(k => { if(k.cl === c.id) perDisc[k.di] = (perDisc[k.di]||0) + (k.ore||0); }));
+    Object.keys(perDisc).forEach(di => {
+      const cap = G.reduce((s,g) => { let n = 0; for(let x=0;x<T;x++) if(attivo(c,g,x)) n++; return s + Math.min(n, maxD); }, 0);
+      if(perDisc[di] > cap){
+        segnalate.add(c.id + '|' + di);
+        impossibili.push(`${c.nome} — ${nomeD(di)}: ${ore(perDisc[di])}, ma con al massimo ${ore(maxD)} della stessa disciplina al giorno se ne possono collocare solo ${cap}: alza il limite nella scheda Vincoli o riduci le ore.`);
+      }
+    });
+  });
+
+  // 2. docenti: ore delle cattedre (e compresenze) contro le ore in cui possono davvero insegnare
+  const oreCo = {};
+  S.classi.forEach(c => G.forEach(g => (S.orario[c.id]?.[g]||[]).forEach(v => compresenti(v).forEach(x => oreCo[x.doc] = (oreCo[x.doc]||0) + 1))));
+  S.docenti.forEach(t => {
+    const H = oreDocente(t) + (oreCo[t.id]||0); if(!H) return;
+    const lim = limGiorno(t), mcd = limConsec(t);
+    const classi = [...new Set(t.cattedre.map(k => k.cl))].map(cls).filter(Boolean);
+    const cap = capSettimana(t, g => Math.min(lim, capGiorno(s => disponibile(t,g,s) && classi.some(c => attivo(c,g,s)), mcd)));
+    const motivi = [];
+    if(glFisso(t)) motivi.push('giorno libero ' + glFisso(t));
+    if(glAuto(t)) motivi.push('un giorno libero scelto dal programma');
+    const nInd = Object.values(t.indisp||{}).reduce((s,a) => s + a.length, 0);
+    if(V.rispettaIndisp && nInd) motivi.push(nInd === 1 ? '1 ora segnata come non disponibile' : nInd + ' ore segnate come non disponibili');
+    if(lim < 99) motivi.push('massimo ' + ore(lim) + ' al giorno');
+    if(mcd < 99) motivi.push('massimo ' + ore(mcd) + ' di fila');
+    const perche = motivi.length ? ' (' + motivi.join(', ') + ')' : '';
+    if(H > cap){
+      impossibili.push(`${t.nome}: ${H} ore da collocare${oreCo[t.id] ? ` (di cui ${oreCo[t.id]} in compresenza)` : ''}, ma al massimo ${cap} possibili${perche}: togli qualche indisponibilità, alza i limiti nella scheda del docente o sposta una cattedra.`);
+      return;
+    }
+    if(H >= cap - 1) difficili.push(`${t.nome}: ${H} ore su ${cap} collocabili${perche}: quasi nessun margine, il generatore avrà poche alternative.`);
+    // stesso docente nella stessa classe: ore consecutive e ore della stessa disciplina al giorno
+    classi.forEach(c => {
+      const Htc = t.cattedre.filter(k => k.cl === c.id).reduce((a,k) => a + (k.ore||0), 0);
+      const perG = g => Math.min(lim, capGiorno(s => disponibile(t,g,s) && attivo(c,g,s), Math.min(maxC, mcd)));
+      const capTc = capSettimana(t, perG);
+      if(Htc > capTc){
+        impossibili.push(`${t.nome} in ${c.nome}: ${Htc} ore, ma al massimo ${capTc} collocabili${maxC < 99 ? ` con al più ${ore(maxC)} di fila nella stessa classe` : ''}${perche}: alza i limiti o dividi la cattedra con un altro docente.`);
+        return;
+      }
+      t.cattedre.filter(k => k.cl === c.id).forEach(k => {
+        if(segnalate.has(c.id + '|' + k.di)) return;
+        const capK = capSettimana(t, g => Math.min(maxD, perG(g)));
+        if(k.ore > capK) impossibili.push(`${t.nome} — ${c.nome} ${nomeD(k.di)}: ${ore(k.ore)}, ma con al massimo ${ore(maxD)} della stessa disciplina al giorno ne entrano solo ${capK} nei giorni in cui il docente è disponibile: alza il limite nella scheda Vincoli o togli qualche indisponibilità.`);
+      });
+    });
+  });
+
+  // 3. aule: i docenti che usano solo aule «una classe per volta» non possono superarne la capienza settimanale
+  const escl = id => aula(id) && !aula(id).contemporanea;
+  const gruppi = new Map();
+  S.docenti.forEach(t => { const R = (t.aule||[]).filter(aula); if(R.length && R.every(escl)) gruppi.set(R.slice().sort().join(','), R); });
+  gruppi.forEach(R => {
+    const dentro = S.docenti.filter(t => { const A = (t.aule||[]).filter(aula); return A.length && A.every(a => R.includes(a)); });
+    const H = dentro.reduce((s,t) => s + oreDocente(t), 0);
+    let W = 0;
+    G.forEach(g => { for(let s=0;s<T;s++) if(dentro.some(t => t.cattedre.some(k => cls(k.cl) && attivo(cls(k.cl),g,s)))) W++; });
+    const cap = R.length * W, nomi = R.map(a => aula(a).nome).join(', ');
+    if(H > cap) impossibili.push(`Aule ${nomi}: devono ospitare ${H} ore (${dentro.map(t => cognome(t.nome)).join(', ')}) ma in una settimana ne offrono al massimo ${cap} (${R.length === 1 ? '1 aula' : R.length + ' aule'} × ${ore(W)}): aggiungi un'aula a questi docenti oppure segna un'aula come «più classi insieme».`);
+    else if(H > cap * 0.9) difficili.push(`Aule ${nomi}: ${H} ore da ospitare su ${cap} disponibili: sono quasi sempre piene.`);
+  });
+  // ora di punta: classi piene (ogni ora ha una lezione) i cui docenti usano solo aule esclusive
+  const piene = S.classi.filter(c => { const rich = orePerClasse(c.id); if(!rich || rich < oreClasse(c)) return false;
+    return S.docenti.filter(t => t.cattedre.some(k => k.cl === c.id)).every(t => { const A = (t.aule||[]).filter(aula); return A.length && A.every(escl); }); });
+  if(piene.length){
+    const aulePiene = new Set();
+    S.docenti.forEach(t => { if(t.cattedre.some(k => piene.some(c => c.id === k.cl))) (t.aule||[]).forEach(a => aulePiene.add(a)); });
+    let punta = 0;
+    G.forEach(g => { for(let s=0;s<T;s++) punta = Math.max(punta, piene.filter(c => attivo(c,g,s)).length); });
+    if(punta > aulePiene.size) impossibili.push(`Nell'ora di punta ${punta} classi fanno lezione insieme e ogni loro ora richiede un'aula, ma i loro docenti dispongono in tutto di ${aulePiene.size} aule: servono almeno ${punta} aule (o un'aula «più classi insieme»).`);
+  }
+  if(S.aule.length && S.aule.length < auleServono() && !S.aule.some(a => a.contemporanea))
+    difficili.push(`Servono almeno ${auleServono()} aule per far lezione contemporaneamente a tutte le classi: ne risultano ${S.aule.length}.`);
+
+  return { impossibili, difficili };
+}
+
+// finestra con il risultato della diagnosi; conGenera: offre di generare comunque
+function mostraFattibilita(F, conGenera){
+  const lista = (tipo, righe) => righe.slice(0,40).map(m => `<div class="msg ${tipo}">${esc(m)}</div>`).join('') +
+    (righe.length > 40 ? `<div class="mini">…e altre ${righe.length-40} segnalazioni</div>` : '');
+  const esito = F.impossibili.length
+    ? `<p><b>Con i dati e i vincoli attuali è impossibile ottenere un orario senza criticità.</b> Nessun tentativo potrà riuscirci finché non correggi questi punti:</p>${lista('bad', F.impossibili)}`
+    : `<div class="msg ok">Nessuna impossibilità strutturale. Se restano ore non collocate, il generatore può farcela con altri tentativi (qualità più alta) o allentando qualche criterio.</div>`;
+  const diff = F.difficili.length ? `<p style="margin-top:12px"><b>Possibile, ma difficile:</b></p>${lista('warn', F.difficili)}` : '';
+  apriModal(`<h3>Diagnosi di fattibilità</h3><div class="report" style="max-height:60vh;overflow:auto">${esito}${diff}</div>
+    <div class="foot"><button class="btn ghost" data-close="1">${conGenera ? 'Annulla' : 'Chiudi'}</button>
+      ${conGenera ? '<button class="btn ghost danger" id="fGenera">Genera comunque</button>' : ''}</div>`,
+    box => { if(conGenera) $('#fGenera',box).addEventListener('click', () => { chiudiModal(); avviaGenerazione(); }); });
 }
 
 /* ---------------- pannello orario ---------------- */
@@ -1532,9 +1911,10 @@ function renderOrario(){
   if(extra) msgs.push(`<div class="mini">…e altre ${extra} segnalazioni</div>`);
   $('#reportOrario').innerHTML = msgs.join('');
 
+  if(POOL_SEL !== null && !POOL[POOL_SEL]) POOL_SEL = null;
   $('#poolWrap').hidden = !POOL.length;
   $('#pool').innerHTML = POOL.map((p,i) =>
-    `<span class="chip bad" draggable="true" data-pool="${i}">${esc(cls(p.cl)?cls(p.cl).nome:'?')} · ${esc(disc(p.di)?disc(p.di).sigla:'?')} · ${esc(cognome(doc(p.doc)?doc(p.doc).nome:''))}${p.ore>1?' ('+p.ore+'h)':''}</span>`).join('');
+    `<span class="chip bad${i===POOL_SEL?' sel':''}" draggable="true" data-pool="${i}" title="Trascinala in una casella libera, oppure selezionala e fai clic sulla casella">${esc(cls(p.cl)?cls(p.cl).nome:'?')} · ${esc(disc(p.di)?disc(p.di).sigla:'?')} · ${esc(cognome(doc(p.doc)?doc(p.doc).nome:''))}${p.ore>1?' ('+p.ore+'h)':''}</span>`).join('');
 
   renderFisse();
   renderSoggetti();
@@ -1550,7 +1930,7 @@ function tutteFisse(){
 function renderFisse(){
   const F = tutteFisse();
   $('#listaFisse').innerHTML = F.length ? F.map(f =>
-    `<span class="chip" style="cursor:default">🔒 ${esc(cls(f.c).nome)} · ${esc(g3(f.g))} ${slotLabel(f.s)} · ${esc(disc(f.v.dis)?disc(f.v.dis).sigla:'?')} ${esc(cognome(doc(f.v.doc)?doc(f.v.doc).nome:''))}
+    `<span class="chip" style="cursor:default">🔒 ${esc(cls(f.c).nome)} · ${esc(g3(f.g))} ${slotLabel(f.s)} · ${esc(disc(f.v.dis)?disc(f.v.dis).sigla:'?')} ${esc(cognome(doc(f.v.doc)?doc(f.v.doc).nome:''))}${esc(compresenti(f.v).map(x => ' + ' + cognome(doc(x.doc)?doc(x.doc).nome:'')).join(''))}
       <button class="linkish" data-unlock="${f.c}|${f.g}|${f.s}">✕</button></span>`).join('')
     : '<span class="mini">Nessuna assegnazione fissa.</span>';
 }
@@ -1568,16 +1948,23 @@ function renderSoggetti(){
   sel.hidden = !opts.length;
 }
 
-function cellHTML(v, modo, cid){
+// sogg: nella vista docente, il docente che si sta guardando (per riconoscere le sue ore in compresenza)
+function cellHTML(v, modo, cid, sogg){
   if(!v) return '';
   const d = disc(v.dis), t = doc(v.doc), a = aula(v.aula);
   const bad = ANALISI && cid && ANALISI.clash.has(cid+'|'+v._g+'|'+v._s);
+  const co = compresenti(v), mioCo = modo==='docente' && co.find(x => x.doc === sogg);
   const r1 = modo==='classe' ? (d?d.sigla:'?') : modo==='docente' ? (cls(cid)?cls(cid).nome:'?') : (cls(cid)?cls(cid).nome:'?');
-  const r2 = modo==='classe' ? (t?cognome(t.nome):'') : modo==='docente' ? (d?d.nome:'') : (t?cognome(t.nome):'');
+  const r2 = modo==='classe' ? (t?cognome(t.nome):'') : modo==='docente' ? (mioCo ? (mioCo.att || (d?d.nome:'')) : (d?d.nome:'')) : (t?cognome(t.nome):'');
   const r3 = modo==='aula' ? (d?d.sigla:'') : (a?a.nome:'');
+  // riga compresenza: in classe/aula gli altri docenti, nel docente in compresenza il titolare
+  const rCo = mioCo ? 'compresenza con ' + (t?cognome(t.nome):'')
+    : modo==='docente' ? (co.length ? '+ ' + co.map(x => cognome(doc(x.doc)?doc(x.doc).nome:'')).join(', ') : '')
+    : co.map(x => '+ ' + cognome(doc(x.doc)?doc(x.doc).nome:'') + (x.att ? ' (' + x.att + ')' : '')).join(' ');
   return `<div class="lesson${bad?' clash':''}" draggable="${modo==='classe'}" style="--h:${d?d.hue:210}">
     <span class="d">${esc(r1)}</span>
     <span class="t">${esc(r2)}</span>
+    ${rCo?`<span class="co" title="${esc(rCo)}">${esc(rCo)}</span>`:''}
     ${r3?`<span class="aula">${modo==='aula'?'':'▢ '}${esc(r3)}</span>`:''}
     ${v.lock?'<span class="lk">🔒</span>':''}</div>`;
 }
@@ -1597,7 +1984,7 @@ function grigliaClasse(c){
   }
   return h + '</tbody></table></div>';
 }
-function grigliaFiltro(match, modo){
+function grigliaFiltro(match, modo, sogg){
   const T = totSlot();
   let h = `<div class="tablewrap"><table class="tt"><thead><tr><th></th>` +
     S.giorni.map(g => `<th>${esc(g)}</th>`).join('') + `</tr></thead><tbody>`;
@@ -1607,7 +1994,8 @@ function grigliaFiltro(match, modo){
       let found = null, fc = null;
       for(const c of S.classi){ const v = cella(c.id,g,s); if(v && match(v,c)){ found = v; fc = c; break; } }
       if(found){ found._g = g; found._s = s; }
-      h += `<td>${found?cellHTML(found,modo,fc.id):''}</td>`;
+      // data-slot: giorno e ora, per collocare qui le ore non collocate (la classe si ricava dall'ora del pool)
+      h += `<td data-slot="${esc(g)}|${s}"${found ? '' : ' class="empty-hint"'}>${found?cellHTML(found,modo,fc.id,sogg):''}</td>`;
     });
     h += '</tr>';
   }
@@ -1640,8 +2028,10 @@ function renderVista(){
     titolo = 'Classe ' + c.nome; corpo = grigliaClasse(c);
   } else if(v==='docente'){
     const t = doc(k); if(!t){ box.innerHTML = '<p class="hint">Nessun docente.</p>'; return; }
-    titolo = t.nome + ' · ' + oreDocente(t) + ' ore';
-    corpo = grigliaFiltro(x => x.doc===t.id, 'docente');
+    let nCo = 0;
+    S.classi.forEach(c => S.giorni.forEach(g => (S.orario[c.id]?.[g]||[]).forEach(v => { if(compresenti(v).some(x => x.doc===t.id)) nCo++; })));
+    titolo = t.nome + ' · ' + oreDocente(t) + ' ore' + (nCo ? ` + ${nCo} in compresenza` : '');
+    corpo = grigliaFiltro(x => inCella(x, t.id), 'docente', t.id);
   } else if(v==='aula'){
     const a = aula(k); if(!a){ box.innerHTML = '<p class="hint">Nessuna aula.</p>'; return; }
     titolo = a.nome; corpo = grigliaFiltro(x => x.aula===a.id, 'aula');
@@ -1686,13 +2076,43 @@ function modalCella(key){
       </select></label>
     <label class="row" style="gap:8px"><input type="checkbox" id="mLock" ${v&&v.lock?'checked':''}> Blocca questa casella (assegnazione fissa)</label>
     ${cand.length?'':'<p class="hint" style="margin-top:8px">Nessun docente ha cattedre in questa classe: aggiungile nella scheda Docenti.</p>'}
+    <div class="stack" style="margin-top:14px;padding-top:10px;border-top:1px solid var(--line)">
+      <span class="fl">Compresenza — altri docenti presenti in quest'ora</span>
+      <div id="mCoLista" class="pool" style="margin:6px 0"></div>
+      <div class="row" style="gap:6px;flex-wrap:wrap">
+        <select id="mCoDoc" style="width:auto;flex:1;min-width:180px"></select>
+        <input type="text" id="mCoAtt" placeholder="attività (es. Sostegno) — facoltativa" style="width:auto;flex:1;min-width:160px">
+        <button class="btn ghost sm" id="mCoAdd">+ Aggiungi</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Una casella con docenti in compresenza viene bloccata: rigenerando con le ore bloccate mantenute resta al suo posto.</p>
+    </div>
     <div class="foot">
       <button class="btn ghost" data-close="1">Annulla</button>
       <button class="btn ghost danger" id="mDel">Svuota</button>
       <button class="btn" id="mOk">Conferma</button>
     </div>`, box => {
+    // compresenze: si lavora su una copia, salvata solo con «Conferma»
+    const co = compresenti(v).map(x => Object.assign({}, x));
+    // docente già impegnato altrove in quest'ora?
+    const impegno = id => { for(const c2 of S.classi){ if(c2.id === cid) continue; if(inCella(cella(c2.id,g,s), id)) return c2.nome; } return ''; };
+    const disegnaCo = () => {
+      const tit = ($('#mSel',box).value||'').split('|')[0];
+      $('#mCoLista',box).innerHTML = co.length ? co.map((x,i) => `<span class="chip" style="cursor:default">${esc(doc(x.doc)?doc(x.doc).nome:'?')}${x.att?' · '+esc(x.att):''}
+        <button class="linkish" data-rmco="${i}" title="Togli">✕</button></span>`).join('') : '<span class="mini">nessuna compresenza</span>';
+      $('#mCoDoc',box).innerHTML = '<option value="">— scegli il docente —</option>' + S.docenti
+        .filter(t => t.id !== tit && !co.some(x => x.doc === t.id))
+        .map(t => { const o = impegno(t.id); return `<option value="${t.id}">${esc(t.nome)}${o ? ' · occupato in ' + esc(o) : ''}</option>`; }).join('');
+    };
+    disegnaCo();
+    $('#mCoLista',box).addEventListener('click', e => { const i = e.target.dataset.rmco; if(i !== undefined){ co.splice(+i,1); disegnaCo(); } });
+    $('#mCoAdd',box).addEventListener('click', () => {
+      const id = $('#mCoDoc',box).value; if(!id) return;
+      co.push({ doc:id, att:$('#mCoAtt',box).value.trim() });
+      $('#mCoAtt',box).value = ''; $('#mLock',box).checked = true;
+      disegnaCo();
+    });
     $('#mSel',box).addEventListener('change', e => {
-      const val = e.target.value; if(!val) return;
+      const val = e.target.value; disegnaCo(); if(!val) return;
       const t = doc(val.split('|')[0]);
       const sugg = aulaPerCella(t.id, g, s, cid);
       if(sugg) $('#mAula',box).value = sugg;
@@ -1700,8 +2120,16 @@ function modalCella(key){
     $('#mDel',box).addEventListener('click', () => { setCella(cid,g,s,null); chiudiModal(); save(); renderOrario(); });
     $('#mOk',box).addEventListener('click', () => {
       const val = $('#mSel',box).value;
-      if(!val) setCella(cid,g,s,null);
-      else setCella(cid,g,s,{ doc:val.split('|')[0], dis:val.split('|')[1], aula:$('#mAula',box).value, lock:$('#mLock',box).checked });
+      if(!val){
+        if(co.length){ $('#mCoLista',box).insertAdjacentHTML('afterend', '<div class="msg warn">Per una compresenza scegli prima il docente titolare dell\'ora.</div>'); return; }
+        setCella(cid,g,s,null);
+      }
+      else {
+        const nv = { doc:val.split('|')[0], dis:val.split('|')[1], aula:$('#mAula',box).value, lock:$('#mLock',box).checked };
+        const tieni = co.filter(x => x.doc !== nv.doc);
+        if(tieni.length){ nv.co = tieni; nv.lock = true; }
+        setCella(cid,g,s,nv);
+      }
       chiudiModal(); save(); renderOrario();
     });
   });
@@ -1791,7 +2219,7 @@ function csvClassi(){
     for(let s=0;s<T;s++){
       const r = [slotLabel(s)];
       S.giorni.forEach(g => { const v = attivo(c,g,s) ? cella(c.id,g,s) : null;
-        r.push(v ? `${disc(v.dis)?disc(v.dis).sigla:''} ${cognome(doc(v.doc)?doc(v.doc).nome:'')}${v.aula?' ['+aula(v.aula).nome+']':''}` : ''); });
+        r.push(v ? `${disc(v.dis)?disc(v.dis).sigla:''} ${cognome(doc(v.doc)?doc(v.doc).nome:'')}${compresenti(v).map(x => ' + ' + cognome(doc(x.doc)?doc(x.doc).nome:'')).join('')}${v.aula?' ['+aula(v.aula).nome+']':''}` : ''); });
       out.push(r.map(csvCell).join(';'));
     }
     out.push('');
@@ -1806,8 +2234,9 @@ function csvDocenti(){
       const r = [slotLabel(s)];
       S.giorni.forEach(g => {
         let txt = '';
-        for(const c of S.classi){ const v = cella(c.id,g,s); if(v && v.doc===t.id){
-          txt = `${c.nome} ${disc(v.dis)?disc(v.dis).sigla:''}${v.aula?' ['+aula(v.aula).nome+']':''}`; break; } }
+        for(const c of S.classi){ const v = cella(c.id,g,s); if(inCella(v, t.id)){
+          const co = v.doc !== t.id ? compresenti(v).find(x => x.doc === t.id) : null;
+          txt = `${c.nome} ${co ? (co.att || (disc(v.dis)?disc(v.dis).sigla:'')) + ' (compresenza)' : (disc(v.dis)?disc(v.dis).sigla:'')}${v.aula?' ['+aula(v.aula).nome+']':''}`; break; } }
         r.push(txt);
       });
       out.push(r.map(csvCell).join(';'));
@@ -2154,6 +2583,7 @@ async function importaFogli(files){
    =========================================================== */
 const APERTI = new Set();
 let DRAG = null;
+let POOL_SEL = null;   // ora del pool selezionata con un clic, in attesa della casella di destinazione
 
 /* ---- tema ---- */
 function applicaTema(t){
@@ -2282,8 +2712,11 @@ $('#tbAule').addEventListener('input', e => {
   S.aule[+i].nome = e.target.value; save();
 });
 $('#tbAule').addEventListener('change', e => {
-  const i = e.target.dataset.i; if(i===undefined || e.target.dataset.f!=='tipo') return;
-  S.aule[+i].tipo = e.target.value; save();
+  const i = e.target.dataset.i, f = e.target.dataset.f; if(i===undefined) return;
+  if(f==='tipo') S.aule[+i].tipo = e.target.value;
+  else if(f==='contemporanea') S.aule[+i].contemporanea = e.target.value === '1';
+  else return;
+  save();
 });
 $('#tbAule').addEventListener('click', e => {
   const i = e.target.dataset.del; if(i===undefined) return;
@@ -2298,7 +2731,7 @@ $('#btnAddAula').addEventListener('click', () => { S.aule.push(nuovaAula('Nuova 
 $('#btnAuleRapide').addEventListener('click', () => {
   [['Palestra','Palestra'],['Lab. informatica','Laboratorio'],['Lab. tecnologia','Laboratorio'],
    ['Lab. scienze','Laboratorio'],['Aula musica','Laboratorio'],['Aula arte','Laboratorio']]
-    .forEach(([nome,tipo]) => { if(!S.aule.some(a => a.nome===nome)) S.aule.push({ id:uid('a'), nome, tipo }); });
+    .forEach(([nome,tipo]) => { if(!S.aule.some(a => a.nome===nome)) S.aule.push(nuovaAula(nome, tipo)); });
   save(); renderAule();
 });
 $('#btnGenAule').addEventListener('click', () => {
@@ -2368,6 +2801,7 @@ $('#btnAddDoc').addEventListener('click', () => { S.docenti.push(nuovoDocente())
 $('#listaDocenti').addEventListener('toggle', e => {
   const d = e.target.closest('details'); if(!d) return;
   const i = +d.dataset.i; if(d.open) APERTI.add(i); else APERTI.delete(i);
+  if(d.open && !d.querySelector('.corpo-doc') && S.docenti[i]) d.insertAdjacentHTML('beforeend', corpoDocente(S.docenti[i], i));
 }, true);
 $('#listaDocenti').addEventListener('input', e => {
   const i = e.target.dataset.i, j = e.target.dataset.j, f = e.target.dataset.f;
@@ -2451,20 +2885,33 @@ function bindVincoli(sel){
 bindVincoli('#vincoliHard'); bindVincoli('#vincoliSoft');
 
 /* ---- 7. orario ---- */
+// prima di generare: se l'orario è strutturalmente impossibile lo dice subito, invece di tentare invano
 $('#btnGenera').addEventListener('click', () => {
+  const F = fattibilita();
+  if(F.impossibili.length) mostraFattibilita(F, true); else avviaGenerazione();
+});
+$('#btnFattibilita').addEventListener('click', () => mostraFattibilita(fattibilita(), false));
+let GEN = null;   // generazione in corso (per il pulsante Interrompi)
+function avviaGenerazione(){
   const q = num($('#selQualita').value,120), keep = $('#chkLock').checked;
   const b = $('#btnGenera'); b.disabled = true;
+  $('#btnFerma').hidden = false;
   $('#genState').textContent = 'Calcolo in corso…';
-  generaAsync(q, keep,
-    (n,tot,best) => { $('#genState').textContent = `tentativo ${n}/${tot} · ore non collocate: ${best ? best.mancanti : '—'}`; },
-    (best, I) => {
-      POOL = applicaSoluzione(best, I, keep);
-      b.disabled = false;
+  GEN = generaAsync(q, keep,
+    (n,tot,best,fase) => { $('#genState').textContent = fase === 'rifinitura'
+      ? `rifinitura del miglior orario (${n} tentativi) · ore non collocate: ${best ? best.mancanti : '—'}`
+      : `tentativo ${n}/${tot} · ore non collocate: ${best ? best.mancanti : '—'}`; },
+    (best, I, interrotta) => {
+      GEN = null; b.disabled = false; $('#btnFerma').hidden = true;
+      if(interrotta && !best){ $('#genState').textContent = 'Generazione interrotta prima del primo risultato: orario invariato.'; return; }
+      POOL = applicaSoluzione(best, I, keep); POOL_SEL = null;
       const auto = Object.keys(I.autoDay||{}).length;
-      $('#genState').textContent = 'Generazione completata' + (auto ? ` · ${auto} giorni liberi assegnati dal programma` : '');
+      $('#genState').textContent = (interrotta ? 'Generazione interrotta: applicato il miglior orario trovato' : 'Generazione completata')
+        + (auto ? ` · ${auto} giorni liberi assegnati dal programma` : '');
       normalizza(); save(true); renderOrario();
     });
-});
+}
+$('#btnFerma').addEventListener('click', () => { if(GEN) GEN.ferma(); });
 $('#btnSvuotaOrario').addEventListener('click', () => {
   chiedi('Svuoto tutte le caselle non bloccate?', () => {
     S.classi.forEach(c => S.giorni.forEach(g => { const r = S.orario[c.id][g]; for(let s=0;s<r.length;s++) if(r[s] && !r[s].lock) r[s] = null; }));
@@ -2489,10 +2936,76 @@ $('#listaFisse').addEventListener('click', e => {
   const [c,g,s] = k.split('|'); const v = cella(c,g,+s); if(v) v.lock = false;
   save(); renderOrario();
 });
+/* ---- ore non collocate (pool): si collocano dalla vista Classe, Docente o Aula ---- */
+// colloca un'ora del pool nella classe dell'ora stessa; l'eventuale lezione già presente torna nel pool
+function collocaDaPool(idx, g, s, aulaId){
+  const p = POOL[idx]; if(!p) return;
+  const cid = p.cl, vecchio = cella(cid,g,s);
+  if(vecchio) POOL.push({ cl:cid, di:vecchio.dis, doc:vecchio.doc, ore:1 });
+  setCella(cid,g,s,{ doc:p.doc, dis:p.di, aula: aulaId || aulaPerCella(p.doc,g,s,cid), lock:false });
+  if(p.ore>1) p.ore--; else POOL.splice(idx,1);
+  POOL_SEL = null;
+  save(); renderOrario();
+}
+// controlli prima di collocare da vista Docente o Aula: errore = non si può; conferme = da chiedere
+function verificaPool(p, g, s, aulaId){
+  const c = cls(p.cl), t = doc(p.doc), conferme = [];
+  const nomeT = t ? cognome(t.nome) : '?';
+  if(!c || !t) return { errore:'Quest\'ora non corrisponde più a una classe o a un docente esistente.' };
+  if(!attivo(c,g,s)) return { errore:`La classe ${c.nome} non ha lezione ${g} alla ${slotLabel(s)}.` };
+  const altrove = S.classi.find(x => x.id !== c.id && inCella(cella(x.id,g,s), t.id));
+  if(altrove) return { errore:`${t.nome} ${g} alla ${slotLabel(s)} è già in ${altrove.nome}.` };
+  if(aulaId){
+    const a = aula(aulaId);
+    const occ = a && !a.contemporanea && S.classi.find(x => x.id !== c.id && cella(x.id,g,s) && cella(x.id,g,s).aula === aulaId);
+    if(occ) return { errore:`${a.nome} ${g} alla ${slotLabel(s)} è già occupata da ${occ.nome}.` };
+    if(a && !(t.aule||[]).includes(aulaId)) conferme.push(`${nomeT} di solito non insegna in ${a.nome}.`);
+  }
+  const v = cella(c.id,g,s);
+  if(v) conferme.push(`In ${c.nome} a quell'ora c'è già ${disc(v.dis)?disc(v.dis).sigla:'?'} ${doc(v.doc)?cognome(doc(v.doc).nome):''}: tornerà tra le ore non collocate.`);
+  if(S.vincoli.rispettaIndisp && ((t.indisp||{})[g]||[]).includes(s)) conferme.push(`Per ${nomeT} quest'ora è segnata come non disponibile.`);
+  if(S.vincoli.giornoLibero && t.giornoLibero === g) conferme.push(`${g} è il giorno libero di ${nomeT}.`);
+  return { conferme };
+}
+// collocazione da vista Docente o Aula: la classe è quella dell'ora del pool
+function provaPool(idx, g, s){
+  const p = POOL[idx]; if(!p) return;
+  const vi = S.ui.vista;
+  if(vi === 'docente' && p.doc !== S.ui.soggetto){
+    POOL_SEL = null; renderOrario();
+    return avvisa(`Quest'ora è di ${doc(p.doc)?doc(p.doc).nome:'?'}: collocala dalla sua vista docente, dalla vista Aula o dalla classe ${cls(p.cl)?cls(p.cl).nome:''}.`);
+  }
+  const aulaId = vi === 'aula' ? S.ui.soggetto : '';
+  const r = verificaPool(p, g, s, aulaId);
+  if(r.errore){ POOL_SEL = null; renderOrario(); return avvisa(r.errore); }
+  const testo = `${cls(p.cl).nome} · ${disc(p.di)?disc(p.di).nome:'?'} · ${doc(p.doc).nome} → ${g} ${slotLabel(s)}${aulaId ? ' in ' + aula(aulaId).nome : ''}.`;
+  // in vista Aula si conferma sempre (classe e aula scelte qui); altrove solo se c'è qualcosa da segnalare
+  if(r.conferme.length || aulaId) chiedi(testo + (r.conferme.length ? ' ' + r.conferme.join(' ') : '') + ' Procedo?', () => collocaDaPool(idx, g, s, aulaId), 'Colloca');
+  else collocaDaPool(idx, g, s, aulaId);
+}
+// clic su una casella vuota della vista Docente o Aula: scegli quale ora del pool mettere
+function modalPoolSlot(g, s){
+  const vi = S.ui.vista, aulaId = vi === 'aula' ? S.ui.soggetto : '';
+  const voci = POOL.map((p,i) => ({ p, i })).filter(x => vi !== 'docente' || x.p.doc === S.ui.soggetto);
+  if(!voci.length) return;
+  apriModal(`<h3>${esc(g)} · ${slotLabel(s)}${aulaId ? ' · ' + esc(aula(aulaId).nome) : ''}</h3>
+    <p>Quale ora non collocata metto qui?</p>
+    <div class="stack" style="gap:6px">${voci.map(({p,i}) => { const r = verificaPool(p, g, s, aulaId);
+      return `<button class="btn ghost" style="justify-content:flex-start;text-align:left" data-pi="${i}" ${r.errore ? 'disabled' : ''}>
+        ${esc(cls(p.cl)?cls(p.cl).nome:'?')} · ${esc(disc(p.di)?disc(p.di).nome:'?')} · ${esc(doc(p.doc)?doc(p.doc).nome:'?')}${p.ore>1?' ('+p.ore+'h)':''}
+        ${r.errore ? `<span class="mini"> — ${esc(r.errore)}</span>` : ''}</button>`; }).join('')}</div>
+    <div class="foot"><button class="btn ghost" data-close="1">Annulla</button></div>`,
+    box => box.addEventListener('click', e => { const b = e.target.closest('[data-pi]'); if(b){ chiudiModal(); provaPool(+b.dataset.pi, g, s); } }));
+}
 $('#pool').addEventListener('dragstart', e => {
   const c = e.target.closest('[data-pool]'); if(!c) return;
   DRAG = { type:'pool', idx:+c.dataset.pool };
   e.dataTransfer.setData('text/plain','pool'); e.dataTransfer.effectAllowed = 'move';
+});
+$('#pool').addEventListener('click', e => {
+  const c = e.target.closest('[data-pool]'); if(!c) return;
+  POOL_SEL = POOL_SEL === +c.dataset.pool ? null : +c.dataset.pool;
+  renderOrario();
 });
 const vista = $('#vistaOrario');
 vista.addEventListener('dragstart', e => {
@@ -2502,28 +3015,41 @@ vista.addEventListener('dragstart', e => {
   e.dataTransfer.setData('text/plain','cell'); e.dataTransfer.effectAllowed = 'move';
 });
 vista.addEventListener('dragover', e => {
-  const td = e.target.closest('td[data-cell]'); if(!td || !DRAG) return;
+  const td = e.target.closest('td[data-cell], td[data-slot]'); if(!td || !DRAG) return;
+  if(td.dataset.slot && DRAG.type !== 'pool') return;
   e.preventDefault(); td.classList.add('drop');
 });
 vista.addEventListener('dragleave', e => { const td = e.target.closest('td'); if(td) td.classList.remove('drop'); });
 vista.addEventListener('drop', e => {
-  const td = e.target.closest('td[data-cell]'); if(!td || !DRAG) return;
+  const td = e.target.closest('td[data-cell], td[data-slot]'); if(!td || !DRAG) return;
   e.preventDefault(); td.classList.remove('drop');
+  if(td.dataset.slot){   // vista Docente o Aula
+    const [g,s0] = td.dataset.slot.split('|');
+    if(DRAG.type === 'pool') provaPool(DRAG.idx, g, +s0);
+    DRAG = null; return;
+  }
   const [cid,g,s0] = td.dataset.cell.split('|'), s = +s0;
   if(DRAG.type==='cell'){ if(DRAG.key !== td.dataset.cell) scambia(DRAG.key, td.dataset.cell); }
   else {
     const p = POOL[DRAG.idx]; if(!p) return;
     if(p.cl !== cid){ avvisa('Questa lezione appartiene alla classe ' + (cls(p.cl)?cls(p.cl).nome:'?') + ': aprila per collocarla.'); DRAG = null; return; }
-    const vecchio = cella(cid,g,s);
-    if(vecchio) POOL.push({ cl:cid, di:vecchio.dis, doc:vecchio.doc, ore:1 });
-    setCella(cid,g,s,{ doc:p.doc, dis:p.di, aula: aulaPerCella(p.doc,g,s,cid), lock:false });
-    if(p.ore>1) p.ore--; else POOL.splice(DRAG.idx,1);
-    save(); renderOrario();
+    collocaDaPool(DRAG.idx, g, s);
   }
   DRAG = null;
 });
 vista.addEventListener('click', e => {
-  const td = e.target.closest('td[data-cell]'); if(!td) return;
+  const td = e.target.closest('td[data-cell], td[data-slot]'); if(!td) return;
+  if(td.dataset.slot){   // vista Docente o Aula
+    const [g,s0] = td.dataset.slot.split('|');
+    if(POOL_SEL !== null) provaPool(POOL_SEL, g, +s0);
+    else if(!td.querySelector('.lesson')) modalPoolSlot(g, +s0);
+    return;
+  }
+  if(POOL_SEL !== null){   // vista Classe con un'ora del pool selezionata
+    const p = POOL[POOL_SEL], [cid,g,s0] = td.dataset.cell.split('|');
+    if(p && p.cl !== cid){ POOL_SEL = null; renderOrario(); return avvisa('Questa lezione appartiene alla classe ' + (cls(p.cl)?cls(p.cl).nome:'?') + ': aprila per collocarla.'); }
+    return collocaDaPool(POOL_SEL, g, +s0);
+  }
   modalCella(td.dataset.cell);
 });
 
@@ -2533,12 +3059,6 @@ $('#btnExportJson').addEventListener('click', async () => {
   const txt = JSON.stringify(S,null,1);
   if(!(await scarica(nomeFile('.json'), txt, 'application/json')))
     mostraTesto('Backup', txt, nomeFile('.json'), 'application/json');
-});
-// file per l'app Orario DADA: è il backup completo con in più la data di pubblicazione
-$('#btnPubblicaApp').addEventListener('click', async () => {
-  const txt = JSON.stringify(Object.assign({}, S, { pubblicato: new Date().toISOString().slice(0,10) }), null, 1);
-  if(!(await scarica('orario.json', txt, 'application/json')))
-    mostraTesto('File per l’app', txt, 'orario.json', 'application/json');
 });
 $('#btnMostraJson').addEventListener('click', () => mostraTesto('Backup da copiare', JSON.stringify(S,null,1), nomeFile('.json'), 'application/json'));
 $('#btnImportJson').addEventListener('click', () => $('#fileJson').click());
