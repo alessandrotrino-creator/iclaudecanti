@@ -224,6 +224,7 @@ td input[type=number]{width:64px}
     <!-- apre l'app di visualizzazione: legge questo orario dal browser e si aggiorna in tempo reale -->
     <a class="btn ghost sm" href="../app/" target="orariodada" style="text-decoration:none">📱 Vedi nell'app</a>
     <button class="btn ghost sm" id="btnTema" title="Chiaro / scuro">◐ Tema</button>
+    <button class="btn ghost sm" id="btnScuola" title="Docenti, classi e cattedre 2026/27 (docenti indicati con le iniziali)">Dati scuola 2026/27</button>
     <button class="btn ghost sm" id="btnEsempio">Dati di esempio</button>
     <button class="btn ghost sm" id="btnAzzera">Azzera tutto</button>
   </div>
@@ -725,6 +726,241 @@ function datiEsempio(){
   return st;
 }
 
+/* ---------------- dati della scuola 2026/27 ----------------
+   dall'elenco "Docenti con materie e classi" 2026/27; i docenti sono indicati con le iniziali
+   perché la pagina è pubblica (i nomi completi si reimportano da Esporta > Scegli i file da importare) */
+const CSV_SCUOLA_CLASSI = `
+"Classe";"Italiano";"Storia";"Geografia";"Matematica";"Scienze";"Inglese";"Francese";"Tecnologia";"Arte e immagine";"Musica";"Educazione fisica";"Religione / Alternativa";"Approfondimento"
+"1A";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"1B";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"1C";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"1D";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"1E";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"2A";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"2B";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"2C";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"2D";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"2E";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"3A";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"3B";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"3C";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"3D";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"
+"3E";"6";"2";"2";"4";"2";"3";"2";"2";"2";"2";"2";"1";"0"`;
+const CSV_SCUOLA_DOCENTI = `
+"Docente";"Aula";"Classe";"Disciplina";"Ore"
+"F. A.";"";"";"";""
+"F. B.";"";"2B";"Geografia";"2"
+"";"";"3C";"Geografia";"2"
+"";"";"1C";"Italiano";"6"
+"";"";"2B";"Storia";"2"
+"";"";"3C";"Storia";"2"
+"A. B.";"";"1A";"Francese";"2"
+"";"";"1B";"Francese";"2"
+"";"";"1D";"Francese";"2"
+"";"";"2A";"Francese";"2"
+"";"";"2B";"Francese";"2"
+"";"";"2D";"Francese";"2"
+"";"";"3A";"Francese";"2"
+"";"";"3B";"Francese";"2"
+"";"";"3D";"Francese";"2"
+"Mi. Bo.";"";"1D";"Matematica";"4"
+"";"";"1E";"Scienze";"2"
+"L. B.";"";"1A";"Educazione fisica";"2"
+"";"";"1C";"Educazione fisica";"2"
+"";"";"1D";"Educazione fisica";"2"
+"";"";"2A";"Educazione fisica";"2"
+"";"";"2C";"Educazione fisica";"2"
+"";"";"2D";"Educazione fisica";"2"
+"";"";"3A";"Educazione fisica";"2"
+"";"";"3C";"Educazione fisica";"2"
+"";"";"3D";"Educazione fisica";"2"
+"G. B.";"";"1A";"Inglese";"3"
+"";"";"1C";"Inglese";"3"
+"";"";"2A";"Inglese";"3"
+"";"";"2C";"Inglese";"3"
+"";"";"3A";"Inglese";"3"
+"";"";"3C";"Inglese";"3"
+"P. B.";"";"1A";"Matematica";"4"
+"";"";"2B";"Matematica";"4"
+"";"";"3B";"Matematica";"4"
+"";"";"1A";"Scienze";"2"
+"";"";"2B";"Scienze";"2"
+"";"";"3B";"Scienze";"2"
+"Ma. Bu.";"";"1B";"Geografia";"2"
+"";"";"1A";"Italiano";"6"
+"";"";"3A";"Italiano";"6"
+"";"";"1B";"Storia";"2"
+"";"";"3A";"Storia";"2"
+"C. C.";"";"3A";"Geografia";"2"
+"";"";"1B";"Italiano";"6"
+"";"";"2A";"Italiano";"6"
+"S. C.";"";"2C";"Italiano";"6"
+"";"";"3D";"Italiano";"6"
+"";"";"3D";"Storia";"2"
+"A. C.";"";"1A";"Geografia";"2"
+"";"";"3B";"Geografia";"2"
+"";"";"2B";"Italiano";"6"
+"";"";"1A";"Storia";"2"
+"F. D.";"";"";"";""
+"E. D.";"";"";"";""
+"So. Di.";"";"";"";""
+"Sa. Du.";"";"1C";"Francese";"2"
+"";"";"1E";"Francese";"2"
+"";"";"2C";"Francese";"2"
+"";"";"2E";"Francese";"2"
+"";"";"3C";"Francese";"2"
+"";"";"3E";"Francese";"2"
+"B. F.";"";"1E";"Geografia";"2"
+"";"";"1D";"Italiano";"6"
+"";"";"2D";"Italiano";"6"
+"";"";"1E";"Storia";"2"
+"";"";"2D";"Storia";"2"
+"M. F.";"";"";"";""
+"A. G.";"";"1A";"Tecnologia";"2"
+"";"";"1B";"Tecnologia";"2"
+"";"";"1D";"Tecnologia";"2"
+"";"";"2A";"Tecnologia";"2"
+"";"";"2B";"Tecnologia";"2"
+"";"";"2D";"Tecnologia";"2"
+"";"";"3A";"Tecnologia";"2"
+"";"";"3B";"Tecnologia";"2"
+"";"";"3D";"Tecnologia";"2"
+"L. G.";"";"1A";"Arte e immagine";"2"
+"";"";"1B";"Arte e immagine";"2"
+"";"";"1E";"Arte e immagine";"2"
+"";"";"2A";"Arte e immagine";"2"
+"";"";"2B";"Arte e immagine";"2"
+"";"";"2E";"Arte e immagine";"2"
+"";"";"3A";"Arte e immagine";"2"
+"";"";"3B";"Arte e immagine";"2"
+"";"";"3E";"Arte e immagine";"2"
+"M. G.";"";"";"";""
+"C. L.";"";"1A";"Musica";"2"
+"";"";"1D";"Musica";"2"
+"";"";"1E";"Musica";"2"
+"";"";"2A";"Musica";"2"
+"";"";"2D";"Musica";"2"
+"";"";"2E";"Musica";"2"
+"";"";"3A";"Musica";"2"
+"";"";"3D";"Musica";"2"
+"";"";"3E";"Musica";"2"
+"N. L.";"";"";"";""
+"S. M.";"";"1A";"Religione / Alternativa";"1"
+"";"";"1B";"Religione / Alternativa";"1"
+"";"";"1C";"Religione / Alternativa";"1"
+"";"";"1D";"Religione / Alternativa";"1"
+"";"";"1E";"Religione / Alternativa";"1"
+"";"";"2A";"Religione / Alternativa";"1"
+"";"";"2B";"Religione / Alternativa";"1"
+"";"";"2C";"Religione / Alternativa";"1"
+"";"";"2D";"Religione / Alternativa";"1"
+"";"";"2E";"Religione / Alternativa";"1"
+"";"";"3A";"Religione / Alternativa";"1"
+"";"";"3B";"Religione / Alternativa";"1"
+"";"";"3C";"Religione / Alternativa";"1"
+"";"";"3D";"Religione / Alternativa";"1"
+"";"";"3E";"Religione / Alternativa";"1"
+"Al. Ma.";"";"";"";""
+"An. Me.";"";"1C";"Geografia";"2"
+"";"";"2E";"Geografia";"2"
+"";"";"3E";"Geografia";"2"
+"";"";"3C";"Italiano";"6"
+"";"";"1C";"Storia";"2"
+"";"";"3E";"Storia";"2"
+"E. M.";"";"1C";"Matematica";"4"
+"";"";"3C";"Matematica";"4"
+"";"";"3D";"Matematica";"4"
+"";"";"1C";"Scienze";"2"
+"";"";"3D";"Scienze";"2"
+"L. M.";"";"1E";"Matematica";"4"
+"";"";"2D";"Matematica";"4"
+"";"";"3E";"Matematica";"4"
+"";"";"1D";"Scienze";"2"
+"";"";"2D";"Scienze";"2"
+"";"";"3E";"Scienze";"2"
+"M. N.";"";"";"";""
+"C. O.";"";"1B";"Inglese";"3"
+"";"";"1D";"Inglese";"3"
+"";"";"2B";"Inglese";"3"
+"";"";"2D";"Inglese";"3"
+"";"";"3B";"Inglese";"3"
+"";"";"3D";"Inglese";"3"
+"V. O.";"";"1B";"Musica";"2"
+"";"";"1C";"Musica";"2"
+"";"";"2B";"Musica";"2"
+"";"";"2C";"Musica";"2"
+"";"";"3B";"Musica";"2"
+"";"";"3C";"Musica";"2"
+"A. P.";"";"";"";""
+"G. P.";"";"";"";""
+"B. P.";"";"1B";"Matematica";"4"
+"";"";"2C";"Matematica";"4"
+"";"";"1B";"Scienze";"2"
+"";"";"2C";"Scienze";"2"
+"";"";"3C";"Scienze";"2"
+"F. P.";"";"";"";""
+"C. R.";"";"1E";"Inglese";"3"
+"";"";"2E";"Inglese";"3"
+"";"";"3E";"Inglese";"3"
+"F. R.";"";"1B";"Educazione fisica";"2"
+"";"";"1E";"Educazione fisica";"2"
+"";"";"2B";"Educazione fisica";"2"
+"";"";"2E";"Educazione fisica";"2"
+"";"";"3B";"Educazione fisica";"2"
+"";"";"3E";"Educazione fisica";"2"
+"C. S.";"";"1C";"Tecnologia";"2"
+"";"";"1E";"Tecnologia";"2"
+"";"";"2C";"Tecnologia";"2"
+"";"";"2E";"Tecnologia";"2"
+"";"";"3C";"Tecnologia";"2"
+"";"";"3E";"Tecnologia";"2"
+"I. S.";"";"";"";""
+"A. T.";"";"2A";"Matematica";"4"
+"";"";"2E";"Matematica";"4"
+"";"";"3A";"Matematica";"4"
+"";"";"2A";"Scienze";"2"
+"";"";"2E";"Scienze";"2"
+"";"";"3A";"Scienze";"2"
+"U. V.";"";"";"";""
+"V. V.";"";"2D";"Geografia";"2"
+"";"";"3D";"Geografia";"2"
+"";"";"3B";"Italiano";"6"
+"";"";"3B";"Storia";"2"
+"F. V.";"";"2A";"Geografia";"2"
+"";"";"2C";"Geografia";"2"
+"";"";"3E";"Italiano";"6"
+"";"";"2A";"Storia";"2"
+"";"";"2C";"Storia";"2"
+"V. Z.";"";"1D";"Geografia";"2"
+"";"";"1E";"Italiano";"6"
+"";"";"2E";"Italiano";"6"
+"";"";"1D";"Storia";"2"
+"";"";"2E";"Storia";"2"`;
+const PROLUNGATO = { classi:['1C','2C','3C'], giorni:['Martedì','Mercoledì','Giovedì'], ore:2 };
+function datiScuola(){
+  S = statoVuoto();
+  S.giorni = GIORNI_ALL.slice(0, 5);   // lunedì-venerdì
+  S.oreM = 6; S.oreP = 2;
+  S.vincoli.maxOreGiorno = 6;
+  S.discipline = discDefault().concat([nuovaDisciplina('Mensa'), nuovaDisciplina('Laboratorio')]);
+  S.discipline.forEach(d => { if(['APP','MEN','LAB'].includes(d.sigla)) d.oreStd = 0; });
+  POOL = [];
+  const D = { docenti:new Map(), classi:new Map(), problemi:[], tabelle:0, orari:[], confronto:null };
+  interpretaTabella(leggiCSV(CSV_SCUOLA_CLASSI), 'classi', D);
+  interpretaTabella(leggiCSV(CSV_SCUOLA_DOCENTI), 'docenti', D);
+  applicaImport(D);
+  // 6 ore al mattino dal lunedì al venerdì; tempo prolungato: 2 ore al pomeriggio
+  S.classi.forEach(c => S.giorni.forEach(g => {
+    c.g[g] = { m:6, p: PROLUNGATO.classi.includes(c.nome) && PROLUNGATO.giorni.includes(g) ? PROLUNGATO.ore : 0 };
+  }));
+  // approfondimento a zero: nessuna ora nel quadro e nessuna cattedra
+  const app = S.discipline.find(d => d.sigla === 'APP');
+  S.classi.forEach(c => { S.quadro[c.id][app.id] = 0; });
+  S.docenti.forEach(t => { t.cattedre = t.cattedre.filter(k => k.di !== app.id); });
+  S.ui.tab = 'setup'; S.ui.soggetto = S.classi[0].id;
+  normalizza();
+  return S;
+}
 /* ===========================================================
    Motore di generazione dell'orario
    Posizionamento greedy randomizzato + riparazione a catena + riavvii
@@ -2613,6 +2849,11 @@ $('#btnTema').addEventListener('click', () => {
   applicaTema(t);
   $('#btnTema').textContent = t==='auto' ? '◐ Tema' : t==='light' ? '☀ Chiaro' : '☾ Scuro';
 });
+$('#btnScuola').addEventListener('click', () => {
+  chiedi('Sostituisco i dati attuali con quelli della scuola 2026/27: 15 classi, 43 docenti (con le iniziali), lunedì-venerdì 6 ore; 1C, 2C, 3C anche martedì, mercoledì e giovedì pomeriggio.', () => {
+    datiScuola(); save(true); vai('setup');
+  }, 'Carica i dati');
+});
 $('#btnEsempio').addEventListener('click', () => {
   chiedi('Sostituisco i dati attuali con la scuola di esempio: 15 classi, 27 docenti, 26 aule.', () => {
     S = datiEsempio(); normalizza(); POOL = []; save(true); vai('setup');
@@ -3146,13 +3387,13 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') chiudiModal(); 
 (function boot(){
   applicaTema(temaCorrente());
   const salvato = load();
-  S = salvato || datiEsempio();
+  S = salvato || datiScuola();
   normalizza();
   renderTabs();
   TABS.forEach(([k]) => { const p = $('#p-'+k); if(p) p.hidden = (k !== S.ui.tab); });
   $$('#segVista button').forEach(x => x.setAttribute('aria-pressed', x.dataset.v === S.ui.vista));
   render();
-  $('#saveState').textContent = salvato ? 'Ripreso dall\'ultimo salvataggio' : 'Scuola di esempio';
+  $('#saveState').textContent = salvato ? 'Ripreso dall\'ultimo salvataggio' : 'Dati scuola 2026/27';
   if(!salvato){
     // prima apertura: prepara subito una proposta di orario
     S.ui.tab = 'orario';
