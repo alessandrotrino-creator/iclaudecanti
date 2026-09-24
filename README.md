@@ -9,7 +9,7 @@ Per evitare conflitti:
 1. **Prima di iniziare**: `git pull --rebase`
 2. **Commit piccoli e frequenti**, ognuno su un argomento.
 3. **Per consegnare**: `./sync.sh "cosa ho fatto"` (fa commit, pull --rebase e push).
-4. **Ognuno lavora preferibilmente nella propria cartella** (es. `membri/<nome>/`) o su file diversi; i file condivisi si modificano avvisando il gruppo.
+4. **Commit piccoli e file piccoli**: meno righe tocchi, meno conflitti.
 
 Configurazione consigliata (una volta sola):
 
@@ -18,7 +18,15 @@ git config pull.rebase true
 git config rebase.autoStash true
 ```
 
+## Il sito
+
+Orario scolastico di una scuola DADA, in HTML/CSS/JS puro, pubblicato con GitHub Pages.
+Regole e convenzioni complete in [CLAUDE.md](CLAUDE.md).
+
 ## Struttura
 
-- `membri/` – una cartella per ciascun membro del gruppo
-- `condiviso/` – materiale comune
+- `index.html` – pagina iniziale
+- `css/` – stili
+- `js/` – script
+- `dati/` – dati dell'orario (JSON)
+- `img/` – immagini
