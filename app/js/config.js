@@ -10,9 +10,9 @@ window.CONFIG = {
   dominio: 'comprensivoalmese.it',
 
   // ID client OAuth di Google (lo crea l'amministratore Google Workspace della scuola,
-  // vedi app/LEGGIMI.md). Finché è vuoto l'app funziona in "modalità dimostrativa":
-  // chiede solo l'indirizzo email, SENZA verificarlo.
-  googleClientId: '',
+  // vedi app/LEGGIMI.md). Non è un dato segreto: può stare nel repository pubblico.
+  // Se si svuota ('') l'app torna in "modalità dimostrativa": chiede solo l'email, SENZA verificarla.
+  googleClientId: '709643540266-2kcc07obqusacsm3qlu8trkc2gb4cjh1.apps.googleusercontent.com',
 
   // Dove si trova il file con l'orario (formato dell'app oppure backup di Orario Facile)
   urlDati: '../dati/orario.json',

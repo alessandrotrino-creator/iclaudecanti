@@ -42,9 +42,11 @@ Dal menu (tondo con le iniziali, in alto a destra):
 Si entra con **"Accedi con Google"**: sono accettati solo gli account **@comprensivoalmese.it** (la scuola usa Google Workspace).
 La password la vede solo Google. Con **"Ricordami su questo dispositivo"** l'accesso resta memorizzato per 30 giorni (lo si cambia in `js/config.js`).
 
-### Da fare una volta sola (amministratore Google Workspace della scuola)
+### Configurazione (già fatta il 24/09/2026)
 
-Finché non si fa questo passaggio l'app è in **modalità dimostrativa**: chiede solo l'email e **non la verifica**.
+L'ID client di Google è già inserito in `js/config.js`, quindi l'accesso con Google è attivo.
+Se il campo `googleClientId` viene svuotato, l'app torna in **modalità dimostrativa**: chiede solo l'email e **non la verifica**.
+Per rifare la configurazione da zero (per esempio con un nuovo progetto Google), l'amministratore Google Workspace della scuola segue questi passaggi:
 
 1. Aprire https://console.cloud.google.com/ con un account della scuola e creare un progetto (es. "Orario DADA").
 2. *API e servizi → Schermata consenso OAuth*: tipo **Interno** (così possono entrare solo gli utenti della scuola), nome app "Orario DADA".
