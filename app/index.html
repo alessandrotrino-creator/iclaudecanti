@@ -69,8 +69,8 @@
         <button type="button" id="btnOggi" class="pulsante">Oggi</button>
         <button type="button" id="btnUtente" class="pulsante-utente" aria-haspopup="true" aria-expanded="false" aria-controls="menu"></button>
       </div>
-      <!-- Menu dell'utente -->
-      <div id="menu" class="menu" hidden>
+      <!-- Menu dell'utente (tabindex="-1": può ricevere il focus quando si apre, senza entrare nell'ordine del tasto Tab) -->
+      <div id="menu" class="menu" tabindex="-1" aria-label="Menu utente" hidden>
         <p class="utente"><strong id="nomeUtente"></strong><br><span id="emailUtente"></span></p>
         <label for="sceltaMonitor">Questo dispositivo è il monitor dell'aula:</label>
         <select id="sceltaMonitor"></select>

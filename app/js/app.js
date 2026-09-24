@@ -170,7 +170,10 @@
   }
 
   /* ---------- menu utente ---------- */
-  function apriMenu() { $('#menu').hidden = false; $('#btnUtente').setAttribute('aria-expanded', 'true'); $('#menu button, #menu select').focus(); }
+  // All'apertura il focus va sul riquadro del menu e non sulla prima tendina:
+  // sui telefoni una tendina che riceve il focus si aprirebbe da sola coprendo il menu.
+  // Con la tastiera si passa alle voci con il tasto Tab.
+  function apriMenu() { $('#menu').hidden = false; $('#btnUtente').setAttribute('aria-expanded', 'true'); $('#menu').focus(); }
   function chiudiMenu() { $('#menu').hidden = true; $('#btnUtente').setAttribute('aria-expanded', 'false'); }
 
   function collegaEventi() {

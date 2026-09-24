@@ -151,6 +151,8 @@ select {
   background: var(--superficie); border: 1px solid var(--bordo); border-radius: 14px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, .18); padding: 14px;
 }
+/* Il riquadro del menu riceve il focus solo quando si apre: niente bordo, lo mostrano le singole voci */
+.menu:focus { outline: none; }
 .menu .utente { margin: 0 0 6px; word-break: break-all; }
 .menu .utente span { color: var(--testo-tenue); font-size: .9rem; }
 .menu label { font-size: .9rem; color: var(--testo-tenue); }
