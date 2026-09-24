@@ -1,0 +1,688 @@
+/*
+  sostituzioni.js – la pagina delle sostituzioni.
+  1. carica l'orario (lo stesso dell'app Orario DADA) e il foglio del conteggio ore;
+  2. si registrano i docenti assenti di un giorno;
+  3. per ogni ora scoperta propone i docenti liberi, prima quelli con più ore a debito;
+  4. tiene il conto delle ore fatte, da riportare poi nel foglio.
+*/
+(() => {
+  // Lunedì della settimana 1, se il foglio non lo scrive (settimana 1: dal 9 all'11 settembre 2026)
+  const INIZIO_PREDEFINITO = '2026-09-07';
+  // Quanti docenti proporre per ogni ora prima di "Mostra tutti"
+  const PROPOSTE_VISIBILI = 4;
+  const NOMI_GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
+
+  const $ = id => document.getElementById(id);
+
+  // ---------- Stato della pagina ----------
+  let D = null;                                   // l'orario (da Dati.carica)
+  let foglio = Archivio.leggi('foglio', null);     // il foglio del conteggio ore
+  let assenze = Archivio.leggi('assenze', []);     // [{ id, data, docente, ore: [1, 2…] }]
+  let registro = Archivio.leggi('registro', []);   // le sostituzioni assegnate
+  let manuali = Archivio.leggi('abbinamenti', {}); // abbinamenti scelti a mano
+  let abbinati = new Map();                       // idDocente -> { chiave, come }
+  let righePerChiave = new Map();                 // chiave -> riga del foglio
+  let dataScelta = '';                            // il giorno mostrato (lo sceglie l'avvio, in fondo)
+  const aperte = new Set();                       // ore per cui si vedono tutti i docenti
+
+  // ---------- Piccoli aiuti ----------
+
+  // Crea un elemento HTML: el('p', { class: 'nota' }, 'testo', altroElemento)
+  // (i testi sono inseriti come testo semplice, mai come HTML: più sicuro)
+  function el(tag, attributi, ...figli) {
+    const e = document.createElement(tag);
+    Object.entries(attributi || {}).forEach(([k, v]) => {
+      if (v === undefined || v === null || v === false) return;
+      if (k === 'class') e.className = v;
+      else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? '' : v);
+    });
+    figli.flat().forEach(f => {
+      if (f !== null && f !== undefined && f !== false) e.append(f instanceof Node ? f : String(f));
+    });
+    return e;
+  }
+
+  // Mostra un messaggio breve in basso per qualche secondo
+  let timerAvviso = null;
+  function avvisa(testo) {
+    const a = $('avviso');
+    a.textContent = testo;
+    a.classList.add('visibile');
+    clearTimeout(timerAvviso);
+    timerAvviso = setTimeout(() => a.classList.remove('visibile'), 5000);
+  }
+
+  // Salva nella memoria del browser e avvisa se non ci riesce
+  function salva(nome, valore) {
+    if (!Archivio.scrivi(nome, valore)) {
+      avvisa('Attenzione: non riesco a salvare su questo dispositivo (memoria piena o bloccata). I dati andranno persi chiudendo la pagina.');
+    }
+  }
+
+  const nuovoId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+  // "ROSSI" -> "Rossi", "D'AMICO" -> "D'Amico"
+  const maiuscoleIniziali = s => String(s).toLowerCase().replace(/(^|[\s'’-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+
+  // Numero con segno: -3 -> "−3", 2 -> "+2"
+  const conSegno = n => n > 0 ? '+' + n : n < 0 ? '−' + Math.abs(n) : '0';
+  const ore = n => n === 1 ? '1 ora' : n + ' ore';
+
+  // ---------- Date ----------
+  const isoLocale = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const daIso = iso => { const [a, m, g] = iso.split('-').map(Number); return new Date(a, m - 1, g); };
+  function spostaGiorni(iso, n) { const d = daIso(iso); d.setDate(d.getDate() + n); return isoLocale(d); }
+  // Oggi, oppure lunedì se oggi è sabato o domenica
+  function giornoPredefinito() {
+    const d = new Date();
+    while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+    return isoLocale(d);
+  }
+  const dataLunga = iso => daIso(iso).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const dataBreve = iso => daIso(iso).toLocaleDateString('it-IT');
+
+  // Il nome del giorno come è scritto nell'orario ("Lunedì"), oppure null se quel giorno non c'è lezione
+  function giornoOrario(iso) {
+    const nome = Foglio.semplifica(NOMI_GIORNI[daIso(iso).getDay()]);
+    return D.giorni.find(g => Foglio.semplifica(g) === nome) || null;
+  }
+
+  // Numero della settimana di scuola (la colonna del foglio) per una data
+  function settimanaDi(iso) {
+    const [a, m, g] = ((foglio && foglio.inizio) || INIZIO_PREDEFINITO).split('-').map(Number);
+    const [a2, m2, g2] = iso.split('-').map(Number);
+    return Math.floor((Date.UTC(a2, m2 - 1, g2) - Date.UTC(a, m - 1, g)) / (7 * 86400000)) + 1;
+  }
+
+  // "3ª ora (10:00–11:00)"
+  function testoOra(n) {
+    const o = D.ore.find(x => x.n === n);
+    return `${n}ª ora` + (o && o.inizio ? ` (${o.inizio}–${o.fine})` : '');
+  }
+
+  // ---------- Docenti, abbinamenti e saldi ----------
+  function aggiornaAbbinamenti() {
+    const righe = foglio ? foglio.docenti : [];
+    righePerChiave = new Map(righe.map(r => [r.chiave, r]));
+    abbinati = D ? Abbinamenti.calcola(D.docente, righe, manuali) : new Map();
+  }
+
+  // La riga del foglio di un docente dell'orario (o null)
+  function rigaDi(idDocente) {
+    const a = abbinati.get(idDocente);
+    return a && a.chiave ? righePerChiave.get(a.chiave) || null : null;
+  }
+
+  const nomeRiga = r => (maiuscoleIniziali(r.cognome) + ' ' + r.nome).trim();
+  // Nome da mostrare: quello completo del foglio se c'è, altrimenti quello dell'orario
+  function nomeDocente(id) {
+    const r = rigaDi(id);
+    return r ? nomeRiga(r) : Dati.nome('docente', id);
+  }
+
+  // Vero se accanto al nome completo conviene mostrare anche le iniziali dell'orario ("F. A.")
+  const conSigla = t => !!rigaDi(t.id) && t.nome.includes('.');
+
+  // Sostituzioni fatte da una riga del foglio e non ancora riportate nel foglio
+  function daRiportarePer(chiave) {
+    return registro.filter(x => !x.riportata && x.sostituto && (rigaDi(x.sostituto) || {}).chiave === chiave).length;
+  }
+
+  // Saldo di un docente dell'orario: { foglio, extra, attuale } oppure null se non è nel foglio
+  function saldoDi(idDocente) {
+    const r = rigaDi(idDocente);
+    if (!r) return null;
+    const extra = daRiportarePer(r.chiave);
+    return { foglio: r.totale, extra, attuale: r.totale + extra };
+  }
+
+  function etichettaSaldo(saldo) {
+    if (!saldo) return el('span', { class: 'etichetta' }, 'non nel foglio');
+    const n = saldo.attuale;
+    const tipo = n < 0 ? 'debito' : n > 0 ? 'credito' : 'pari';
+    const testo = n < 0 ? `${ore(-n)} a debito` : n > 0 ? `${ore(n)} a credito` : 'in pari';
+    return el('span', { class: 'etichetta ' + tipo }, `${conSegno(n)} · ${testo}`);
+  }
+
+  // ---------- Assenze e ore da coprire ----------
+  const assenzeDel = iso => assenze.filter(a => a.data === iso);
+
+  function lezioniDi(idDocente, giorno) {
+    return D.lezioni.filter(l => l.giorno === giorno && l.docente === idDocente).sort((a, b) => a.ora - b.ora);
+  }
+
+  // Le lezioni dei docenti assenti in quel giorno, ciascuna con il campo "assente"
+  function oreDaCoprire(iso) {
+    const giorno = giornoOrario(iso);
+    if (!giorno) return [];
+    const elenco = [];
+    assenzeDel(iso).forEach(a => {
+      lezioniDi(a.docente, giorno).filter(l => a.ore.includes(l.ora))
+        .forEach(l => elenco.push(Object.assign({ assente: a.docente }, l)));
+    });
+    return elenco.sort((x, y) => x.ora - y.ora || x.classe.localeCompare(y.classe, 'it', { numeric: true }));
+  }
+
+  const sostituzioneDi = (iso, l) => registro.find(x =>
+    x.data === iso && x.ora === l.ora && x.classe === l.classe && x.assente === l.assente);
+
+  // Chi è assente a una certa ora di quel giorno
+  const assentiAllOra = (iso, ora) => new Set(assenzeDel(iso).filter(a => a.ore.includes(ora)).map(a => a.docente));
+
+  /*
+    I docenti che possono coprire una lezione, già in ordine di preferenza:
+    1. prima chi è a scuola quel giorno (ha almeno una lezione);
+    2. poi chi ha più ore a debito (saldo più basso);
+    3. poi chi ha un'ora buca, poi chi ha lezione subito prima o dopo;
+    4. poi chi conosce già la classe.
+  */
+  function candidati(iso, l) {
+    const giorno = l.giorno;
+    const assenti = assentiAllOra(iso, l.ora);
+    const occupati = new Set(D.lezioni.filter(k => k.giorno === giorno && k.ora === l.ora).map(k => k.docente));
+    const giaImpegnati = new Set(registro.filter(x => x.data === iso && x.ora === l.ora).map(x => x.sostituto));
+
+    return D.docente
+      .filter(t => !assenti.has(t.id) && !occupati.has(t.id) && !giaImpegnati.has(t.id))
+      .map(t => {
+        const oreGiorno = lezioniDi(t.id, giorno).map(k => k.ora);
+        const aScuola = oreGiorno.length > 0;
+        let posizione = 3;                                  // nessuna lezione quel giorno
+        if (oreGiorno.some(o => o < l.ora) && oreGiorno.some(o => o > l.ora)) posizione = 0;   // ora buca
+        else if (oreGiorno.includes(l.ora - 1) || oreGiorno.includes(l.ora + 1)) posizione = 1; // subito prima/dopo
+        else if (aScuola) posizione = 2;
+        const stessaClasse = D.lezioni.some(k => k.docente === t.id && k.classe === l.classe);
+        return { t, aScuola, posizione, stessaClasse, saldo: saldoDi(t.id) };
+      })
+      .sort((a, b) =>
+        (b.aScuola - a.aScuola) ||
+        ((a.saldo ? a.saldo.attuale : Infinity) - (b.saldo ? b.saldo.attuale : Infinity)) ||
+        (a.posizione - b.posizione) ||
+        (b.stessaClasse - a.stessaClasse) ||
+        nomeDocente(a.t.id).localeCompare(nomeDocente(b.t.id), 'it'));
+  }
+
+  const TESTI_POSIZIONE = [
+    'ora buca: è già a scuola',
+    'subito prima o dopo le sue lezioni',
+    'a scuola, ma non in ore vicine',
+    'nessuna lezione in questo giorno'
+  ];
+
+  function assegna(iso, l, idSostituto) {
+    registro.push({
+      id: nuovoId(), data: iso, settimana: settimanaDi(iso), ora: l.ora,
+      classe: l.classe, aula: l.aula, materia: l.materia,
+      assente: l.assente, sostituto: idSostituto, riportata: false
+    });
+    salva('registro', registro);
+    avvisa(`${testoOra(l.ora)} in ${Dati.nome('classe', l.classe)}: sostituisce ${nomeDocente(idSostituto)}.`);
+    disegnaTutto();
+  }
+
+  function annulla(s) {
+    if (s.riportata && !confirm('Questa sostituzione è già stata riportata nel foglio. Annullarla comunque? Ricordati di correggere anche il foglio.')) return;
+    registro = registro.filter(x => x.id !== s.id);
+    salva('registro', registro);
+    avvisa('Sostituzione annullata.');
+    disegnaTutto();
+  }
+
+  // ---------- Disegno della sezione 1: dati ----------
+  function disegnaDati() {
+    if (D) {
+      const fonte = D.fonte === 'bozza' ? 'la bozza di Orario Facile su questo computer' : 'l\'orario pubblicato';
+      $('statoOrario').textContent = `Uso ${fonte}${D.scuola ? ' – ' + D.scuola : ''}: ` +
+        `${D.docente.length} docenti, ${D.lezioni.length} lezioni.` + (D.offline ? ' (copia salvata: sei senza connessione)' : '');
+      $('boxFonte').hidden = !D.bozzaDisponibile;
+      $('sceltaFonte').value = Dati.fonte();
+    }
+
+    const stato = $('statoFoglio');
+    stato.replaceChildren();
+    if (foglio) {
+      const inizio = foglio.inizio || INIZIO_PREDEFINITO;
+      stato.append(
+        el('strong', {}, foglio.file), ` (foglio "${foglio.foglio}"): ${foglio.docenti.length} righe, ` +
+        `caricato il ${new Date(foglio.caricato).toLocaleString('it-IT')}. ` +
+        `La settimana 1 inizia lunedì ${dataBreve(inizio)}` + (foglio.inizio ? '.' : ' (valore predefinito).'));
+    } else {
+      stato.textContent = 'Nessun foglio caricato: i docenti liberi vengono proposti lo stesso, ma senza sapere chi è a debito.';
+    }
+    disegnaAbbinamenti();
+  }
+
+  function disegnaAbbinamenti() {
+    const box = $('abbinamenti');
+    box.replaceChildren();
+    if (!D) return;
+    if (!foglio) {
+      $('riassuntoAbbinamenti').textContent = 'Abbinamenti tra orario e foglio (carica prima il foglio)';
+      return;
+    }
+    const daControllare = D.docente.filter(t => !(abbinati.get(t.id) || {}).chiave).length;
+    $('riassuntoAbbinamenti').textContent = `Abbinamenti tra orario e foglio: ${D.docente.length - daControllare} su ${D.docente.length} abbinati` +
+      (daControllare ? ` · ${daControllare} da controllare` : ' ✔');
+
+    const righeOrdinate = foglio.docenti.slice().sort((a, b) => nomeRiga(a).localeCompare(nomeRiga(b), 'it'));
+    const tabella = el('table', { class: 'tabella' },
+      el('caption', {}, 'Ogni docente dell\'orario è collegato a una riga del foglio. Se è sbagliato o manca, sceglilo dall\'elenco.'),
+      el('thead', {}, el('tr', {},
+        el('th', { scope: 'col' }, 'Docente nell\'orario'),
+        el('th', { scope: 'col' }, 'Riga del foglio'),
+        el('th', { scope: 'col' }, 'Stato'))),
+      el('tbody', {}, D.docente.map(t => {
+        const a = abbinati.get(t.id) || {};
+        const idSelect = 'abb-' + t.id;
+        const scelta = el('select', {
+          id: idSelect,
+          onchange: e => {
+            if (e.target.value === '__auto') delete manuali[t.id];
+            else manuali[t.id] = e.target.value;
+            salva('abbinamenti', manuali);
+            aggiornaAbbinamenti();
+            disegnaTutto();
+          }
+        },
+        el('option', { value: '__auto' }, 'Automatico'),
+        el('option', { value: '' }, '— nessuna riga —'),
+        righeOrdinate.map(r => el('option', { value: r.chiave }, nomeRiga(r) || r.cognome)));
+        scelta.value = a.come === 'manuale' ? (a.chiave || '') : '__auto';
+        const stati = {
+          manuale: 'scelto a mano',
+          automatico: '✔ ' + (a.chiave ? nomeRiga(righePerChiave.get(a.chiave)) : ''),
+          ambiguo: '⚠ più righe possibili: sceglilo',
+          mancante: '⚠ non trovato nel foglio'
+        };
+        return el('tr', {},
+          el('th', { scope: 'row' }, el('label', { for: idSelect }, t.nome)),
+          el('td', {}, scelta),
+          el('td', { class: a.chiave || a.come === 'manuale' ? '' : 'attenzione' }, stati[a.come] || ''));
+      })));
+    box.append(el('div', { class: 'scorrevole' }, tabella));
+  }
+
+  // ---------- Disegno della sezione 2: giorno e assenze ----------
+  function disegnaGiorno() {
+    $('data').value = dataScelta;
+    const giorno = giornoOrario(dataScelta);
+    const sett = settimanaDi(dataScelta);
+    $('descrizioneGiorno').textContent = dataLunga(dataScelta) +
+      (sett >= 1 ? ` · settimana ${sett}` : '') + (giorno ? '' : ' · nessuna lezione in questo giorno');
+
+    // Elenco dei docenti per il modulo (mantiene la scelta fatta)
+    const select = $('docenteAssente');
+    const prima = select.value;
+    select.replaceChildren(el('option', { value: '' }, '— scegli —'),
+      ...D.docente.slice().sort((a, b) => nomeDocente(a.id).localeCompare(nomeDocente(b.id), 'it')).map(t => el('option', { value: t.id }, nomeDocente(t.id) + (conSigla(t) ? ` (${t.nome})` : ''))));
+    select.value = D.mappa.docente.has(prima) ? prima : '';
+    select.disabled = !giorno;
+    disegnaOreAssenza();
+
+    // Assenze già registrate in questo giorno
+    const box = $('elencoAssenze');
+    box.replaceChildren();
+    const elenco = assenzeDel(dataScelta);
+    if (!elenco.length) {
+      box.append(el('p', { class: 'nota' }, 'Nessuna assenza registrata in questo giorno.'));
+      return;
+    }
+    box.append(el('h3', {}, 'Assenti'), el('ul', { class: 'elenco-assenze' }, elenco.map(a =>
+      el('li', {},
+        el('span', {}, el('strong', {}, nomeDocente(a.docente)), ' – ', a.ore.map(n => n + 'ª').join(', '), ' ora'),
+        el('button', {
+          type: 'button', class: 'pulsante piccolo',
+          'aria-label': 'Togli l\'assenza di ' + nomeDocente(a.docente),
+          onclick: () => togliAssenza(a)
+        }, 'Togli')))));
+  }
+
+  // Le caselle con le ore di lezione del docente scelto
+  function disegnaOreAssenza() {
+    const box = $('oreAssenza');
+    box.replaceChildren();
+    const id = $('docenteAssente').value;
+    const giorno = giornoOrario(dataScelta);
+    if (!id || !giorno) return;
+    const lezioni = lezioniDi(id, giorno);
+    if (!lezioni.length) {
+      box.append(el('p', { class: 'nota' }, 'Questo docente non ha lezioni in questo giorno: non serve nessuna sostituzione.'));
+      return;
+    }
+    // Se il docente è già segnato assente, partiamo dalle sue ore; altrimenti tutte spuntate
+    const gia = new Set((assenzeDel(dataScelta).find(a => a.docente === id) || { ore: [] }).ore);
+    box.append(el('fieldset', { class: 'ore-assenza' },
+      el('legend', {}, 'Ore di assenza'),
+      lezioni.map(l => el('label', { class: 'casella' },
+        el('input', { type: 'checkbox', name: 'ora', value: l.ora, checked: gia.size ? gia.has(l.ora) : true }),
+        ` ${testoOra(l.ora)} · ${Dati.nome('classe', l.classe)} ${l.materia}` + (l.aula ? ` · ${Dati.nome('aula', l.aula)}` : '')))));
+  }
+
+  function registraAssenza(evento) {
+    evento.preventDefault();
+    const id = $('docenteAssente').value;
+    if (!id) { avvisa('Scegli il docente assente.'); $('docenteAssente').focus(); return; }
+    const oreScelte = [...document.querySelectorAll('#oreAssenza input[name="ora"]:checked')].map(c => Number(c.value));
+    if (!oreScelte.length) { avvisa('Spunta almeno un\'ora di assenza.'); return; }
+    // Se il docente era già assente quel giorno, aggiorniamo le sue ore
+    const esistente = assenzeDel(dataScelta).find(a => a.docente === id);
+    if (esistente) esistente.ore = oreScelte.sort((a, b) => a - b);
+    else assenze.push({ id: nuovoId(), data: dataScelta, docente: id, ore: oreScelte.sort((a, b) => a - b) });
+    // Le sostituzioni già assegnate per ore tolte non servono più
+    registro = registro.filter(x => !(x.data === dataScelta && x.assente === id && !oreScelte.includes(x.ora) && !x.riportata));
+    salva('assenze', assenze);
+    salva('registro', registro);
+    avvisa(`Assenza registrata: ${nomeDocente(id)}, ${ore(oreScelte.length)}.`);
+    $('docenteAssente').value = '';
+    disegnaTutto();
+    $('titoloCoprire').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function togliAssenza(a) {
+    const collegate = registro.filter(x => x.data === a.data && x.assente === a.docente);
+    if (collegate.length && !confirm(`Togliendo l'assenza vengono annullate anche ${collegate.length} sostituzioni già assegnate. Continuare?`)) return;
+    assenze = assenze.filter(x => x.id !== a.id);
+    registro = registro.filter(x => !collegate.includes(x));
+    salva('assenze', assenze);
+    salva('registro', registro);
+    disegnaTutto();
+  }
+
+  // ---------- Disegno della sezione 3: ore da coprire ----------
+  function disegnaCoprire() {
+    const box = $('oreDaCoprire');
+    box.replaceChildren();
+    const elenco = oreDaCoprire(dataScelta);
+    if (!elenco.length) {
+      box.append(el('p', { class: 'nota' }, 'Nessuna ora da coprire in questo giorno.'));
+      disegnaStampa([]);
+      return;
+    }
+    elenco.forEach(l => box.append(schedaOra(l)));
+    disegnaStampa(elenco);
+  }
+
+  function schedaOra(l) {
+    const chiave = [dataScelta, l.ora, l.classe, l.assente].join('|');
+    const s = sostituzioneDi(dataScelta, l);
+    const titolo = el('h3', {}, `${testoOra(l.ora)} · ${Dati.nome('classe', l.classe)}`);
+    const dettagli = el('p', { class: 'dettagli-ora' },
+      [l.materia, l.aula ? Dati.nome('aula', l.aula) : '', 'assente: ' + nomeDocente(l.assente)].filter(Boolean).join(' · '));
+
+    // Compresenza: in classe c'è già un altro docente presente
+    const altri = D.lezioni.filter(k => k.giorno === l.giorno && k.ora === l.ora && k.classe === l.classe &&
+      k.docente !== l.assente && !assentiAllOra(dataScelta, l.ora).has(k.docente));
+    const compresenza = altri.length
+      ? el('p', { class: 'nota' }, `ℹ️ In classe c'è anche ${altri.map(k => nomeDocente(k.docente)).join(', ')} (compresenza): forse la sostituzione non serve.`)
+      : null;
+
+    if (s) {
+      const saldo = saldoDi(s.sostituto);
+      return el('article', { class: 'ora coperta' }, titolo, dettagli, compresenza,
+        el('p', { class: 'sostituto' }, '✔ Sostituisce ', el('strong', {}, nomeDocente(s.sostituto)), ' ', etichettaSaldo(saldo),
+          s.riportata ? el('span', { class: 'etichetta' }, 'già riportata nel foglio') : null),
+        el('button', { type: 'button', class: 'pulsante piccolo', onclick: () => annulla(s) }, 'Annulla la sostituzione'));
+    }
+
+    const tutti = candidati(dataScelta, l);
+    const aScuola = tutti.filter(c => c.aScuola);
+    const aCasa = tutti.filter(c => !c.aScuola);
+    const aperta = aperte.has(chiave);
+    const visibili = aperta ? aScuola : aScuola.slice(0, PROPOSTE_VISIBILI);
+
+    const voce = c => el('li', { class: 'candidato' },
+      el('div', { class: 'candidato-info' },
+        el('strong', {}, nomeDocente(c.t.id)),
+        conSigla(c.t) ? el('span', { class: 'sigla' }, ` (${c.t.nome})`) : null,
+        el('span', { class: 'etichette' },
+          etichettaSaldo(c.saldo),
+          el('span', { class: 'etichetta' }, TESTI_POSIZIONE[c.posizione]),
+          c.stessaClasse ? el('span', { class: 'etichetta' }, 'conosce la classe') : null)),
+      el('button', {
+        type: 'button', class: 'pulsante primario piccolo',
+        'aria-label': `Assegna la ${l.ora}ª ora in ${Dati.nome('classe', l.classe)} a ${nomeDocente(c.t.id)}`,
+        onclick: () => assegna(dataScelta, l, c.t.id)
+      }, 'Assegna'));
+
+    const contenuto = [];
+    if (!tutti.length) contenuto.push(el('p', { class: 'attenzione' }, 'Nessun docente libero in quest\'ora.'));
+    if (visibili.length) contenuto.push(el('ol', { class: 'candidati' }, visibili.map(voce)));
+    else if (tutti.length) contenuto.push(el('p', { class: 'nota' }, 'Nessun docente già a scuola è libero in quest\'ora.'));
+    if (aperta && aCasa.length) {
+      contenuto.push(el('h4', {}, 'Senza lezioni in questo giorno (dovrebbero venire apposta)'),
+        el('ol', { class: 'candidati' }, aCasa.map(voce)));
+    }
+    const nascosti = aScuola.length - visibili.length + (aperta ? 0 : aCasa.length);
+    if (nascosti > 0 || aperta) {
+      contenuto.push(el('button', {
+        type: 'button', class: 'pulsante piccolo', 'aria-expanded': String(aperta),
+        onclick: () => { aperta ? aperte.delete(chiave) : aperte.add(chiave); disegnaCoprire(); }
+      }, aperta ? 'Mostra meno' : `Mostra tutti i docenti liberi (${tutti.length})`));
+    }
+    return el('article', { class: 'ora' }, titolo, dettagli, compresenza, contenuto);
+  }
+
+  // Tabella riassuntiva del giorno (è anche quella che si stampa)
+  function disegnaStampa(elenco) {
+    const box = $('stampaGiorno');
+    box.replaceChildren();
+    if (!elenco.length) return;
+    box.append(el('div', { class: 'scorrevole' }, el('table', { class: 'tabella' },
+      el('caption', {}, 'Sostituzioni di ' + dataLunga(dataScelta)),
+      el('thead', {}, el('tr', {}, ['Ora', 'Classe', 'Aula', 'Materia', 'Assente', 'Sostituto']
+        .map(t => el('th', { scope: 'col' }, t)))),
+      el('tbody', {}, elenco.map(l => {
+        const s = sostituzioneDi(dataScelta, l);
+        return el('tr', {},
+          el('th', { scope: 'row' }, testoOra(l.ora)),
+          el('td', {}, Dati.nome('classe', l.classe)),
+          el('td', {}, l.aula ? Dati.nome('aula', l.aula) : ''),
+          el('td', {}, l.materia),
+          el('td', {}, nomeDocente(l.assente)),
+          el('td', { class: s ? '' : 'attenzione' }, s ? nomeDocente(s.sostituto) : 'DA COPRIRE'));
+      })))));
+  }
+
+  // ---------- Disegno della sezione 4: saldi ----------
+  function disegnaSaldi() {
+    const box = $('saldi');
+    box.replaceChildren();
+    if (!foglio) {
+      box.append(el('p', { class: 'nota' }, 'Carica il foglio del conteggio ore per vedere il saldo di ogni docente.'));
+      return;
+    }
+    const collegate = new Set([...abbinati.values()].map(a => a.chiave).filter(Boolean));
+    const righe = foglio.docenti.map(r => {
+      const extra = daRiportarePer(r.chiave);
+      return { r, extra, attuale: r.totale + extra };
+    }).sort((a, b) => a.attuale - b.attuale || nomeRiga(a.r).localeCompare(nomeRiga(b.r), 'it'));
+
+    box.append(el('div', { class: 'scorrevole' }, el('table', { class: 'tabella saldi' },
+      el('caption', {}, 'Dal più alto debito al più alto credito. Negativo = ore a debito, positivo = ore a credito.'),
+      el('thead', {}, el('tr', {},
+        el('th', { scope: 'col' }, 'Docente'),
+        el('th', { scope: 'col' }, 'Totale nel foglio'),
+        el('th', { scope: 'col' }, 'Sostituzioni da riportare'),
+        el('th', { scope: 'col' }, 'Saldo attuale'))),
+      el('tbody', {}, righe.map(x => el('tr', {},
+        el('th', { scope: 'row' }, nomeRiga(x.r) || x.r.cognome,
+          collegate.has(x.r.chiave) ? null : el('span', { class: 'sigla' }, ' (non nell\'orario)')),
+        el('td', { class: 'numero' }, conSegno(x.r.totale)),
+        el('td', { class: 'numero' }, x.extra ? '+' + x.extra : ''),
+        el('td', { class: 'numero' }, etichettaSaldo({ attuale: x.attuale }))))))));
+  }
+
+  // ---------- Disegno della sezione 5: da riportare nel foglio ----------
+  // Raggruppa le sostituzioni non ancora riportate per settimana e docente
+  function riepilogoDaRiportare() {
+    const gruppi = new Map();
+    registro.filter(x => !x.riportata).forEach(x => {
+      const r = rigaDi(x.sostituto);
+      const k = x.settimana + '|' + (r ? r.chiave : 'orario:' + x.sostituto);
+      if (!gruppi.has(k)) gruppi.set(k, { settimana: x.settimana, riga: r, id: x.sostituto, ore: 0 });
+      gruppi.get(k).ore++;
+    });
+    return [...gruppi.values()].sort((a, b) => a.settimana - b.settimana ||
+      (a.riga ? nomeRiga(a.riga) : nomeDocente(a.id)).localeCompare(b.riga ? nomeRiga(b.riga) : nomeDocente(b.id), 'it'));
+  }
+
+  function disegnaRiportare() {
+    const box = $('daRiportare');
+    box.replaceChildren();
+    const gruppi = riepilogoDaRiportare();
+    if (!gruppi.length) {
+      box.append(el('p', { class: 'nota' }, 'Nessuna ora da riportare nel foglio.'));
+      return;
+    }
+    box.append(
+      el('p', {}, 'Da aggiungere nel foglio, nella colonna della settimana (ogni ora di sostituzione vale +1):'),
+      el('div', { class: 'scorrevole' }, el('table', { class: 'tabella' },
+        el('caption', {}, 'Ore di sostituzione non ancora riportate nel foglio'),
+        el('thead', {}, el('tr', {},
+          el('th', { scope: 'col' }, 'Settimana'),
+          el('th', { scope: 'col' }, 'Docente'),
+          el('th', { scope: 'col' }, 'Ore da aggiungere'))),
+        el('tbody', {}, gruppi.map(g => el('tr', {},
+          el('td', { class: 'numero' }, g.settimana),
+          el('th', { scope: 'row' }, g.riga ? nomeRiga(g.riga) : nomeDocente(g.id) + ' (non nel foglio)'),
+          el('td', { class: 'numero' }, '+' + g.ore)))))),
+      el('p', { class: 'nota' }, 'Dopo aver aggiornato il foglio premi "Segna come già riportate": così le ore non vengono contate due volte quando ricarichi il foglio.'));
+  }
+
+  function disegnaTutto() {
+    if (!D) return;
+    disegnaDati();
+    disegnaGiorno();
+    disegnaCoprire();
+    disegnaSaldi();
+    disegnaRiportare();
+  }
+
+  // ---------- Esportazioni ----------
+  function scaricaCsv(nomeFile, righe) {
+    const cella = v => {
+      const s = String(v === undefined || v === null ? '' : v);
+      return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    // Il carattere ﻿ all'inizio fa riconoscere a Excel le lettere accentate
+    const testo = '﻿' + righe.map(r => r.map(cella).join(';')).join('\r\n');
+    const link = el('a', { href: URL.createObjectURL(new Blob([testo], { type: 'text/csv;charset=utf-8' })), download: nomeFile });
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  }
+
+  function scaricaRegistro() {
+    if (!registro.length) { avvisa('Il registro è vuoto.'); return; }
+    const ordinato = registro.slice().sort((a, b) => a.data.localeCompare(b.data) || a.ora - b.ora);
+    scaricaCsv(`sostituzioni-registro-${isoLocale(new Date())}.csv`, [
+      ['Data', 'Settimana', 'Ora', 'Classe', 'Aula', 'Materia', 'Docente assente', 'Sostituto', 'Riportata nel foglio'],
+      ...ordinato.map(x => [dataBreve(x.data), x.settimana, x.ora, Dati.nome('classe', x.classe),
+        x.aula ? Dati.nome('aula', x.aula) : '', x.materia, nomeDocente(x.assente), nomeDocente(x.sostituto), x.riportata ? 'sì' : 'no'])
+    ]);
+  }
+
+  function scaricaRiepilogo() {
+    const gruppi = riepilogoDaRiportare();
+    if (!gruppi.length) { avvisa('Nessuna ora da riportare nel foglio.'); return; }
+    scaricaCsv(`sostituzioni-da-riportare-${isoLocale(new Date())}.csv`, [
+      ['Settimana', 'COGNOME', 'NOME', 'Ore da aggiungere'],
+      ...gruppi.map(g => [g.settimana, g.riga ? g.riga.cognome : nomeDocente(g.id), g.riga ? g.riga.nome : '', g.ore])
+    ]);
+  }
+
+  function segnaRiportate() {
+    const quante = registro.filter(x => !x.riportata).length;
+    if (!quante) { avvisa('Non ci sono sostituzioni da segnare.'); return; }
+    if (!confirm(`Hai già aggiunto nel foglio queste ${quante} ore di sostituzione? ` +
+      'Da ora in poi non verranno più sommate al saldo, perché saranno già nel TOTALE del foglio.')) return;
+    registro.forEach(x => { x.riportata = true; });
+    salva('registro', registro);
+    avvisa(`${quante} sostituzioni segnate come riportate. Ricorda di ricaricare il foglio aggiornato.`);
+    disegnaTutto();
+  }
+
+  function cancellaTutto() {
+    if (!confirm('Cancellare da questo dispositivo il foglio caricato, le assenze, le sostituzioni e gli abbinamenti? Non si può annullare.')) return;
+    Archivio.cancellaTutto();
+    foglio = null; assenze = []; registro = []; manuali = {};
+    aggiornaAbbinamenti();
+    disegnaTutto();
+    avvisa('Dati cancellati da questo dispositivo.');
+  }
+
+  // ---------- Caricamento del foglio scelto dall'utente ----------
+  async function caricaFoglio(evento) {
+    const file = evento.target.files[0];
+    evento.target.value = '';                 // così si può ricaricare lo stesso file
+    if (!file) return;
+    try {
+      foglio = await Foglio.leggiFile(file);
+      salva('foglio', foglio);
+      aggiornaAbbinamenti();
+      disegnaTutto();
+      const nonRiportate = registro.filter(x => !x.riportata).length;
+      avvisa(`Foglio caricato: ${foglio.docenti.length} docenti.` + (nonRiportate
+        ? ` Ci sono ${nonRiportate} sostituzioni non ancora segnate come riportate: se sono già nel foglio, premi "Segna come già riportate".`
+        : ''));
+    } catch (errore) {
+      console.error(errore);
+      avvisa('Non riesco a leggere il foglio: ' + errore.message);
+    }
+  }
+
+  // ---------- Avvio ----------
+  async function caricaOrario() {
+    try {
+      D = await Dati.carica();
+    } catch (errore) {
+      console.error(errore);
+      $('statoOrario').textContent = 'Non riesco a caricare l\'orario: ' + errore.message +
+        ' (per provarla sul PC serve un piccolo server, vedi LEGGIMI.md).';
+      return;
+    }
+    aggiornaAbbinamenti();
+    // La prima volta, se ci sono abbinamenti da controllare, apriamo il riquadro
+    if (foglio && D.docente.some(t => !(abbinati.get(t.id) || {}).chiave)) $('boxAbbinamenti').open = true;
+    disegnaTutto();
+  }
+
+  function collegaPulsanti() {
+    $('fileFoglio').addEventListener('change', caricaFoglio);
+    $('sceltaFonte').addEventListener('change', e => { Dati.impostaFonte(e.target.value); caricaOrario(); });
+    $('data').addEventListener('change', e => { if (e.target.value) { dataScelta = e.target.value; aperte.clear(); disegnaTutto(); } });
+    $('giornoPrima').addEventListener('click', () => { dataScelta = spostaGiorni(dataScelta, -1); aperte.clear(); disegnaTutto(); });
+    $('giornoDopo').addEventListener('click', () => { dataScelta = spostaGiorni(dataScelta, 1); aperte.clear(); disegnaTutto(); });
+    $('oggi').addEventListener('click', () => { dataScelta = giornoPredefinito(); aperte.clear(); disegnaTutto(); });
+    $('docenteAssente').addEventListener('change', disegnaOreAssenza);
+    $('moduloAssenza').addEventListener('submit', registraAssenza);
+    $('stampa').addEventListener('click', () => {
+      if (!oreDaCoprire(dataScelta).length) { avvisa('Nessuna sostituzione da stampare in questo giorno.'); return; }
+      window.print();
+    });
+    $('scaricaRegistro').addEventListener('click', scaricaRegistro);
+    $('scaricaRiepilogo').addEventListener('click', scaricaRiepilogo);
+    $('segnaRiportate').addEventListener('click', segnaRiportate);
+    $('cancellaTutto').addEventListener('click', cancellaTutto);
+
+    // Se i dati cambiano in un'altra scheda (o Orario Facile modifica la bozza) ci aggiorniamo
+    window.addEventListener('storage', e => {
+      if (Archivio.eNostra(e.key)) {
+        foglio = Archivio.leggi('foglio', null);
+        assenze = Archivio.leggi('assenze', []);
+        registro = Archivio.leggi('registro', []);
+        manuali = Archivio.leggi('abbinamenti', {});
+        aggiornaAbbinamenti();
+        disegnaTutto();
+      } else if (e.key === Dati.CHIAVE_BOZZA) {
+        caricaOrario();
+      }
+    });
+  }
+
+  dataScelta = giornoPredefinito();
+  collegaPulsanti();
+  caricaOrario();
+})();

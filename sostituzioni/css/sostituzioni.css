@@ -1,0 +1,207 @@
+/*
+  sostituzioni.css – stile della pagina delle sostituzioni.
+  Pensato prima per il telefono (mobile-first), poi allargato per schermi più grandi.
+  Stessi colori della pagina iniziale del sito, con tema chiaro e scuro automatico.
+*/
+
+/* ---------- Colori ---------- */
+:root {
+  --sfondo: #f4f6fa;
+  --scheda: #fff;
+  --testo: #1a1f2b;
+  --tenue: #566074;
+  --primario: #1c56b8;
+  --su-primario: #fff;
+  --bordo: #d8dde7;
+  --debito: #a3261c;        /* rosso: ore a debito */
+  --debito-sfondo: #fdecea;
+  --credito: #1d6b33;       /* verde: ore a credito */
+  --credito-sfondo: #e6f4ea;
+  --neutro-sfondo: #eef1f6;
+  --attenzione: #8a4b00;
+  --fatto-sfondo: #eef7f0;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sfondo: #11151c;
+    --scheda: #1a2029;
+    --testo: #e8ecf3;
+    --tenue: #a3adbf;
+    --primario: #7fa8f5;
+    --su-primario: #0d1422;
+    --bordo: #313a48;
+    --debito: #ffaaa1;
+    --debito-sfondo: #3a1d1a;
+    --credito: #8fdca5;
+    --credito-sfondo: #17301f;
+    --neutro-sfondo: #252d39;
+    --attenzione: #ffc46b;
+    --fatto-sfondo: #172a1e;
+  }
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  background: var(--sfondo);
+  color: var(--testo);
+}
+a { color: var(--primario); }
+h1, h2, h3, h4 { line-height: 1.25; }
+
+/* Contorno ben visibile quando ci si sposta con la tastiera */
+:focus-visible { outline: 3px solid var(--primario); outline-offset: 2px; }
+
+/* Link "Vai al contenuto": compare solo quando riceve il focus da tastiera */
+.salta { position: absolute; left: -9999px; top: 8px; background: var(--scheda); padding: 8px 12px; z-index: 10; }
+.salta:focus { left: 8px; }
+
+/* Nasconde un elemento alla vista ma lo lascia ai lettori di schermo */
+.solo-lettori {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Testata ---------- */
+.testata { max-width: 960px; margin: 0 auto; padding: 20px 16px 8px; }
+.testata h1 { margin: 8px 0 4px; font-size: 1.6rem; }
+.sottotitolo { margin: 0; color: var(--tenue); }
+.indietro { font-size: .95rem; }
+
+/* ---------- Sezioni ---------- */
+main { max-width: 960px; margin: 0 auto; padding: 8px 16px 96px; }
+.scheda {
+  background: var(--scheda);
+  border: 1px solid var(--bordo);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 16px;
+}
+.scheda h2 { margin: 0 0 12px; font-size: 1.25rem; }
+.scheda h3 { margin: 12px 0 6px; font-size: 1.05rem; }
+.nota { color: var(--tenue); font-size: .95rem; }
+.attenzione { color: var(--attenzione); font-weight: 600; }
+.colonne { display: grid; gap: 8px 24px; }
+
+/* ---------- Pulsanti e campi ---------- */
+.pulsante {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px;                   /* abbastanza grande da toccare col dito */
+  padding: 8px 14px;
+  border: 1px solid var(--bordo);
+  border-radius: 10px;
+  background: var(--scheda);
+  color: var(--testo);
+  font: inherit;
+  cursor: pointer;
+}
+.pulsante:hover { border-color: var(--primario); }
+.pulsante.primario { background: var(--primario); border-color: var(--primario); color: var(--su-primario); font-weight: 600; }
+.pulsante.piccolo { min-height: 36px; padding: 4px 12px; font-size: .95rem; }
+.pulsante.pericolo { color: var(--debito); border-color: var(--debito); }
+.pulsanti { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+/* Il pulsante "Carica il foglio" è un'etichetta che contiene il campo file nascosto */
+.scegli-file:focus-within { outline: 3px solid var(--primario); outline-offset: 2px; }
+
+select, input[type="date"] {
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 1px solid var(--bordo);
+  border-radius: 10px;
+  background: var(--scheda);
+  color: var(--testo);
+  font: inherit;
+  max-width: 100%;
+}
+label { font-weight: 600; }
+fieldset { border: 1px solid var(--bordo); border-radius: 12px; padding: 12px; margin: 0; }
+legend { font-weight: 700; padding: 0 4px; }
+.modulo-assenza select { display: block; width: 100%; margin: 4px 0 12px; }
+.ore-assenza { margin-bottom: 12px; }
+.casella { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; padding: 6px 0; }
+.casella input { width: 20px; height: 20px; margin-top: 2px; flex: none; }
+
+/* ---------- Giorno ---------- */
+.navigazione-giorno { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.navigazione-giorno .pulsante { min-width: 44px; }
+.descrizione-giorno { font-weight: 600; text-transform: capitalize; }
+.elenco-assenze { list-style: none; padding: 0; margin: 0; }
+.elenco-assenze li {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid var(--bordo);
+}
+
+/* ---------- Ore da coprire ---------- */
+.ora { border: 1px solid var(--bordo); border-radius: 12px; padding: 12px; margin-top: 12px; }
+.ora h3 { margin: 0; }
+.ora h4 { margin: 12px 0 4px; font-size: .95rem; color: var(--tenue); }
+.ora.coperta { background: var(--fatto-sfondo); }
+.dettagli-ora { margin: 2px 0 8px; color: var(--tenue); }
+.sostituto { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.candidati { list-style: none; padding: 0; margin: 0 0 8px; }
+.candidato {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid var(--bordo);
+}
+.candidato:last-child { border-bottom: 0; }
+.candidato-info { min-width: 0; }
+.sigla { color: var(--tenue); font-weight: 400; }
+.etichette { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+
+/* Piccole "etichette" colorate: saldo ore, ora buca, ecc. */
+.etichetta {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: .85rem;
+  background: var(--neutro-sfondo);
+  white-space: nowrap;
+}
+.etichetta.debito { background: var(--debito-sfondo); color: var(--debito); font-weight: 600; }
+.etichetta.credito { background: var(--credito-sfondo); color: var(--credito); font-weight: 600; }
+
+/* ---------- Tabelle ---------- */
+.scorrevole { overflow-x: auto; }   /* sul telefono la tabella scorre di lato, la pagina no */
+.tabella { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.tabella caption { text-align: left; color: var(--tenue); padding-bottom: 6px; }
+.tabella th, .tabella td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--bordo); vertical-align: top; }
+.tabella thead th { font-size: .9rem; color: var(--tenue); }
+.tabella tbody th { font-weight: 600; }
+.tabella .numero { text-align: right; white-space: nowrap; }
+.tabella select { width: 100%; min-width: 180px; }
+.stampa-giorno { margin-top: 16px; }
+.abbinamenti { margin-top: 12px; }
+.abbinamenti summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+
+/* ---------- Messaggio in basso ---------- */
+.avviso {
+  position: fixed; left: 16px; right: 16px; bottom: 16px;
+  max-width: 560px; margin: 0 auto;
+  padding: 12px 16px; border-radius: 12px;
+  background: var(--testo); color: var(--sfondo);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .25);
+  opacity: 0; transform: translateY(12px); pointer-events: none;
+  transition: opacity .2s, transform .2s;
+}
+.avviso.visibile { opacity: 1; transform: none; }
+
+/* ---------- Schermi più larghi ---------- */
+@media (min-width: 720px) {
+  .testata h1 { font-size: 2rem; }
+  .colonne { grid-template-columns: 1fr 1fr; }
+  .modulo-assenza select { max-width: 420px; }
+}
+
+/* ---------- Stampa: solo la tabella delle sostituzioni del giorno ---------- */
+@media print {
+  body { background: #fff; color: #000; }
+  .testata, .salta, .avviso, .scheda > *:not(#stampaGiorno) { display: none !important; }
+  .scheda { border: 0; padding: 0; margin: 0; }
+  .scheda:not(:has(#stampaGiorno)) { display: none; }
+  .tabella caption { color: #000; font-size: 1.2rem; font-weight: 700; }
+  .tabella th, .tabella td { border-bottom: 1px solid #999; color: #000; }
+  .attenzione { color: #000; }
+}
