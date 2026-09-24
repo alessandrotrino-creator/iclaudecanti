@@ -1,0 +1,18 @@
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+# Editor
+.vscode/
+.idea/
+*.swp
+# File temporanei di Office
+~$*
+# Dipendenze / build
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+dist/
+build/
+.env
