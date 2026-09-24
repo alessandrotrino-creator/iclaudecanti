@@ -219,6 +219,8 @@ td input[type=number]{width:64px}
   </div>
   <div class="bar-actions">
     <span class="savestate" id="saveState"></span>
+    <!-- apre l'app di visualizzazione: legge questo orario dal browser e si aggiorna in tempo reale -->
+    <a class="btn ghost sm" href="../app/" target="orariodada" style="text-decoration:none">📱 Vedi nell'app</a>
     <button class="btn ghost sm" id="btnTema" title="Chiaro / scuro">◐ Tema</button>
     <button class="btn ghost sm" id="btnEsempio">Dati di esempio</button>
     <button class="btn ghost sm" id="btnAzzera">Azzera tutto</button>
@@ -406,6 +408,18 @@ td input[type=number]{width:64px}
     <div class="phead">
       <h2>Salvataggio ed esportazione</h2>
       <p>Il lavoro viene salvato automaticamente in questo browser. Per spostarlo su un altro computer, o per conservarne una copia, usa il file di backup.</p>
+    </div>
+    <div class="card">
+      <h3>Pubblica nell'app Orario DADA</h3>
+      <p class="hint">Su questo dispositivo l'app <a href="../app/" target="orariodada">Orario DADA</a> mostra già questo orario e si aggiorna mentre lo modifichi.
+        Per farlo vedere a <b>tutti</b> (telefoni, tablet, monitor di classe):</p>
+      <ol class="hint">
+        <li>premi «Scarica orario.json»;</li>
+        <li>apri la <a href="https://github.com/alessandrotrino-creator/iclaudecanti/upload/main/dati" target="_blank" rel="noopener">cartella dati su GitHub</a>,
+          trascina il file (sostituisce quello vecchio) e premi «Commit changes»;</li>
+        <li>dopo un paio di minuti l'app mostra il nuovo orario a tutti.</li>
+      </ol>
+      <div class="row"><button class="btn" id="btnPubblicaApp">Scarica orario.json</button></div>
     </div>
     <div class="card">
       <h3>Backup completo (.json)</h3>
@@ -2519,6 +2533,12 @@ $('#btnExportJson').addEventListener('click', async () => {
   const txt = JSON.stringify(S,null,1);
   if(!(await scarica(nomeFile('.json'), txt, 'application/json')))
     mostraTesto('Backup', txt, nomeFile('.json'), 'application/json');
+});
+// file per l'app Orario DADA: è il backup completo con in più la data di pubblicazione
+$('#btnPubblicaApp').addEventListener('click', async () => {
+  const txt = JSON.stringify(Object.assign({}, S, { pubblicato: new Date().toISOString().slice(0,10) }), null, 1);
+  if(!(await scarica('orario.json', txt, 'application/json')))
+    mostraTesto('File per l’app', txt, 'orario.json', 'application/json');
 });
 $('#btnMostraJson').addEventListener('click', () => mostraTesto('Backup da copiare', JSON.stringify(S,null,1), nomeFile('.json'), 'application/json'));
 $('#btnImportJson').addEventListener('click', () => $('#fileJson').click());
