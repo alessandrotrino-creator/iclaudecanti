@@ -148,10 +148,16 @@ const Breve = (() => {
       const fatta = oggi && minuti(o.fine) <= adesso.minuto;
       const ora = oggi && adesso.ora === o.n;
       const stato = [lez.length ? '' : 'libera', fatta ? 'fatta' : '', ora ? 'in-corso' : ''].filter(Boolean).join(' ');
+      // Etichetta dello stato dell'ora (a destra, come la pillola "Adesso")
+      const pill = ora ? '<span class="pill-breve">In corso</span>' : fatta ? '<span class="pill-ora">Fatta</span>' : !lez.length ? '<span class="pill-ora">Libera</span>' : '';
+      // Ogni ora è una scheda grande come "Adesso" e "Dopo": materia, docente/classe e aula
       const testo = lez.length
-        ? lez.map(l => `<b>${esc(l.materia || '—')}</b><span>${esc(soggetto.tipo === 'aula' ? Dati.nome('classe', l.classe) : Dati.nome('aula', l.aula))}</span>`).join('')
-        : '<b>Libera</b>';
-      return `<li class="mini-breve ${stato}"><span class="n-breve">${o.n}ª · ${esc(o.inizio)}</span>${testo}${ora ? '<span class="solo-lettori"> (in corso)</span>' : ''}</li>`;
+        ? lez.map(l => `
+          <div class="riga-breve"><span class="materia-breve">${esc(l.materia || '—')}</span><span class="dettagli-breve">${esc(dettagli(l, soggetto.tipo))}</span></div>
+          ${soggetto.tipo !== 'aula' && l.aula ? `<span class="aula-ora">${ICONA_AULA}<span class="solo-lettori">Aula: </span>${esc(Dati.nome('aula', l.aula))}</span>` : ''}`).join('')
+        : '<span class="materia-breve">Ora libera</span>';
+      return `<li class="scheda-breve scheda-ora ${stato}">
+        <div class="riga-breve"><span class="dettagli-breve">${esc(`${o.n}ª ora · ${o.inizio}–${o.fine}`)}</span>${pill}</div>${testo}</li>`;
     }).join('') + '</ol>';
 
     el.innerHTML = html;

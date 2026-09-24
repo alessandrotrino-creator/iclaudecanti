@@ -93,25 +93,22 @@ body.breve-aperta .controlli, body.breve-aperta #contenuto { display: none; }
 .spostati-breve b { color: var(--primario); }
 .vuoto-breve { margin: 0; color: var(--testo-tenue); }
 
-/* Il resto della giornata: schede piccole da scorrere in orizzontale */
+/* Il resto della giornata: una scheda grande per ogni ora, una sotto l'altra, larga quanto lo schermo */
 .titoletto-breve {
   margin: 6px 16px 0; font-size: .78rem; font-weight: 700; letter-spacing: .08em;
   text-transform: uppercase; color: var(--testo-tenue);
 }
-.giornata-breve {
-  list-style: none; margin: 0; padding: 2px 16px 6px; display: flex; gap: 8px; overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+.giornata-breve { list-style: none; margin: 0; padding: 0 16px 6px; display: grid; gap: 10px; }
+.scheda-ora { box-shadow: var(--ombra); }
+.aula-ora { display: inline-flex; align-items: center; gap: 6px; font-size: 1.15rem; font-weight: 700; color: var(--primario); }
+.aula-ora svg { width: 17px; height: 17px; flex: none; }
+.pill-ora {
+  font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 999px; border: 1px solid var(--bordo); color: var(--testo-tenue);
 }
-.mini-breve {
-  flex: none; width: 112px; display: grid; gap: 2px; align-content: start; padding: 10px;
-  border: 1px solid var(--bordo); border-radius: 14px; background: var(--superficie); font-size: .82rem;
-}
-.mini-breve b { font-size: .9rem; line-height: 1.2; }
-.mini-breve span { color: var(--testo-tenue); }
-.n-breve { font-size: .75rem; font-variant-numeric: tabular-nums; }
-.mini-breve.fatta { opacity: .55; }
-.mini-breve.libera { border-style: dashed; background: transparent; }
-.mini-breve.in-corso { border: 2px solid var(--evidenza-bordo); background: var(--evidenza); }
+.scheda-ora.fatta { opacity: .6; }
+.scheda-ora.libera { background: transparent; box-shadow: none; border: 2px dashed var(--bordo); }
+.scheda-ora.in-corso { border: 2px solid var(--evidenza-bordo); background: var(--evidenza); }
 
 /* Tablet e schermi più larghi: la vista è centrata, le schede "Adesso" e "Dopo" stanno affiancate
    e il resto della giornata diventa una griglia di schede grandi che va a capo (niente scorrimento di lato).
@@ -127,13 +124,9 @@ body.breve-aperta .controlli, body.breve-aperta #contenuto { display: none; }
   .materia-breve { font-size: 1.4rem; }
   .aula-breve { font-size: 1.7rem; }
   .titoletto-breve { margin: 10px 24px 0; }
-  .giornata-breve {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px; padding: 2px 24px 8px; overflow: visible;
-  }
-  .mini-breve { width: auto; padding: 14px 16px; border-radius: 18px; font-size: .95rem; gap: 4px; }
-  .mini-breve b { font-size: 1.1rem; }
-  .n-breve { font-size: .85rem; }
+  /* Tablet: le schede delle ore restano grandi, due per riga */
+  .giornata-breve { grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 24px 8px; }
+  .aula-ora { font-size: 1.3rem; }
 }
 
 @media print { .vista-breve, .pulsante-breve { display: none !important; } }
