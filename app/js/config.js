@@ -20,5 +20,9 @@ window.CONFIG = {
   minutiRitornoMonitor: 2,
 
   // Ogni quanti minuti si ricontrolla se l'orario è stato aggiornato
-  minutiAggiornamentoDati: 15
+  minutiAggiornamentoDati: 15,
+
+  // Tema "secondo l'ora": scuro da oraInizioScuro fino a oraFineScuro (ore intere, 0-23)
+  oraInizioScuro: 19,
+  oraFineScuro: 7
 };

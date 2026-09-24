@@ -97,6 +97,9 @@
     $('#btnUtente').setAttribute('aria-label', 'Menu di ' + utente.nome);
     $('#btnMioOrario').hidden = !mioDocente;
     $('#btnSchermoIntero').hidden = !document.fullscreenEnabled;
+    // Tema: la voce "secondo l'ora" mostra gli orari impostati in config.js
+    $('#sceltaTema').value = Tema.scelta();
+    $('#opzioneTemaOra').textContent = `Secondo l'ora (scuro dalle ${CONFIG.oraInizioScuro} alle ${CONFIG.oraFineScuro})`;
     // Scelta tra la bozza di Orario Facile e l'orario pubblicato
     $('#gruppoFonte').hidden = !D.bozzaDisponibile;
     $('#sceltaFonte').value = D.fonte;
@@ -194,6 +197,7 @@
       chiudiMenu();
     });
     $('#btnRicarica').addEventListener('click', async () => { chiudiMenu(); await ricaricaDati(true); });
+    $('#sceltaTema').addEventListener('change', e => Tema.imposta(e.target.value));
     $('#sceltaFonte').addEventListener('change', e => { Dati.impostaFonte(e.target.value); chiudiMenu(); ricaricaDati(true); });
     // Quando Orario Facile (aperto in un'altra scheda) salva, l'app si aggiorna subito
     window.addEventListener('storage', e => { if (e.key === Dati.CHIAVE_BOZZA) ricaricaDati(false); });

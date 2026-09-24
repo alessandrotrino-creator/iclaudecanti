@@ -22,8 +22,11 @@
   --ombra: 0 1px 3px rgba(20, 30, 50, .12);
   color-scheme: light dark;
 }
+/* Tema scuro: si applica se il dispositivo è in modalità scura (salvo scelta "chiaro")
+   oppure se nell'app si è scelto "scuro" (o "secondo l'ora" di sera).
+   Le stesse variabili sono ripetute due volte perché il CSS non permette di unire i due casi. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-tema="chiaro"]) {
     --sfondo: #11151c;
     --superficie: #1a2029;
     --testo: #e8ecf3;
@@ -39,8 +42,28 @@
     --lezione-s: 40%;
     --lezione-bordo-l: 62%;
     --ombra: 0 1px 3px rgba(0, 0, 0, .5);
+    color-scheme: dark;
   }
 }
+:root[data-tema="scuro"] {
+  --sfondo: #11151c;
+  --superficie: #1a2029;
+  --testo: #e8ecf3;
+  --testo-tenue: #a3adbf;
+  --bordo: #313a48;
+  --primario: #7fa8f5;
+  --primario-testo: #0d1a33;
+  --evidenza: #3d3413;
+  --evidenza-bordo: #e6b422;
+  --avviso: #1d2738;
+  --errore: #ff8a80;
+  --lezione-l: 20%;
+  --lezione-s: 40%;
+  --lezione-bordo-l: 62%;
+  --ombra: 0 1px 3px rgba(0, 0, 0, .5);
+  color-scheme: dark;
+}
+:root[data-tema="chiaro"] { color-scheme: light; }
 
 /* ---------- Base ---------- */
 * { box-sizing: border-box; }
@@ -131,7 +154,17 @@ select {
 .menu .utente { margin: 0 0 6px; word-break: break-all; }
 .menu .utente span { color: var(--testo-tenue); font-size: .9rem; }
 .menu label { font-size: .9rem; color: var(--testo-tenue); }
+.menu select { width: 100%; min-width: 0; }
 .voce-menu { text-align: left; }
+.menu hr { border: 0; border-top: 1px solid var(--bordo); margin: 4px 0; width: 100%; }
+.voce-menu.installa { font-weight: 600; color: var(--primario); }
+
+/* Finestra con le istruzioni per installare l'app */
+.finestra { max-width: min(420px, calc(100vw - 32px)); border: 1px solid var(--bordo); border-radius: 16px; padding: 20px; background: var(--superficie); color: var(--testo); }
+.finestra::backdrop { background: rgba(0, 0, 0, .45); }
+.finestra h2 { margin: 0 0 8px; font-size: 1.2rem; }
+.finestra ol { padding-left: 1.2em; }
+.finestra .pulsante { width: 100%; margin-top: 8px; }
 a.voce-menu { display: flex; align-items: center; text-decoration: none; color: var(--primario); }
 .gruppo-menu { display: grid; gap: 6px; }
 
