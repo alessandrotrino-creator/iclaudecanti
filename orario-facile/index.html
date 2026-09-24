@@ -426,6 +426,25 @@ td input[type=number]{width:64px}
       </div>
       <p class="hint" style="margin-top:8px">Se il download non parte (succede quando l'app è aperta dentro Claude), compare il testo da copiare e incollare in un file.</p>
     </div>
+    <div class="card">
+      <h3>Importa da foglio di calcolo (.csv, .xlsx)</h3>
+      <p class="hint">Due modelli, da compilare in Excel: <b>docenti</b> (Docente · Aula · Classe · Disciplina · Ore, una riga per cattedra)
+        e <b>classi</b> (Classe e una colonna per ogni materia con le ore settimanali). Puoi scegliere uno o più file insieme:
+        prima di cambiare i dati compare un riepilogo da confermare.</p>
+      <div class="row">
+        <button class="btn" id="btnImportFoglio">Scegli i file da importare</button>
+        <button class="btn ghost" id="btnModDocenti">Modello docenti</button>
+        <button class="btn ghost" id="btnModClassi">Modello classi</button>
+        <input type="file" id="fileFoglio" accept=".csv,.txt,.xlsx,.xlsm,text/csv" multiple hidden>
+      </div>
+      <p class="hint" style="margin-top:12px">Hai un orario in formato «MATERIA · DOCENTE · SPAZI SETT. · 1A · 2A…» (file .xlsm)?
+        Il programma prepara il foglio <b>Cattedre</b> già compilato con docenti, classi e ore: tu aggiungi la disciplina
+        (basta sulla prima riga del docente se è sempre la stessa) e dividi le ore quando in una classe insegna più materie.</p>
+      <div class="row">
+        <button class="btn ghost" id="btnPreparaCattedre">Prepara foglio Cattedre da un orario .xlsm</button>
+        <input type="file" id="fileOrarioXlsm" accept=".xlsm,.xlsx" hidden>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -446,6 +465,8 @@ const $$ = (s,r) => Array.from((r||document).querySelectorAll(s));
 const clamp = (n,a,b) => Math.max(a, Math.min(b, n));
 const num = (v,d) => { const n = parseInt(v,10); return isNaN(n) ? (d||0) : n; };
 const cognome = n => { const p = String(n||'').trim().split(/\s+/); return p.length>1 ? p[p.length-1] : (p[0]||''); };
+// confronto tra nomi senza maiuscole, accenti e spazi doppi
+const norma = s => String(s==null?'':s).normalize('NFD').replace(/\p{M}/gu,'').trim().toLowerCase().replace(/\s+/g,' ');
 
 /* ---------------- stato ---------------- */
 let S = null;
@@ -475,13 +496,27 @@ const DISC_BASE = [
   ['Religione / Alternativa','IRC',52,false,1]
 ];
 
-function discDefault(){
-  return DISC_BASE.map(([nome,sigla,hue,principale,ore]) => ({
+function discDaBase([nome,sigla,hue,principale,ore]){
+  return {
     id: uid('d'), nome, sigla, hue, principale,
     blocchi2: ['ART','TEC','MUS'].includes(sigla),
     ultimaOra: sigla === 'MOT',
     oreStd: ore
-  }));
+  };
+}
+function discDefault(){ return DISC_BASE.map(discDaBase); }
+// nuova disciplina: se il nome (o la sigla) è una disciplina standard ne prende sigla, colore e impostazioni
+function nuovaDisciplina(nome){
+  const b = nome && DISC_BASE.find(x => norma(x[0]) === norma(nome) || norma(x[1]) === norma(nome));
+  if(b) return discDaBase(b);
+  return { id:uid('d'), nome: nome||'Nuova disciplina',
+    sigla: nome ? (norma(nome).replace(/[^a-z]/g,'').slice(0,3).toUpperCase() || 'XXX') : 'XXX',
+    hue: Math.round(Math.random()*360), principale:false, blocchi2:false, ultimaOra:false, oreStd:1 };
+}
+function nuovaAula(nome, tipo){
+  const n = norma(nome);
+  return { id:uid('a'), nome: nome||'Nuova aula',
+    tipo: tipo || (n.includes('palestra') ? 'Palestra' : n.startsWith('lab') ? 'Laboratorio' : 'Aula') };
 }
 
 function nuovaClasse(anno, sez){
@@ -1776,6 +1811,330 @@ function csvCattedre(){
   return out.join('\r\n');
 }
 
+/* ---------------- importazione da foglio di calcolo ----------------
+   Modello docenti: Docente;Aula;Classe;Disciplina;Ore  (una riga per cattedra;
+                    nome e aula solo sulla prima riga del docente, "/" tra più aule)
+   Modello classi:  Classe;<materia>;<materia>;…       (ore settimanali: quadro orario) */
+
+// modelli precompilati con i dati attuali (o con un esempio se mancano)
+function modelloDocenti(){
+  const out = [['Docente','Aula','Classe','Disciplina','Ore'].map(csvCell).join(';')];
+  S.docenti.forEach(t => {
+    const aule = (t.aule||[]).map(a => aula(a)?aula(a).nome:'').join(' / ');
+    if(!t.cattedre.length) out.push([t.nome, aule, '', '', ''].map(csvCell).join(';'));
+    t.cattedre.forEach((k,j) => out.push([j ? '' : t.nome, j ? '' : aule,
+      cls(k.cl)?cls(k.cl).nome:'', disc(k.di)?disc(k.di).nome:'', k.ore].map(csvCell).join(';')));
+  });
+  if(out.length === 1) out.push('"Anna Rossi";"Aula 1";"1A";"Italiano";"5"', '"";"";"1A";"Storia";"2"', '"";"";"1B";"Italiano";"5"');
+  return out.join('\r\n');
+}
+function modelloClassi(){
+  const ds = S.discipline.length ? S.discipline.map(d => d.nome) : DISC_BASE.map(x => x[0]);
+  const out = [['Classe'].concat(ds).map(csvCell).join(';')];
+  S.classi.forEach(c => out.push([c.nome].concat(S.discipline.map(d => (S.quadro[c.id]||{})[d.id]||0)).map(csvCell).join(';')));
+  if(out.length === 1) out.push(['1A'].concat(DISC_BASE.map(x => x[4])).map(csvCell).join(';'));
+  return out.join('\r\n');
+}
+
+// testo CSV → righe di celle. Separatore riconosciuto dalla prima riga (; , o tabulazione)
+function leggiCSV(testo){
+  if(testo.charCodeAt(0) === 0xFEFF) testo = testo.slice(1);   // toglie il BOM che Excel mette all'inizio
+  const prima = testo.split(/\r?\n/).find(l => l.trim()) || '';
+  const sep = [';', '\t', ','].map(s => [s, prima.split(s).length]).sort((a,b) => b[1] - a[1])[0][0];
+  const righe = []; let r = [], c = '', virg = false;
+  for(let i=0;i<testo.length;i++){
+    const ch = testo[i];
+    if(virg){
+      if(ch === '"'){ if(testo[i+1] === '"'){ c += '"'; i++; } else virg = false; }
+      else c += ch;
+    }
+    else if(ch === '"') virg = true;
+    else if(ch === sep){ r.push(c); c = ''; }
+    else if(ch === '\n' || ch === '\r'){
+      if(ch === '\r' && testo[i+1] === '\n') i++;
+      r.push(c); righe.push(r); r = []; c = '';
+    }
+    else c += ch;
+  }
+  if(c || r.length){ r.push(c); righe.push(r); }
+  return righe;
+}
+// Excel salva i CSV in UTF-8 oppure nella codifica di Windows: prova la prima, poi la seconda
+function testoDaFile(buf){
+  try{ return new TextDecoder('utf-8', { fatal:true }).decode(buf); }
+  catch(e){ return new TextDecoder('windows-1252').decode(buf); }
+}
+
+// .xlsx → [{nome, righe}]: un .xlsx è un archivio zip di file XML, letto con le funzioni del browser
+async function leggiXLSX(buf){
+  const dv = new DataView(buf), u8 = new Uint8Array(buf), dec = new TextDecoder();
+  let fine = -1;
+  for(let i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--) if(dv.getUint32(i,true) === 0x06054b50){ fine = i; break; }
+  if(fine < 0) throw new Error('non è un file xlsx');
+  const voci = {};
+  let p = dv.getUint32(fine+16, true);
+  for(let i = dv.getUint16(fine+10, true); i > 0; i--){
+    const ln = dv.getUint16(p+28,true), le = dv.getUint16(p+30,true), lc = dv.getUint16(p+32,true);
+    voci[dec.decode(u8.subarray(p+46, p+46+ln))] = { metodo:dv.getUint16(p+10,true), dim:dv.getUint32(p+20,true), off:dv.getUint32(p+42,true) };
+    p += 46 + ln + le + lc;
+  }
+  const xml = async nome => {
+    const v = voci[nome]; if(!v) return null;
+    const da = v.off + 30 + dv.getUint16(v.off+26,true) + dv.getUint16(v.off+28,true);
+    const dati = u8.subarray(da, da + v.dim);
+    const t = v.metodo === 0 ? dec.decode(dati)
+      : await new Response(new Blob([dati]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+    return new DOMParser().parseFromString(t, 'application/xml');
+  };
+  const tag = (el, n) => Array.from(el.getElementsByTagName(n));
+  const ss = await xml('xl/sharedStrings.xml');
+  const testi = ss ? tag(ss,'si').map(si => tag(si,'t').map(t => t.textContent).join('')) : [];
+  const wb = await xml('xl/workbook.xml'), rel = await xml('xl/_rels/workbook.xml.rels');
+  if(!wb || !rel) throw new Error('non è un file xlsx');
+  const dest = {};
+  tag(rel,'Relationship').forEach(r => dest[r.getAttribute('Id')] = r.getAttribute('Target'));
+  const colonna = rif => { let n = 0; for(const ch of String(rif||'').replace(/\d+$/,'')) n = n*26 + ch.charCodeAt(0) - 64; return n - 1; };
+  const fogli = [];
+  for(const sh of tag(wb,'sheet')){
+    const t = dest[sh.getAttribute('r:id')] || '';
+    const foglio = await xml(t.startsWith('/') ? t.slice(1) : 'xl/' + t);
+    if(!foglio) continue;
+    const righe = [];
+    tag(foglio,'row').forEach(row => {
+      const r = [];
+      tag(row,'c').forEach(c => {
+        const v = c.getElementsByTagName('v')[0], tipo = c.getAttribute('t');
+        const val = tipo === 's' ? (testi[+(v&&v.textContent)] || '')
+          : tipo === 'inlineStr' ? tag(c,'t').map(x => x.textContent).join('')
+          : (v ? v.textContent : '');
+        const k = c.getAttribute('r') ? colonna(c.getAttribute('r')) : r.length;
+        r[k] = val;
+      });
+      const ri = parseInt(row.getAttribute('r'), 10);
+      righe[isNaN(ri) ? righe.length : ri - 1] = Array.from(r, x => x == null ? '' : x);
+    });
+    fogli.push({ nome: sh.getAttribute('name'), righe: Array.from(righe, x => x || []) });
+  }
+  return fogli;
+}
+
+/* foglio orario in formato «MATERIA · DOCENTE · SPAZI SETT. · 1A · 2A … · TOT · controllo»:
+   per ogni docente le ore totali in ciascuna classe (senza la disciplina). null se il formato non è questo */
+function leggiOrarioDocenti(righe){
+  for(let h=0; h<Math.min(righe.length, 10); h++){
+    const int = (righe[h]||[]).map(norma);
+    const cD = int.indexOf('docente'), cS = int.findIndex(x => x.startsWith('spazi sett'));
+    if(cD < 0 || cS < 0) continue;
+    const colClassi = [];
+    for(let j=cS+1; j<int.length; j++){ if(/^[1-3]\s*[a-z]$/.test(int[j])) colClassi.push(j); else if(colClassi.length) break; }
+    if(!colClassi.length) continue;
+    const cT = int.indexOf('tot'), cCtrl = int.indexOf('controllo');
+    const docenti = [];
+    for(let i=h+1; i<righe.length; i++){
+      const r = righe[i] || [], nome = String(r[cD] == null ? '' : r[cD]).trim();
+      if(!nome){ if(docenti.length && String(r[cS]||'').trim()) break; continue; }   // riga dei totali: fine tabella
+      if(norma(nome) === 'docente') break;                                          // inizio della griglia oraria sotto
+      const ore = {};
+      colClassi.forEach(j => { const n = Math.round(parseFloat(String(r[j]||'').replace(',','.'))); if(n > 0) ore[nomeClasse(righe[h][j])] = n; });
+      if(!Object.keys(ore).length) continue;                                        // righe segnaposto (DOCENTE30…)
+      docenti.push({ nome, ore, previste: num(r[cS],0), tot: cT >= 0 ? num(r[cT],0) : 0, controllo: cCtrl >= 0 ? norma(r[cCtrl]) : '' });
+    }
+    return docenti.length ? { docenti } : null;
+  }
+  return null;
+}
+// foglio Cattedre già compilato con docente, classe e ore, da completare con la disciplina
+function csvCattedreDaOrario(O){
+  const out = [['Docente','Aula','Classe','Disciplina','Ore'].map(csvCell).join(';')];
+  O.docenti.forEach(t => Object.keys(t.ore).forEach((cl,j) => out.push([j ? '' : t.nome, '', cl, '', t.ore[cl]].map(csvCell).join(';'))));
+  return out.join('\r\n');
+}
+// confronta le cattedre importate con il foglio orario più somigliante (stessi docenti)
+function confrontaConOrario(D){
+  if(!D.orari.length || !D.docenti.size) return;
+  const quanti = o => o.docenti.filter(t => D.docenti.has(norma(t.nome))).length;
+  const O = D.orari.slice().sort((a,b) => quanti(b) - quanti(a))[0];
+  if(!quanti(O)) return;
+  const diff = [];
+  O.docenti.forEach(t => {
+    const c = D.docenti.get(norma(t.nome));
+    if(t.controllo === 'no') diff.push(`${t.nome}: nel foglio orario ha ${t.tot} ore assegnate su ${t.previste} previste.`);
+    if(!c){ diff.push(`${t.nome}: presente nel foglio orario ma non nelle cattedre.`); return; }
+    const somma = {};
+    c.cattedre.forEach(k => { const cl = nomeClasse(k.classe); somma[cl] = (somma[cl]||0) + k.ore; });
+    new Set(Object.keys(t.ore).concat(Object.keys(somma))).forEach(cl => {
+      if((somma[cl]||0) !== (t.ore[cl]||0)) diff.push(`${t.nome} ${cl}: ${somma[cl]||0} ore nelle cattedre contro ${t.ore[cl]||0} nel foglio orario.`);
+    });
+  });
+  D.confronto = { fonte:O.fonte, diff };
+}
+
+// riconosce il modello dalla riga di intestazione e raccoglie i dati in D (non tocca ancora S).
+// Restituisce true se il foglio è stato riconosciuto; con silenzioso non segnala i fogli estranei
+function interpretaTabella(righe, fonte, D, silenzioso){
+  const oreDa = t => Math.round(parseFloat(String(t).replace(',', '.')));
+  const cel = (r, j) => j >= 0 ? String(r[j] == null ? '' : r[j]).trim() : '';
+  const O = leggiOrarioDocenti(righe);
+  if(O){ O.fonte = fonte; D.orari.push(O); return true; }
+  for(let h=0; h<Math.min(righe.length, 10); h++){
+    const int = righe[h].map(norma);
+    if(int[0] === 'docente' || int[0] === 'docenti'){
+      const col = (...n) => int.findIndex(x => n.includes(x));
+      const cA = col('aula','aule'), cC = col('classe'), cM = col('disciplina','materia'), cO = col('ore');
+      if(cC < 0 || cM < 0 || cO < 0){ D.problemi.push(`${fonte}: mancano le colonne Classe, Disciplina o Ore.`); return true; }
+      let cur = null, ultimaDisc = '';
+      for(let i=h+1; i<righe.length; i++){
+        const r = righe[i] || [];
+        if(!r.some(x => String(x).trim())) continue;
+        const nome = cel(r,0);
+        if(nome){
+          cur = D.docenti.get(norma(nome)) || { nome, aule:[], cattedre:[] };
+          D.docenti.set(norma(nome), cur);
+          ultimaDisc = '';
+        }
+        if(!cur){ D.problemi.push(`${fonte}, riga ${i+1}: manca il nome del docente.`); continue; }
+        cel(r,cA).split('/').map(s => s.trim()).filter(Boolean)
+          .forEach(a => { if(!cur.aule.some(x => norma(x) === norma(a))) cur.aule.push(a); });
+        const cl = cel(r,cC), o = cel(r,cO);
+        let di = cel(r,cM);
+        if(!cl && !di && !o) continue;
+        if(di) ultimaDisc = di; else di = ultimaDisc;   // disciplina vuota: vale quella della riga sopra dello stesso docente
+        const ore = oreDa(o);
+        if(!cl || !di || !(ore > 0)){
+          D.problemi.push(`${fonte}, riga ${i+1}: cattedra incompleta (${!di ? `manca la disciplina di ${cur.nome}` : 'servono classe e ore'}) — scartata.`);
+          continue;
+        }
+        cur.cattedre.push({ classe:cl, disc:di, ore:clamp(ore,1,20) });
+      }
+      D.tabelle++; return true;
+    }
+    if(int[0] === 'classe' || int[0] === 'classi'){
+      const materie = righe[h].map(x => String(x == null ? '' : x).trim());
+      for(let i=h+1; i<righe.length; i++){
+        const r = righe[i] || [], nome = cel(r,0);
+        if(!nome) continue;
+        const c = D.classi.get(norma(nome)) || { nome, ore:{} };
+        for(let j=1; j<materie.length; j++){
+          const t = cel(r,j);
+          if(!materie[j] || t === '') continue;
+          const n = oreDa(t);
+          if(isNaN(n) || n < 0){ D.problemi.push(`${fonte}, riga ${i+1}: «${t}» non è un numero di ore (${materie[j]}) — ignorato.`); continue; }
+          c.ore[materie[j]] = clamp(n,0,20);
+        }
+        D.classi.set(norma(nome), c);
+      }
+      D.tabelle++; return true;
+    }
+  }
+  if(!silenzioso) D.problemi.push(`${fonte}: modello non riconosciuto — la prima colonna dell'intestazione deve chiamarsi «Docente» oppure «Classe».`);
+  return false;
+}
+
+// cerca per nome (per le discipline vale anche la sigla)
+const perNome = (lista, nome) => lista.find(x => norma(x.nome) === norma(nome) || (x.sigla && norma(x.sigla) === norma(nome)));
+// "1 a" → "1A", come i nomi creati da nuovaClasse()
+const nomeClasse = n => { const m = String(n).trim().match(/^([1-3])\s*(.+)$/); return m ? m[1] + m[2].toUpperCase() : String(n).trim(); };
+
+function riepilogoImport(D){
+  const doc = [...D.docenti.values()], cl = [...D.classi.values()];
+  const nuovi = (lista, nomi) => [...new Map(nomi.filter(n => !perNome(lista, n)).map(n => [norma(n), n])).values()];
+  return {
+    docNuovi: doc.filter(t => !perNome(S.docenti, t.nome)).length,
+    docAgg: doc.filter(t => perNome(S.docenti, t.nome)).length,
+    cattedre: doc.reduce((s,t) => s + t.cattedre.length, 0),
+    quadri: cl.length,
+    classi: nuovi(S.classi, cl.map(c => c.nome).concat(doc.flatMap(t => t.cattedre.map(k => k.classe))).map(nomeClasse)),
+    discipline: nuovi(S.discipline, cl.flatMap(c => Object.keys(c.ore)).concat(doc.flatMap(t => t.cattedre.map(k => k.disc)))),
+    aule: nuovi(S.aule, doc.flatMap(t => t.aule))
+  };
+}
+
+function applicaImport(D){
+  const trova = (lista, nome, crea) => { let x = perNome(lista, nome); if(!x){ x = crea(nome); lista.push(x); } return x; };
+  const creaClasse = nome => {
+    const c = /^[1-3]/.test(nome) ? nuovaClasse(+nome[0], nome.slice(1)) : nuovaClasse(1, '');
+    c.nome = nome;
+    return c;
+  };
+  const classe = n => trova(S.classi, nomeClasse(n), creaClasse);
+  const disciplina = n => trova(S.discipline, n, nuovaDisciplina);
+  const nClassi = S.classi.length;
+  D.classi.forEach(r => {
+    const c = classe(r.nome);
+    S.quadro[c.id] = S.quadro[c.id] || {};
+    Object.keys(r.ore).forEach(dn => S.quadro[c.id][disciplina(dn).id] = r.ore[dn]);
+  });
+  D.docenti.forEach(r => {
+    const t = trova(S.docenti, r.nome, nuovoDocente);
+    // aule e cattedre del file sostituiscono quelle del docente: reimportare non raddoppia nulla
+    if(r.aule.length) t.aule = r.aule.map(n => trova(S.aule, n, nuovaAula).id);
+    if(r.cattedre.length) t.cattedre = r.cattedre.map(k => ({ cl:classe(k.classe).id, di:disciplina(k.disc).id, ore:k.ore }));
+  });
+  // quadro orario ancora vuoto per una classe/materia: lo ricava dalle cattedre (file senza modello classi)
+  const somma = {};
+  S.docenti.forEach(t => t.cattedre.forEach(k => { const q = k.cl + '|' + k.di; somma[q] = (somma[q]||0) + k.ore; }));
+  Object.keys(somma).forEach(q => {
+    const [cl, di] = q.split('|');
+    S.quadro[cl] = S.quadro[cl] || {};
+    if(!S.quadro[cl][di]) S.quadro[cl][di] = somma[q];
+  });
+  // classi nuove in ordine 1A, 1B… 2A…, dopo quelle che c'erano già
+  const nuove = S.classi.splice(nClassi).sort((a,b) => (a.anno - b.anno) || a.nome.localeCompare(b.nome));
+  S.classi.push(...nuove);
+  normalizza();
+  POOL = POOL.filter(p => { const t = doc(p.doc); return t && t.cattedre.some(k => k.cl===p.cl && k.di===p.di); });
+  if(!S.ui.soggetto && S.classi[0]) S.ui.soggetto = S.classi[0].id;
+  APERTI.clear(); save(true);
+}
+
+async function importaFogli(files){
+  const D = { docenti:new Map(), classi:new Map(), problemi:[], tabelle:0, orari:[], confronto:null };
+  for(const f of files){
+    try{
+      const buf = await f.arrayBuffer();
+      if(/\.xls[xm]$/i.test(f.name)){
+        // in un file Excel i fogli di altro tipo (calcoli, controlli…) si ignorano senza segnalarli
+        const ok = (await leggiXLSX(buf)).filter(sh => interpretaTabella(sh.righe, `${f.name} (foglio ${sh.nome})`, D, true)).length;
+        if(!ok) D.problemi.push(`${f.name}: nessun foglio con intestazione «Docente» oppure «Classe».`);
+      }
+      else interpretaTabella(leggiCSV(testoDaFile(buf)), f.name, D);
+    }catch(err){ D.problemi.push(`${f.name}: impossibile leggerlo (${err.message||err}). Se è un .xls vecchio o un .ods, salvalo come .xlsx o .csv.`); }
+  }
+  confrontaConOrario(D);
+  const R = riepilogoImport(D);
+  const li = (n, testo, elenco) => n ? `<li>${testo}${elenco && elenco.length ? ': <span class="mini">' + esc(elenco.join(', ')) + '</span>' : ''}</li>` : '';
+  const elencoMsg = (tipo, righe) => righe.length ? `<div class="msg ${tipo}" style="margin-top:10px">${righe.slice(0,30).map(esc).join('<br>')}${righe.length>30?`<br>…e altre ${righe.length-30} segnalazioni`:''}</div>` : '';
+  const prob = elencoMsg('warn', D.problemi);
+  const conf = D.confronto ? (D.confronto.diff.length
+    ? `<p style="margin-top:10px"><b>Confronto con il foglio orario</b> <span class="mini">${esc(D.confronto.fonte)}</span></p>` + elencoMsg('warn', D.confronto.diff)
+    : `<div class="msg ok" style="margin-top:10px">Le ore delle cattedre coincidono con il foglio orario ${esc(D.confronto.fonte)}.</div>`) : '';
+  if(!D.docenti.size && !D.classi.size){
+    const soloOrario = D.orari.length ? `<p>Il file contiene un foglio orario con le ore per classe ma senza le discipline:
+      usa «Prepara foglio Cattedre da un orario .xlsm», completa la colonna Disciplina e importa il foglio Cattedre.</p>` : '';
+    apriModal(`<h3>Nessun dato da importare</h3>${soloOrario}${prob}<div class="foot"><button class="btn" data-close="1">Chiudi</button></div>`);
+    return;
+  }
+  apriModal(`<h3>Importazione da foglio di calcolo</h3>
+    <p>Ecco cosa cambierà:</p>
+    <ul>
+      ${li(R.docNuovi, `${R.docNuovi} docenti nuovi`)}
+      ${li(R.docAgg, `${R.docAgg} docenti già presenti: aule e cattedre sostituite da quelle del file`)}
+      ${li(R.cattedre, `${R.cattedre} cattedre in tutto`)}
+      ${li(R.quadri, `${R.quadri} classi con le ore per materia (quadro orario) aggiornate`)}
+      ${li(R.classi.length, `${R.classi.length} classi nuove`, R.classi)}
+      ${li(R.discipline.length, `${R.discipline.length} discipline nuove`, R.discipline)}
+      ${li(R.aule.length, `${R.aule.length} aule nuove`, R.aule)}
+    </ul>
+    <p class="hint">Controlla i nomi nuovi: una materia scritta in modo diverso (es. «Arte» invece di «Arte e immagine») diventa una disciplina in più.</p>
+    ${prob}${conf}
+    <div class="foot"><button class="btn ghost" data-close="1">Annulla</button><button class="btn" id="impGo">Importa</button></div>`,
+    box => $('#impGo',box).addEventListener('click', () => {
+      applicaImport(D); chiudiModal();
+      vai(D.docenti.size ? 'docenti' : 'quadro');
+      avvisa('Importazione completata.');
+    }));
+}
+
 /* ===========================================================
    Eventi e avvio
    =========================================================== */
@@ -1899,8 +2258,7 @@ $('#tbDiscipline').addEventListener('click', e => {
   }, 'Elimina', true);
 });
 $('#btnAddDisc').addEventListener('click', () => {
-  S.discipline.push({ id:uid('d'), nome:'Nuova disciplina', sigla:'XXX', hue: Math.round(Math.random()*360),
-    principale:false, blocchi2:false, ultimaOra:false, oreStd:1 });
+  S.discipline.push(nuovaDisciplina());
   save(); renderDiscipline();
 });
 
@@ -1922,7 +2280,7 @@ $('#tbAule').addEventListener('click', e => {
     normalizza(); save(); renderAule();
   }, 'Elimina', true);
 });
-$('#btnAddAula').addEventListener('click', () => { S.aule.push({ id:uid('a'), nome:'Nuova aula', tipo:'Aula' }); save(); renderAule(); });
+$('#btnAddAula').addEventListener('click', () => { S.aule.push(nuovaAula('Nuova aula', 'Aula')); save(); renderAule(); });
 $('#btnAuleRapide').addEventListener('click', () => {
   [['Palestra','Palestra'],['Lab. informatica','Laboratorio'],['Lab. tecnologia','Laboratorio'],
    ['Lab. scienze','Laboratorio'],['Aula musica','Laboratorio'],['Aula arte','Laboratorio']]
@@ -1935,7 +2293,7 @@ $('#btnGenAule').addEventListener('click', () => {
   let create = 0;
   for(let i=1;i<=n;i++){
     const nome = pref + ' ' + i;
-    if(!S.aule.some(a => a.nome===nome)){ S.aule.push({ id:uid('a'), nome, tipo:'Aula' }); create++; }
+    if(!S.aule.some(a => a.nome===nome)){ S.aule.push(nuovaAula(nome, 'Aula')); create++; }
   }
   const rex = new RegExp('^' + pref.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ' (\\d+)$');
   const extra = S.aule.filter(a => { const m = a.nome.match(rex); return m && +m[1] > n; });
@@ -2188,6 +2546,34 @@ function importa(txt){
     avvisa('Backup importato.');
   }catch(err){ avvisa('Il file non sembra un backup di Orario Facile.'); }
 }
+$('#btnImportFoglio').addEventListener('click', () => $('#fileFoglio').click());
+$('#fileFoglio').addEventListener('change', e => {
+  const files = Array.from(e.target.files); e.target.value = '';
+  if(files.length) importaFogli(files);
+});
+$('#btnPreparaCattedre').addEventListener('click', () => $('#fileOrarioXlsm').click());
+$('#fileOrarioXlsm').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if(!f) return;
+  let fogli;
+  try{ fogli = (await leggiXLSX(await f.arrayBuffer())).map(sh => ({ nome:sh.nome, O:leggiOrarioDocenti(sh.righe) })).filter(x => x.O); }
+  catch(err){ avvisa(`Non riesco a leggere ${f.name}: salvalo come .xlsx o .xlsm e riprova.`); return; }
+  if(!fogli.length){ avvisa(`In ${f.name} non ho trovato fogli con le colonne «DOCENTE», «SPAZI SETT.» e le classi (1A, 2A…).`); return; }
+  apriModal(`<h3>Prepara il foglio Cattedre</h3>
+    <p>Da quale foglio di <b>${esc(f.name)}</b> prendo docenti, classi e ore?</p>
+    <select id="pcFoglio" style="width:100%">${fogli.map((x,i) => `<option value="${i}">${esc(x.nome)} — ${x.O.docenti.length} docenti</option>`).join('')}</select>
+    <p class="hint">Nel file che ottieni scrivi la disciplina di ogni cattedra: se il docente insegna sempre la stessa materia basta la prima riga;
+      se in una classe insegna più materie duplica la riga e dividi le ore. Poi importalo con «Scegli i file da importare»
+      (anche insieme al file .xlsm, così il programma controlla che le ore tornino).</p>
+    <div class="foot"><button class="btn ghost" data-close="1">Annulla</button><button class="btn" id="pcGo">Prepara</button></div>`,
+    box => $('#pcGo',box).addEventListener('click', () => {
+      const x = fogli[+$('#pcFoglio',box).value];
+      mostraTesto('Foglio Cattedre da completare', csvCattedreDaOrario(x.O),
+        'cattedre_' + x.nome.replace(/[^\w\-]+/g,'_').slice(0,30) + '.csv', 'text/csv');
+    }));
+});
+$('#btnModDocenti').addEventListener('click', () => mostraTesto('Modello docenti', modelloDocenti(), 'modello-docenti.csv', 'text/csv'));
+$('#btnModClassi').addEventListener('click', () => mostraTesto('Modello classi', modelloClassi(), 'modello-classi.csv', 'text/csv'));
 $('#btnCsvClassi').addEventListener('click', () => mostraTesto('Orario delle classi', csvClassi(), nomeFile('_classi.csv'), 'text/csv'));
 $('#btnCsvDocenti').addEventListener('click', () => mostraTesto('Orario dei docenti', csvDocenti(), nomeFile('_docenti.csv'), 'text/csv'));
 $('#btnCsvCattedre').addEventListener('click', () => mostraTesto('Elenco cattedre', csvCattedre(), nomeFile('_cattedre.csv'), 'text/csv'));
