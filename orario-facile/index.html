@@ -484,7 +484,8 @@ const $ = (s,r) => (r||document).querySelector(s);
 const $$ = (s,r) => Array.from((r||document).querySelectorAll(s));
 const clamp = (n,a,b) => Math.max(a, Math.min(b, n));
 const num = (v,d) => { const n = parseInt(v,10); return isNaN(n) ? (d||0) : n; };
-const cognome = n => { const p = String(n||'').trim().split(/\s+/); return p.length>1 ? p[p.length-1] : (p[0]||''); };
+// nomi scritti con le iniziali ("F. A.", "Mi. Bo."): si mostrano interi, non solo l'ultima iniziale
+const cognome = n => { const s = String(n||'').trim(); if(/^(\p{L}{1,2}\.\s*)+$/u.test(s)) return s; const p = s.split(/\s+/); return p.length>1 ? p[p.length-1] : (p[0]||''); };
 // confronto tra nomi senza maiuscole, accenti e spazi doppi
 const norma = s => String(s==null?'':s).normalize('NFD').replace(/\p{M}/gu,'').trim().toLowerCase().replace(/\s+/g,' ');
 
