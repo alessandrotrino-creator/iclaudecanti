@@ -1,0 +1,2528 @@
+{
+ "scuola": "IC Almese – esempio",
+ "anno": "2026/2027",
+ "aggiornato": "2026-09-24",
+ "nota": "Dati di esempio inventati. Sostituire con l'orario reale (anche il backup JSON di Orario Facile va bene).",
+ "giorni": [
+  "Lunedì",
+  "Martedì",
+  "Mercoledì",
+  "Giovedì",
+  "Venerdì"
+ ],
+ "ore": [
+  {
+   "n": 1,
+   "inizio": "08:00",
+   "fine": "09:00"
+  },
+  {
+   "n": 2,
+   "inizio": "09:00",
+   "fine": "10:00"
+  },
+  {
+   "n": 3,
+   "inizio": "10:00",
+   "fine": "11:00"
+  },
+  {
+   "n": 4,
+   "inizio": "11:00",
+   "fine": "12:00"
+  },
+  {
+   "n": 5,
+   "inizio": "12:00",
+   "fine": "13:00"
+  },
+  {
+   "n": 6,
+   "inizio": "13:00",
+   "fine": "14:00"
+  },
+  {
+   "n": 7,
+   "inizio": "14:00",
+   "fine": "15:00"
+  },
+  {
+   "n": 8,
+   "inizio": "15:00",
+   "fine": "16:00"
+  }
+ ],
+ "classi": [
+  "1A",
+  "1B",
+  "1C",
+  "2A",
+  "2B",
+  "2C",
+  "3A",
+  "3B",
+  "3C"
+ ],
+ "docenti": [
+  {
+   "id": "marco-bianchi",
+   "nome": "Marco Bianchi",
+   "email": "marco.bianchi@comprensivoalmese.it"
+  },
+  {
+   "id": "laura-bruno",
+   "nome": "Laura Bruno",
+   "email": "laura.bruno@comprensivoalmese.it"
+  },
+  {
+   "id": "chiara-colombo",
+   "nome": "Chiara Colombo",
+   "email": "chiara.colombo@comprensivoalmese.it"
+  },
+  {
+   "id": "andrea-conti",
+   "nome": "Andrea Conti",
+   "email": "andrea.conti@comprensivoalmese.it"
+  },
+  {
+   "id": "davide-costa",
+   "nome": "Davide Costa",
+   "email": "davide.costa@comprensivoalmese.it"
+  },
+  {
+   "id": "giulia-esposito",
+   "nome": "Giulia Esposito",
+   "email": "giulia.esposito@comprensivoalmese.it"
+  },
+  {
+   "id": "sara-ferraro",
+   "nome": "Sara Ferraro",
+   "email": "sara.ferraro@comprensivoalmese.it"
+  },
+  {
+   "id": "silvia-fontana",
+   "nome": "Silvia Fontana",
+   "email": "silvia.fontana@comprensivoalmese.it"
+  },
+  {
+   "id": "martina-gallo",
+   "nome": "Martina Gallo",
+   "email": "martina.gallo@comprensivoalmese.it"
+  },
+  {
+   "id": "stefano-greco",
+   "nome": "Stefano Greco",
+   "email": "stefano.greco@comprensivoalmese.it"
+  },
+  {
+   "id": "francesca-leone",
+   "nome": "Francesca Leone",
+   "email": "francesca.leone@comprensivoalmese.it"
+  },
+  {
+   "id": "teresa-lombardi",
+   "nome": "Teresa Lombardi",
+   "email": "teresa.lombardi@comprensivoalmese.it"
+  },
+  {
+   "id": "fabio-longo",
+   "nome": "Fabio Longo",
+   "email": "fabio.longo@comprensivoalmese.it"
+  },
+  {
+   "id": "giorgio-mancini",
+   "nome": "Giorgio Mancini",
+   "email": "giorgio.mancini@comprensivoalmese.it"
+  },
+  {
+   "id": "elena-marino",
+   "nome": "Elena Marino",
+   "email": "elena.marino@comprensivoalmese.it"
+  },
+  {
+   "id": "claire-moreau",
+   "nome": "Claire Moreau",
+   "email": "claire.moreau@comprensivoalmese.it"
+  },
+  {
+   "id": "paolo-ricci",
+   "nome": "Paolo Ricci",
+   "email": "paolo.ricci@comprensivoalmese.it"
+  },
+  {
+   "id": "luca-romano",
+   "nome": "Luca Romano",
+   "email": "luca.romano@comprensivoalmese.it"
+  },
+  {
+   "id": "anna-rossi",
+   "nome": "Anna Rossi",
+   "email": "anna.rossi@comprensivoalmese.it"
+  },
+  {
+   "id": "roberto-villa",
+   "nome": "Roberto Villa",
+   "email": "roberto.villa@comprensivoalmese.it"
+  }
+ ],
+ "aule": [
+  {
+   "id": "aula-1",
+   "nome": "Aula 1",
+   "tipo": "Lettere"
+  },
+  {
+   "id": "aula-2",
+   "nome": "Aula 2",
+   "tipo": "Lettere"
+  },
+  {
+   "id": "aula-3",
+   "nome": "Aula 3",
+   "tipo": "Lettere"
+  },
+  {
+   "id": "aula-4",
+   "nome": "Aula 4",
+   "tipo": "Lettere"
+  },
+  {
+   "id": "aula-5",
+   "nome": "Aula 5",
+   "tipo": "Lettere"
+  },
+  {
+   "id": "aula-6",
+   "nome": "Aula 6",
+   "tipo": "Lettere"
+  },
+  {
+   "id": "aula-7",
+   "nome": "Aula 7",
+   "tipo": "Lettere"
+  },
+  {
+   "id": "aula-8",
+   "nome": "Aula 8",
+   "tipo": "Lettere"
+  },
+  {
+   "id": "aula-9",
+   "nome": "Aula 9",
+   "tipo": "Lettere"
+  },
+  {
+   "id": "lab--scienze-1",
+   "nome": "Lab. scienze 1",
+   "tipo": "Matematica e scienze"
+  },
+  {
+   "id": "lab--scienze-2",
+   "nome": "Lab. scienze 2",
+   "tipo": "Matematica e scienze"
+  },
+  {
+   "id": "lab--scienze-3",
+   "nome": "Lab. scienze 3",
+   "tipo": "Matematica e scienze"
+  },
+  {
+   "id": "aula-lingue-1",
+   "nome": "Aula lingue 1",
+   "tipo": "Lingue"
+  },
+  {
+   "id": "aula-lingue-2",
+   "nome": "Aula lingue 2",
+   "tipo": "Lingue"
+  },
+  {
+   "id": "aula-lingue-3",
+   "nome": "Aula lingue 3",
+   "tipo": "Lingue"
+  },
+  {
+   "id": "lab--tecnologia",
+   "nome": "Lab. tecnologia",
+   "tipo": "Laboratorio"
+  },
+  {
+   "id": "aula-arte",
+   "nome": "Aula arte",
+   "tipo": "Laboratorio"
+  },
+  {
+   "id": "aula-musica",
+   "nome": "Aula musica",
+   "tipo": "Laboratorio"
+  },
+  {
+   "id": "palestra",
+   "nome": "Palestra",
+   "tipo": "Palestra"
+  },
+  {
+   "id": "aula-10",
+   "nome": "Aula 10",
+   "tipo": "Aula"
+  }
+ ],
+ "lezioni": [
+  {
+   "giorno": "Lunedì",
+   "ora": 1,
+   "classe": "1A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 1,
+   "classe": "1B",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 1,
+   "classe": "1C",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 1,
+   "classe": "2A",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 1,
+   "classe": "2B",
+   "materia": "Storia",
+   "docente": "chiara-colombo",
+   "aula": "aula-5"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 1,
+   "classe": "2C",
+   "materia": "Religione",
+   "docente": "teresa-lombardi",
+   "aula": "aula-10"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 1,
+   "classe": "3A",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 1,
+   "classe": "3B",
+   "materia": "Scienze",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 1,
+   "classe": "3C",
+   "materia": "Scienze",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 2,
+   "classe": "1A",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 2,
+   "classe": "1B",
+   "materia": "Geografia",
+   "docente": "marco-bianchi",
+   "aula": "aula-2"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 2,
+   "classe": "1C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 2,
+   "classe": "2A",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 2,
+   "classe": "2B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 2,
+   "classe": "2C",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 2,
+   "classe": "3A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 2,
+   "classe": "3B",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 2,
+   "classe": "3C",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 3,
+   "classe": "1A",
+   "materia": "Italiano",
+   "docente": "anna-rossi",
+   "aula": "aula-1"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 3,
+   "classe": "1B",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 3,
+   "classe": "1C",
+   "materia": "Italiano",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 3,
+   "classe": "2A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 3,
+   "classe": "2B",
+   "materia": "Religione",
+   "docente": "teresa-lombardi",
+   "aula": "aula-10"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 3,
+   "classe": "2C",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 3,
+   "classe": "3A",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 3,
+   "classe": "3B",
+   "materia": "Geografia",
+   "docente": "stefano-greco",
+   "aula": "aula-8"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 3,
+   "classe": "3C",
+   "materia": "Approfondimento",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 4,
+   "classe": "1A",
+   "materia": "Religione",
+   "docente": "teresa-lombardi",
+   "aula": "aula-10"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 4,
+   "classe": "1B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 4,
+   "classe": "1C",
+   "materia": "Inglese",
+   "docente": "martina-gallo",
+   "aula": "aula-lingue-2"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 4,
+   "classe": "2A",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 4,
+   "classe": "2B",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 4,
+   "classe": "2C",
+   "materia": "Italiano",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 4,
+   "classe": "3A",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 4,
+   "classe": "3B",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 4,
+   "classe": "3C",
+   "materia": "Storia",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 5,
+   "classe": "1A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 5,
+   "classe": "1B",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 5,
+   "classe": "1C",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 5,
+   "classe": "2A",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 5,
+   "classe": "2B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 5,
+   "classe": "2C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 5,
+   "classe": "3A",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 5,
+   "classe": "3B",
+   "materia": "Italiano",
+   "docente": "stefano-greco",
+   "aula": "aula-8"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 5,
+   "classe": "3C",
+   "materia": "Italiano",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 6,
+   "classe": "1A",
+   "materia": "Scienze",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 6,
+   "classe": "1B",
+   "materia": "Italiano",
+   "docente": "marco-bianchi",
+   "aula": "aula-2"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 6,
+   "classe": "1C",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 6,
+   "classe": "2A",
+   "materia": "Geografia",
+   "docente": "luca-romano",
+   "aula": "aula-4"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 6,
+   "classe": "2B",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 6,
+   "classe": "2C",
+   "materia": "Italiano",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 6,
+   "classe": "3A",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 6,
+   "classe": "3B",
+   "materia": "Italiano",
+   "docente": "stefano-greco",
+   "aula": "aula-8"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 6,
+   "classe": "3C",
+   "materia": "Italiano",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 7,
+   "classe": "1C",
+   "materia": "Laboratorio di matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Lunedì",
+   "ora": 8,
+   "classe": "1C",
+   "materia": "Laboratorio di lettura",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 1,
+   "classe": "1A",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 1,
+   "classe": "1B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 1,
+   "classe": "1C",
+   "materia": "Scienze",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 1,
+   "classe": "2A",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 1,
+   "classe": "2B",
+   "materia": "Italiano",
+   "docente": "chiara-colombo",
+   "aula": "aula-5"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 1,
+   "classe": "2C",
+   "materia": "Approfondimento",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 1,
+   "classe": "3A",
+   "materia": "Italiano",
+   "docente": "elena-marino",
+   "aula": "aula-7"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 1,
+   "classe": "3B",
+   "materia": "Storia",
+   "docente": "stefano-greco",
+   "aula": "aula-8"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 1,
+   "classe": "3C",
+   "materia": "Inglese",
+   "docente": "martina-gallo",
+   "aula": "aula-lingue-2"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 2,
+   "classe": "1A",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 2,
+   "classe": "1B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 2,
+   "classe": "1C",
+   "materia": "Italiano",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 2,
+   "classe": "2A",
+   "materia": "Storia",
+   "docente": "luca-romano",
+   "aula": "aula-4"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 2,
+   "classe": "2B",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 2,
+   "classe": "2C",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 2,
+   "classe": "3A",
+   "materia": "Scienze",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 2,
+   "classe": "3B",
+   "materia": "Italiano",
+   "docente": "stefano-greco",
+   "aula": "aula-8"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 2,
+   "classe": "3C",
+   "materia": "Geografia",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 3,
+   "classe": "1A",
+   "materia": "Approfondimento",
+   "docente": "anna-rossi",
+   "aula": "aula-1"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 3,
+   "classe": "1B",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 3,
+   "classe": "1C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 3,
+   "classe": "2A",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 3,
+   "classe": "2B",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 3,
+   "classe": "2C",
+   "materia": "Geografia",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 3,
+   "classe": "3A",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 3,
+   "classe": "3B",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 3,
+   "classe": "3C",
+   "materia": "Italiano",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 4,
+   "classe": "1A",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 4,
+   "classe": "1B",
+   "materia": "Italiano",
+   "docente": "marco-bianchi",
+   "aula": "aula-2"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 4,
+   "classe": "1C",
+   "materia": "Storia",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 4,
+   "classe": "2A",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 4,
+   "classe": "2B",
+   "materia": "Italiano",
+   "docente": "chiara-colombo",
+   "aula": "aula-5"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 4,
+   "classe": "2C",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 4,
+   "classe": "3A",
+   "materia": "Geografia",
+   "docente": "elena-marino",
+   "aula": "aula-7"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 4,
+   "classe": "3B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 4,
+   "classe": "3C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 5,
+   "classe": "1A",
+   "materia": "Italiano",
+   "docente": "anna-rossi",
+   "aula": "aula-1"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 5,
+   "classe": "1B",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 5,
+   "classe": "1C",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 5,
+   "classe": "2A",
+   "materia": "Scienze",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 5,
+   "classe": "2B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 5,
+   "classe": "2C",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 5,
+   "classe": "3A",
+   "materia": "Storia",
+   "docente": "elena-marino",
+   "aula": "aula-7"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 5,
+   "classe": "3B",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 5,
+   "classe": "3C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 6,
+   "classe": "1A",
+   "materia": "Italiano",
+   "docente": "anna-rossi",
+   "aula": "aula-1"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 6,
+   "classe": "1B",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 6,
+   "classe": "1C",
+   "materia": "Storia",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 6,
+   "classe": "2A",
+   "materia": "Italiano",
+   "docente": "luca-romano",
+   "aula": "aula-4"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 6,
+   "classe": "2B",
+   "materia": "Scienze",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 6,
+   "classe": "2C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 6,
+   "classe": "3A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 6,
+   "classe": "3B",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 6,
+   "classe": "3C",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 7,
+   "classe": "1C",
+   "materia": "Laboratorio di matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 7,
+   "classe": "3C",
+   "materia": "Laboratorio di lettura",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 8,
+   "classe": "1C",
+   "materia": "Laboratorio di lettura",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Martedì",
+   "ora": 8,
+   "classe": "3C",
+   "materia": "Laboratorio di matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 1,
+   "classe": "1A",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 1,
+   "classe": "1B",
+   "materia": "Italiano",
+   "docente": "marco-bianchi",
+   "aula": "aula-2"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 1,
+   "classe": "1C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 1,
+   "classe": "2A",
+   "materia": "Approfondimento",
+   "docente": "luca-romano",
+   "aula": "aula-4"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 1,
+   "classe": "2B",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 1,
+   "classe": "2C",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 1,
+   "classe": "3A",
+   "materia": "Religione",
+   "docente": "teresa-lombardi",
+   "aula": "aula-10"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 1,
+   "classe": "3B",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 1,
+   "classe": "3C",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 2,
+   "classe": "1A",
+   "materia": "Geografia",
+   "docente": "anna-rossi",
+   "aula": "aula-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 2,
+   "classe": "1B",
+   "materia": "Religione",
+   "docente": "teresa-lombardi",
+   "aula": "aula-10"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 2,
+   "classe": "1C",
+   "materia": "Scienze",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 2,
+   "classe": "2A",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 2,
+   "classe": "2B",
+   "materia": "Geografia",
+   "docente": "chiara-colombo",
+   "aula": "aula-5"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 2,
+   "classe": "2C",
+   "materia": "Italiano",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 2,
+   "classe": "3A",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 2,
+   "classe": "3B",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 2,
+   "classe": "3C",
+   "materia": "Inglese",
+   "docente": "martina-gallo",
+   "aula": "aula-lingue-2"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 3,
+   "classe": "1A",
+   "materia": "Geografia",
+   "docente": "anna-rossi",
+   "aula": "aula-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 3,
+   "classe": "1B",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 3,
+   "classe": "1C",
+   "materia": "Geografia",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 3,
+   "classe": "2A",
+   "materia": "Italiano",
+   "docente": "luca-romano",
+   "aula": "aula-4"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 3,
+   "classe": "2B",
+   "materia": "Italiano",
+   "docente": "chiara-colombo",
+   "aula": "aula-5"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 3,
+   "classe": "2C",
+   "materia": "Inglese",
+   "docente": "martina-gallo",
+   "aula": "aula-lingue-2"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 3,
+   "classe": "3A",
+   "materia": "Scienze",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 3,
+   "classe": "3B",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 3,
+   "classe": "3C",
+   "materia": "Scienze",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 4,
+   "classe": "1A",
+   "materia": "Italiano",
+   "docente": "anna-rossi",
+   "aula": "aula-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 4,
+   "classe": "1B",
+   "materia": "Approfondimento",
+   "docente": "marco-bianchi",
+   "aula": "aula-2"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 4,
+   "classe": "1C",
+   "materia": "Approfondimento",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 4,
+   "classe": "2A",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 4,
+   "classe": "2B",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 4,
+   "classe": "2C",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 4,
+   "classe": "3A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 4,
+   "classe": "3B",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 4,
+   "classe": "3C",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 5,
+   "classe": "1A",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 5,
+   "classe": "1B",
+   "materia": "Scienze",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 5,
+   "classe": "1C",
+   "materia": "Italiano",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 5,
+   "classe": "2A",
+   "materia": "Italiano",
+   "docente": "luca-romano",
+   "aula": "aula-4"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 5,
+   "classe": "2B",
+   "materia": "Italiano",
+   "docente": "chiara-colombo",
+   "aula": "aula-5"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 5,
+   "classe": "2C",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 5,
+   "classe": "3A",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 5,
+   "classe": "3B",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 5,
+   "classe": "3C",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 6,
+   "classe": "1A",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 6,
+   "classe": "1B",
+   "materia": "Scienze",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 6,
+   "classe": "1C",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 6,
+   "classe": "2A",
+   "materia": "Scienze",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 6,
+   "classe": "2B",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 6,
+   "classe": "2C",
+   "materia": "Storia",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 6,
+   "classe": "3A",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 6,
+   "classe": "3B",
+   "materia": "Approfondimento",
+   "docente": "stefano-greco",
+   "aula": "aula-8"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 6,
+   "classe": "3C",
+   "materia": "Religione",
+   "docente": "teresa-lombardi",
+   "aula": "aula-10"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 7,
+   "classe": "2C",
+   "materia": "Laboratorio di lettura",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Mercoledì",
+   "ora": 8,
+   "classe": "2C",
+   "materia": "Laboratorio di lettura",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 1,
+   "classe": "1A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 1,
+   "classe": "1B",
+   "materia": "Italiano",
+   "docente": "marco-bianchi",
+   "aula": "aula-2"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 1,
+   "classe": "1C",
+   "materia": "Inglese",
+   "docente": "martina-gallo",
+   "aula": "aula-lingue-2"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 1,
+   "classe": "2A",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 1,
+   "classe": "2B",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 1,
+   "classe": "2C",
+   "materia": "Scienze",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 1,
+   "classe": "3A",
+   "materia": "Geografia",
+   "docente": "elena-marino",
+   "aula": "aula-7"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 1,
+   "classe": "3B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 1,
+   "classe": "3C",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 2,
+   "classe": "1A",
+   "materia": "Storia",
+   "docente": "anna-rossi",
+   "aula": "aula-1"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 2,
+   "classe": "1B",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 2,
+   "classe": "1C",
+   "materia": "Geografia",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 2,
+   "classe": "2A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 2,
+   "classe": "2B",
+   "materia": "Storia",
+   "docente": "chiara-colombo",
+   "aula": "aula-5"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 2,
+   "classe": "2C",
+   "materia": "Scienze",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 2,
+   "classe": "3A",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 2,
+   "classe": "3B",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 2,
+   "classe": "3C",
+   "materia": "Storia",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 3,
+   "classe": "1A",
+   "materia": "Scienze",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 3,
+   "classe": "1B",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 3,
+   "classe": "1C",
+   "materia": "Italiano",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 3,
+   "classe": "2A",
+   "materia": "Storia",
+   "docente": "luca-romano",
+   "aula": "aula-4"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 3,
+   "classe": "2B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 3,
+   "classe": "2C",
+   "materia": "Geografia",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 3,
+   "classe": "3A",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 3,
+   "classe": "3B",
+   "materia": "Italiano",
+   "docente": "stefano-greco",
+   "aula": "aula-8"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 3,
+   "classe": "3C",
+   "materia": "Geografia",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 4,
+   "classe": "1A",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 4,
+   "classe": "1B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 4,
+   "classe": "1C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 4,
+   "classe": "2A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 4,
+   "classe": "2B",
+   "materia": "Geografia",
+   "docente": "chiara-colombo",
+   "aula": "aula-5"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 4,
+   "classe": "2C",
+   "materia": "Storia",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 4,
+   "classe": "3A",
+   "materia": "Storia",
+   "docente": "elena-marino",
+   "aula": "aula-7"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 4,
+   "classe": "3B",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 4,
+   "classe": "3C",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 5,
+   "classe": "1A",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 5,
+   "classe": "1B",
+   "materia": "Storia",
+   "docente": "marco-bianchi",
+   "aula": "aula-2"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 5,
+   "classe": "1C",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 5,
+   "classe": "2A",
+   "materia": "Italiano",
+   "docente": "luca-romano",
+   "aula": "aula-4"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 5,
+   "classe": "2B",
+   "materia": "Approfondimento",
+   "docente": "chiara-colombo",
+   "aula": "aula-5"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 5,
+   "classe": "2C",
+   "materia": "Inglese",
+   "docente": "martina-gallo",
+   "aula": "aula-lingue-2"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 5,
+   "classe": "3A",
+   "materia": "Italiano",
+   "docente": "elena-marino",
+   "aula": "aula-7"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 5,
+   "classe": "3B",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 5,
+   "classe": "3C",
+   "materia": "Italiano",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 6,
+   "classe": "1A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 6,
+   "classe": "1B",
+   "materia": "Geografia",
+   "docente": "marco-bianchi",
+   "aula": "aula-2"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 6,
+   "classe": "1C",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 6,
+   "classe": "2A",
+   "materia": "Geografia",
+   "docente": "luca-romano",
+   "aula": "aula-4"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 6,
+   "classe": "2B",
+   "materia": "Scienze",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 6,
+   "classe": "2C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 6,
+   "classe": "3A",
+   "materia": "Italiano",
+   "docente": "elena-marino",
+   "aula": "aula-7"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 6,
+   "classe": "3B",
+   "materia": "Geografia",
+   "docente": "stefano-greco",
+   "aula": "aula-8"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 6,
+   "classe": "3C",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 7,
+   "classe": "2C",
+   "materia": "Laboratorio di matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Giovedì",
+   "ora": 8,
+   "classe": "2C",
+   "materia": "Laboratorio di matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 1,
+   "classe": "1A",
+   "materia": "Storia",
+   "docente": "anna-rossi",
+   "aula": "aula-1"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 1,
+   "classe": "1B",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 1,
+   "classe": "1C",
+   "materia": "Inglese",
+   "docente": "martina-gallo",
+   "aula": "aula-lingue-2"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 1,
+   "classe": "2A",
+   "materia": "Italiano",
+   "docente": "luca-romano",
+   "aula": "aula-4"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 1,
+   "classe": "2B",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 1,
+   "classe": "2C",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 1,
+   "classe": "3A",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 1,
+   "classe": "3B",
+   "materia": "Italiano",
+   "docente": "stefano-greco",
+   "aula": "aula-8"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 1,
+   "classe": "3C",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 2,
+   "classe": "1A",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 2,
+   "classe": "1B",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 2,
+   "classe": "1C",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 2,
+   "classe": "2A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 2,
+   "classe": "2B",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 2,
+   "classe": "2C",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 2,
+   "classe": "3A",
+   "materia": "Italiano",
+   "docente": "elena-marino",
+   "aula": "aula-7"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 2,
+   "classe": "3B",
+   "materia": "Storia",
+   "docente": "stefano-greco",
+   "aula": "aula-8"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 2,
+   "classe": "3C",
+   "materia": "Inglese",
+   "docente": "martina-gallo",
+   "aula": "aula-lingue-2"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 3,
+   "classe": "1A",
+   "materia": "Italiano",
+   "docente": "anna-rossi",
+   "aula": "aula-1"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 3,
+   "classe": "1B",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 3,
+   "classe": "1C",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 3,
+   "classe": "2A",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 3,
+   "classe": "2B",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 3,
+   "classe": "2C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 3,
+   "classe": "3A",
+   "materia": "Approfondimento",
+   "docente": "elena-marino",
+   "aula": "aula-7"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 3,
+   "classe": "3B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 3,
+   "classe": "3C",
+   "materia": "Italiano",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 4,
+   "classe": "1A",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 4,
+   "classe": "1B",
+   "materia": "Storia",
+   "docente": "marco-bianchi",
+   "aula": "aula-2"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 4,
+   "classe": "1C",
+   "materia": "Italiano",
+   "docente": "giulia-esposito",
+   "aula": "aula-3"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 4,
+   "classe": "2A",
+   "materia": "Religione",
+   "docente": "teresa-lombardi",
+   "aula": "aula-10"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 4,
+   "classe": "2B",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 4,
+   "classe": "2C",
+   "materia": "Italiano",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 4,
+   "classe": "3A",
+   "materia": "Matematica",
+   "docente": "davide-costa",
+   "aula": "lab--scienze-1"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 4,
+   "classe": "3B",
+   "materia": "Matematica",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 4,
+   "classe": "3C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 5,
+   "classe": "1A",
+   "materia": "Francese",
+   "docente": "claire-moreau",
+   "aula": "aula-lingue-3"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 5,
+   "classe": "1B",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 5,
+   "classe": "1C",
+   "materia": "Religione",
+   "docente": "teresa-lombardi",
+   "aula": "aula-10"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 5,
+   "classe": "2A",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 5,
+   "classe": "2B",
+   "materia": "Italiano",
+   "docente": "chiara-colombo",
+   "aula": "aula-5"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 5,
+   "classe": "2C",
+   "materia": "Inglese",
+   "docente": "martina-gallo",
+   "aula": "aula-lingue-2"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 5,
+   "classe": "3A",
+   "materia": "Italiano",
+   "docente": "elena-marino",
+   "aula": "aula-7"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 5,
+   "classe": "3B",
+   "materia": "Scienze",
+   "docente": "silvia-fontana",
+   "aula": "lab--scienze-2"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 5,
+   "classe": "3C",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 6,
+   "classe": "1A",
+   "materia": "Arte e immagine",
+   "docente": "francesca-leone",
+   "aula": "aula-arte"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 6,
+   "classe": "1B",
+   "materia": "Italiano",
+   "docente": "marco-bianchi",
+   "aula": "aula-2"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 6,
+   "classe": "1C",
+   "materia": "Tecnologia",
+   "docente": "roberto-villa",
+   "aula": "lab--tecnologia"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 6,
+   "classe": "2A",
+   "materia": "Inglese",
+   "docente": "sara-ferraro",
+   "aula": "aula-lingue-1"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 6,
+   "classe": "2B",
+   "materia": "Educazione fisica",
+   "docente": "fabio-longo",
+   "aula": "palestra"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 6,
+   "classe": "2C",
+   "materia": "Italiano",
+   "docente": "paolo-ricci",
+   "aula": "aula-6"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 6,
+   "classe": "3A",
+   "materia": "Musica",
+   "docente": "giorgio-mancini",
+   "aula": "aula-musica"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 6,
+   "classe": "3B",
+   "materia": "Religione",
+   "docente": "teresa-lombardi",
+   "aula": "aula-10"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 6,
+   "classe": "3C",
+   "materia": "Matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 7,
+   "classe": "3C",
+   "materia": "Laboratorio di lettura",
+   "docente": "laura-bruno",
+   "aula": "aula-9"
+  },
+  {
+   "giorno": "Venerdì",
+   "ora": 8,
+   "classe": "3C",
+   "materia": "Laboratorio di matematica",
+   "docente": "andrea-conti",
+   "aula": "lab--scienze-3"
+  }
+ ]
+}

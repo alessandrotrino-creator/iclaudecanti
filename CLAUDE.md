@@ -6,10 +6,17 @@ nelle scuole DADA le aule sono assegnate alle materie/ai docenti e sono **gli st
 Il sito deve quindi mostrare chiaramente, per ogni ora: classe, materia, docente e **aula**.
 
 Viene pubblicato con **GitHub Pages** direttamente da `main`, cartella radice:
-https://alessandrotrino-creator.github.io/iclaudecanti/ (reindirizza a `orario-facile/`).
+https://alessandrotrino-creator.github.io/iclaudecanti/ (pagina iniziale con i link alle due app).
 Non rompere mai questi requisiti: percorsi relativi, niente build, `.nojekyll` presente,
 `localStorage` sempre dentro `try/catch` (su github.io è condiviso tra tutti i repo dello stesso utente,
-quindi usa chiavi con prefisso, es. `orariofacile.`).
+quindi usa chiavi con prefisso, es. `orariofacile.` e `orariodada.`).
+
+Le parti del progetto:
+- **`app/` – Orario DADA**: app di *visualizzazione* per smartphone, tablet e monitor di classe (PWA installabile,
+  accesso con Google limitato a @comprensivoalmese.it). Dettagli in `app/LEGGIMI.md`.
+- **`orario-facile/` – Orario Facile**: app per *creare* l'orario. Il suo backup JSON salvato come
+  `dati/orario.json` viene letto direttamente dall'app di visualizzazione: se cambi il formato del backup,
+  aggiorna anche `daOrarioFacile()` in `app/js/dati.js`.
 
 ## Il gruppo
 - Gruppo **iclaudecanti**, studenti **principianti** in programmazione e git.
@@ -24,18 +31,18 @@ quindi usa chiavi con prefisso, es. `orariofacile.`).
 
 ## Struttura
 ```
-index.html        porta all'app (reindirizza a orario-facile/)
+index.html        pagina iniziale del sito (link alle due app)
 404.html          pagina per indirizzi inesistenti su GitHub Pages
 .nojekyll         dice a GitHub Pages di pubblicare i file così come sono
+app/              Orario DADA, app di visualizzazione (css/, js/, icone/, sw.js, manifest)
 orario-facile/    l'app Orario Facile (un unico index.html autonomo + modelli CSV)
-css/              fogli di stile (un file per area, es. base.css, orario.css)
-js/               script (un file per funzionalità, es. orario.js, filtri.js)
-dati/             dati dell'orario in JSON (classi, docenti, aule, orario)
+dati/orario.json  l'orario letto da app/ (formato dell'app o backup di Orario Facile)
 img/              immagini
 ```
 - Tieni i **dati dell'orario separati dal codice** (file JSON in `dati/`), così si possono aggiornare senza toccare JS/HTML.
 - Preferisci più file piccoli a un unico file enorme: riduce i conflitti tra chi lavora in parallelo.
 - Con GitHub Pages usa **percorsi relativi** (`css/base.css`, non `/css/base.css`).
+- `app/js/config.js` è l'unico file di configurazione dell'app (dominio, ID client Google, tempi).
 - Nota: `fetch()` dei JSON non funziona aprendo il file con doppio clic (`file://`); per provare in locale
   usa un server semplice (es. estensione Live Server o `python -m http.server`).
 

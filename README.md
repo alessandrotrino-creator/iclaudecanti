@@ -27,9 +27,8 @@ Regole e convenzioni complete in [CLAUDE.md](CLAUDE.md).
 
 ## Struttura
 
-- `index.html` – reindirizza all'app
-- `orario-facile/` – l'app Orario Facile
-- `css/` – stili
-- `js/` – script
-- `dati/` – dati dell'orario (JSON)
+- `index.html` – pagina iniziale
+- `app/` – **Orario DADA**, per vedere l'orario da telefono, tablet e monitor di classe ([istruzioni](app/LEGGIMI.md))
+- `orario-facile/` – l'app Orario Facile, per creare l'orario
+- `dati/orario.json` – l'orario mostrato dall'app
 - `img/` – immagini
