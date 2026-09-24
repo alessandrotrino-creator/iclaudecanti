@@ -143,7 +143,7 @@ const Breve = (() => {
 
     // 3. Il resto della giornata: dalla prima all'ultima ora con lezioni (le ore vuote sono "libere")
     const ore = D.ore.filter(o => o.n >= numeri[0] && o.n <= numeri[numeri.length - 1]);
-    html += `<h3 class="titoletto-breve">Il resto della giornata</h3><ol class="giornata-breve">` + ore.map(o => {
+    html += `<h3 class="titoletto-breve">${oggi ? 'Il resto della giornata' : 'La giornata'}</h3><ol class="giornata-breve">` + ore.map(o => {
       const lez = perOra.get(o.n) || [];
       const fatta = oggi && minuti(o.fine) <= adesso.minuto;
       const ora = oggi && adesso.ora === o.n;

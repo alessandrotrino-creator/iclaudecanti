@@ -113,10 +113,27 @@ body.breve-aperta .controlli, body.breve-aperta #contenuto { display: none; }
 .mini-breve.libera { border-style: dashed; background: transparent; }
 .mini-breve.in-corso { border: 2px solid var(--evidenza-bordo); background: var(--evidenza); }
 
-/* Schermi più larghi: la vista resta stretta e centrata, come su un telefono */
-@media (min-width: 700px) {
-  .vista-breve { max-width: 640px; margin: 16px auto 0; border-radius: 24px; overflow: hidden; }
-  .schede-breve { grid-template-columns: 1fr 1fr; align-items: start; }
+/* Tablet e schermi più larghi: la vista è centrata, le schede "Adesso" e "Dopo" stanno affiancate
+   e il resto della giornata diventa una griglia di schede grandi che va a capo (niente scorrimento di lato).
+   Da 600px: così vale anche per i tablet piccoli (7 pollici) tenuti in verticale */
+@media (min-width: 600px) {
+  .vista-breve { max-width: 960px; margin: 16px auto 0; border-radius: 24px; overflow: hidden; }
+  .testata-breve { padding: 20px 24px 32px; }
+  .testata-breve h2 { font-size: 2rem; }
+  .scelta-breve { max-width: 420px; }
+  .schede-breve { grid-template-columns: 1fr 1fr; align-items: start; padding: 0 24px; }
+  .schede-breve > :only-child { grid-column: 1 / -1; }   /* una sola scheda: occupa tutta la riga */
+  .scheda-breve { padding: 18px 20px; }
+  .materia-breve { font-size: 1.4rem; }
+  .aula-breve { font-size: 1.7rem; }
+  .titoletto-breve { margin: 10px 24px 0; }
+  .giornata-breve {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px; padding: 2px 24px 8px; overflow: visible;
+  }
+  .mini-breve { width: auto; padding: 14px 16px; border-radius: 18px; font-size: .95rem; gap: 4px; }
+  .mini-breve b { font-size: 1.1rem; }
+  .n-breve { font-size: .85rem; }
 }
 
 @media print { .vista-breve, .pulsante-breve { display: none !important; } }
