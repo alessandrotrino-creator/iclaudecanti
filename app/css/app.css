@@ -165,6 +165,13 @@ select {
 .finestra h2 { margin: 0 0 8px; font-size: 1.2rem; }
 .finestra ol { padding-left: 1.2em; }
 .finestra .pulsante { width: 100%; margin-top: 8px; }
+/* Finestra "Condividi": il QR resta sempre nero su bianco, anche col tema scuro, per essere letto bene */
+.finestra-condividi { text-align: center; }
+.qr-app { display: block; width: min(320px, 70vw); height: auto; margin: 8px auto; background: #fff; padding: 8px; border-radius: 12px; }
+.indirizzo-app { font-size: .85rem; color: var(--testo-tenue); word-break: break-all; user-select: all; }
+.azioni-finestra { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.esito { min-height: 1.4em; margin: 6px 0 0; font-size: .9rem; }
+body.modalita-monitor .qr-app { width: min(420px, 60vh); }
 a.voce-menu { display: flex; align-items: center; text-decoration: none; color: var(--primario); }
 .gruppo-menu { display: grid; gap: 6px; }
 

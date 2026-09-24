@@ -2,6 +2,10 @@
   config.js – impostazioni dell'app (l'unico file da modificare per configurarla)
 */
 window.CONFIG = {
+  // Indirizzo pubblico dell'app, usato per condividerla con i colleghi.
+  // Se cambia, va rigenerato anche il QR code in icone/qr-app.svg (vedi LEGGIMI.md).
+  indirizzoApp: 'https://alessandrotrino-creator.github.io/iclaudecanti/app/',
+
   // Solo gli account di questo dominio possono entrare
   dominio: 'comprensivoalmese.it',
 

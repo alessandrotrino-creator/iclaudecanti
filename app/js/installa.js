@@ -15,7 +15,6 @@
 
   function aggiornaPulsante() {
     $('#btnInstalla').hidden = installata();
-    $('#separatoreInstalla').hidden = installata();
   }
 
   // Il browser comunica che l'app si può installare: teniamo da parte l'offerta

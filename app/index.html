@@ -93,8 +93,9 @@
         <button type="button" id="btnSchermoIntero" class="voce-menu">Schermo intero</button>
         <button type="button" id="btnRicarica" class="voce-menu">Aggiorna l'orario</button>
         <button type="button" id="btnEsci" class="voce-menu">Esci</button>
+        <hr>
+        <button type="button" id="btnCondividi" class="voce-menu">🔗 Condividi l'app con i colleghi</button>
         <!-- Nascosto se l'app è già installata -->
-        <hr id="separatoreInstalla">
         <button type="button" id="btnInstalla" class="voce-menu installa">📲 Installa l'app su questo dispositivo</button>
       </div>
     </header>
@@ -138,10 +139,25 @@
     <button type="button" id="btnChiudiInstalla" class="pulsante primario">Ho capito</button>
   </dialog>
 
+  <!-- QR code e link per far installare l'app ai colleghi -->
+  <dialog id="finestraCondividi" class="finestra finestra-condividi" aria-labelledby="titoloCondividi">
+    <h2 id="titoloCondividi">Condividi l'app</h2>
+    <p>Fai inquadrare il codice con la fotocamera del telefono. Una volta aperta l'app: menu → <strong>Installa l'app</strong>.</p>
+    <img id="qrApp" class="qr-app" src="icone/qr-app.svg" width="320" height="320" alt="">
+    <p class="indirizzo-app"><span id="indirizzoApp"></span></p>
+    <div class="azioni-finestra">
+      <button type="button" id="btnCondividiLink" class="pulsante" hidden>Condividi…</button>
+      <button type="button" id="btnCopiaLink" class="pulsante">Copia link</button>
+    </div>
+    <p id="esitoCondividi" class="esito" role="status"></p>
+    <button type="button" id="btnChiudiCondividi" class="pulsante primario">Chiudi</button>
+  </dialog>
+
   <script src="js/dati.js"></script>
   <script src="js/accesso.js"></script>
   <script src="js/viste.js"></script>
   <script src="js/installa.js"></script>
+  <script src="js/condividi.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

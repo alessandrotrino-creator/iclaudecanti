@@ -34,6 +34,7 @@ All'apertura l'app sceglie da sola cosa mostrare:
 Dal menu (tondo con le iniziali, in alto a destra):
 
 - **📲 Installa l'app su questo dispositivo** (ultima voce): su Chrome ed Edge (Android, Windows, monitor) parte l'installazione; su iPhone/iPad e negli altri browser compaiono le istruzioni passo passo. Se l'app è già installata la voce non c'è.
+- **🔗 Condividi l'app con i colleghi**: mostra un QR code grande da far inquadrare (anche dal monitor di classe, a tutta la sala docenti), con i pulsanti *Condividi…* (WhatsApp, email… sui telefoni) e *Copia link*.
 - **Tema**: *Come il dispositivo*, *Chiaro*, *Scuro* oppure *Secondo l'ora* (scuro dalle 19 alle 7; gli orari si cambiano in `js/config.js`). La scelta resta memorizzata su quel dispositivo.
 
 ## Accesso con l'account della scuola
@@ -111,6 +112,8 @@ app/
   js/config.js          impostazioni (dominio, ID client Google, durata "Ricordami", orari del tema...)
   js/tema.js            tema chiaro / scuro / secondo l'ora
   js/installa.js        pulsante "Installa l'app"
+  js/condividi.js       finestra "Condividi l'app" con QR code
+  icone/qr-app.svg      QR code con l'indirizzo dell'app
   js/dati.js            lettura dell'orario (anche dal backup di Orario Facile)
   js/accesso.js         accesso con Google
   js/viste.js           disegno della tabella
@@ -118,6 +121,12 @@ app/
   sw.js                 funzionamento senza connessione
   manifest.webmanifest  installazione come app
   icone/                icone dell'app
+```
+
+Se l'indirizzo dell'app dovesse cambiare, aggiornare `indirizzoApp` in `js/config.js` e rigenerare il QR (serve Python con il pacchetto `qrcode`):
+
+```bash
+py -c "import qrcode, qrcode.image.svg; qrcode.make('NUOVO_INDIRIZZO', image_factory=qrcode.image.svg.SvgPathFillImage, border=3).save('app/icone/qr-app.svg')"
 ```
 
 Per provarla sul PC serve un piccolo server (dalla cartella del repo): `py -m http.server 8765`, poi aprire http://localhost:8765/app/
