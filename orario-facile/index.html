@@ -1,0 +1,2224 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<style>
+:root{color-scheme:light dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Orario Facile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600&display=swap">
+<style>
+:root{
+  --bg:#f2f4f6; --surface:#ffffff; --surface-2:#e9ecf1; --surface-3:#f7f8fa;
+  --line:#d8dde5; --line-2:#bcc4d0;
+  --text:#191f27; --text-2:#5a6572; --text-3:#8b95a3;
+  --accent:#0c5d66; --accent-2:#094950; --accent-soft:#d6ebed; --accent-ink:#ffffff;
+  --ok:#2c7a4f; --ok-soft:#dcf0e3;
+  --warn:#8d5a0c; --warn-soft:#fbeed3;
+  --bad:#a52e28; --bad-soft:#fae0de;
+  --les-s:58%; --les-l:91%; --les-ts:52%; --les-tl:25%; --les-bs:48%; --les-bl:60%;
+  --r:10px; --r-sm:6px;
+  --shadow:0 1px 2px rgba(17,24,39,.05), 0 8px 24px rgba(17,24,39,.07);
+  --font:'IBM Plex Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --font-c:'IBM Plex Sans Condensed','IBM Plex Sans', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12151a; --surface:#1a1e25; --surface-2:#232830; --surface-3:#1e232a;
+    --line:#2e343e; --line-2:#3d4652;
+    --text:#e8ecf1; --text-2:#a3adba; --text-3:#7b8593;
+    --accent:#3fb0aa; --accent-2:#63c7c1; --accent-soft:#12383a; --accent-ink:#06211f;
+    --ok:#6ec08c; --ok-soft:#183025;
+    --warn:#e0ac5c; --warn-soft:#3a2d15;
+    --bad:#ef8a83; --bad-soft:#3b1f1d;
+    --les-s:34%; --les-l:22%; --les-ts:62%; --les-tl:84%; --les-bs:40%; --les-bl:45%;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12151a; --surface:#1a1e25; --surface-2:#232830; --surface-3:#1e232a;
+  --line:#2e343e; --line-2:#3d4652;
+  --text:#e8ecf1; --text-2:#a3adba; --text-3:#7b8593;
+  --accent:#3fb0aa; --accent-2:#63c7c1; --accent-soft:#12383a; --accent-ink:#06211f;
+  --ok:#6ec08c; --ok-soft:#183025;
+  --warn:#e0ac5c; --warn-soft:#3a2d15;
+  --bad:#ef8a83; --bad-soft:#3b1f1d;
+  --les-s:34%; --les-l:22%; --les-ts:62%; --les-tl:84%; --les-bs:40%; --les-bl:45%;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%}
+h1,h2,h3{margin:0;font-weight:600;text-wrap:balance}
+p{margin:0 0 .6em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- chrome ---------- */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;display:flex;flex-wrap:wrap;gap:12px;align-items:center;
+  padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0;flex:1}
+.brand h1{font-family:var(--font-c);font-size:19px;letter-spacing:.2px}
+.brand .mark{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;background:var(--accent);color:var(--accent-ink);
+  font-family:var(--font-c);font-size:15px;align-self:center}
+.brand .sub{color:var(--text-3);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.savestate{font-size:12px;color:var(--text-3);font-variant-numeric:tabular-nums}
+
+.tabs{position:sticky;top:calc(env(safe-area-inset-top,0px) + 49px);z-index:35;display:flex;gap:2px;overflow-x:auto;
+  padding:0 10px;background:var(--surface);border-bottom:1px solid var(--line);scrollbar-width:thin}
+.tabs button{flex:0 0 auto;background:none;border:0;border-bottom:2px solid transparent;padding:10px 12px;cursor:pointer;
+  color:var(--text-2);font-weight:500;white-space:nowrap}
+.tabs button:hover{color:var(--text)}
+.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tabs .tnum{display:inline-block;min-width:16px;margin-right:6px;color:var(--text-3);font-size:11.5px;font-variant-numeric:tabular-nums}
+.tabs button[aria-selected="true"] .tnum{color:var(--accent)}
+
+main{padding-block:18px 60px;padding-left:16px;padding-right:16px;max-width:1500px;margin:0 auto}
+.panel[hidden]{display:none!important}
+.phead{margin-bottom:14px}
+.phead h2{font-family:var(--font-c);font-size:22px}
+.phead p{color:var(--text-2);max-width:68ch;margin-top:4px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card > h3{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spread{justify-content:space-between}
+.stack{display:flex;flex-direction:column;gap:4px}
+label.fl{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-2);font-weight:500}
+input[type=text],input[type=number],select,textarea{background:var(--surface-3);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:7px 9px;color:var(--text);width:100%;font-variant-numeric:tabular-nums}
+input[type=number]{max-width:110px}
+textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5}
+input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px}
+input[type=color]{width:38px;height:30px;padding:0;border:1px solid var(--line);border-radius:6px;background:none}
+
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:var(--accent-ink);border:1px solid transparent;
+  border-radius:var(--r-sm);padding:7px 13px;font-weight:500;cursor:pointer}
+.btn:hover{background:var(--accent-2)}
+.btn.ghost{background:var(--surface);color:var(--text);border-color:var(--line-2)}
+.btn.ghost:hover{background:var(--surface-2)}
+.btn.sm{padding:4px 9px;font-size:12.5px}
+.btn.danger{background:var(--bad);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.linkish{background:none;border:0;color:var(--accent);cursor:pointer;padding:2px 4px;font-weight:500}
+.iconbtn{background:none;border:1px solid var(--line);border-radius:var(--r-sm);color:var(--text-2);cursor:pointer;
+  width:26px;height:26px;display:grid;place-items:center;line-height:1}
+.iconbtn:hover{border-color:var(--bad);color:var(--bad)}
+
+.tag{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:500;
+  background:var(--surface-2);color:var(--text-2)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.tag.acc{background:var(--accent-soft);color:var(--accent)}
+.hint{font-size:12.5px;color:var(--text-3)}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+thead th{position:sticky;top:0;background:var(--surface-2);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--text-2);z-index:2;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td input[type=text]{min-width:120px}
+td input[type=number]{width:64px}
+.num{text-align:right}
+.mini{font-size:12px;color:var(--text-3)}
+
+/* ---------- timetable grid ---------- */
+.tt{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed;min-width:640px}
+.tt th,.tt td{border:1px solid var(--line);padding:0}
+.tt thead th{background:var(--surface-2);font-family:var(--font-c);font-size:12.5px;text-transform:none;letter-spacing:0;
+  padding:6px 4px;text-align:center}
+.tt tbody th{background:var(--surface-2);font-size:11.5px;color:var(--text-2);text-align:center;padding:4px 6px;width:74px;
+  font-weight:500;line-height:1.2}
+.tt tbody th.pom{background:var(--accent-soft);color:var(--accent)}
+.tt td{height:52px;background:var(--surface);position:relative}
+.tt td.off{background:repeating-linear-gradient(135deg,var(--surface-2),var(--surface-2) 6px,transparent 6px,transparent 12px)}
+.tt td.drop{outline:2px dashed var(--accent);outline-offset:-3px}
+.lesson{--h:200;height:100%;min-height:50px;padding:5px 6px;display:flex;flex-direction:column;gap:1px;justify-content:center;cursor:grab;
+  background:hsl(var(--h) var(--les-s) var(--les-l));color:hsl(var(--h) var(--les-ts) var(--les-tl));
+  border-left:3px solid hsl(var(--h) var(--les-bs) var(--les-bl));overflow:hidden}
+.lesson:hover{filter:brightness(.97)}
+.lesson .d{font-weight:600;font-size:12.5px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lesson .t{font-size:11px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lesson .aula{font-size:10.5px;font-weight:600;letter-spacing:.02em;opacity:.95;display:flex;align-items:center;gap:3px}
+.lesson.clash{box-shadow:inset 0 0 0 2px var(--bad)}
+.lesson.locked::after{content:"lucchetto";position:absolute}
+.lesson .lk{position:absolute;top:2px;right:3px;font-size:10px;opacity:.7}
+.tt td.empty-hint::after{content:"+";position:absolute;inset:0;display:grid;place-items:center;color:var(--text-3);opacity:0;font-size:18px}
+.tt td:hover.empty-hint::after{opacity:.6}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-2)}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:var(--r-sm);overflow:hidden}
+.seg button{background:var(--surface);border:0;padding:6px 11px;cursor:pointer;color:var(--text-2);font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.seg button + button{border-left:1px solid var(--line-2)}
+
+.report{display:grid;gap:6px;margin-top:10px}
+.msg{display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border-radius:var(--r-sm);font-size:12.5px;border:1px solid transparent}
+.msg.bad{background:var(--bad-soft);color:var(--bad);border-color:color-mix(in srgb,var(--bad) 25%,transparent)}
+.msg.warn{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in srgb,var(--warn) 25%,transparent)}
+.msg.ok{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in srgb,var(--ok) 25%,transparent)}
+.stats{display:flex;flex-wrap:wrap;gap:16px;padding:12px 14px;background:var(--surface-3);border:1px solid var(--line);border-radius:var(--r)}
+.stat{display:flex;flex-direction:column;min-width:96px}
+.stat b{font-size:20px;font-family:var(--font-c);font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em}
+
+.pool{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);border-radius:999px;padding:3px 10px;font-size:12px;
+  background:var(--surface);cursor:grab}
+.chip.bad{border-color:var(--bad);color:var(--bad);background:var(--bad-soft)}
+
+/* ---------- overlay ---------- */
+.overlay{position:fixed;inset:0;background:rgba(10,14,20,.5);display:grid;place-items:center;z-index:100;padding:16px}
+.overlay[hidden]{display:none!important}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);width:min(560px,100%);
+  max-height:85vh;overflow:auto;padding:18px}
+.modal h3{font-family:var(--font-c);font-size:18px;margin-bottom:10px}
+.modal .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+
+.indisp{border-collapse:separate;border-spacing:2px}
+.indisp td,.indisp th{border:0;padding:0}
+.indisp th{font-size:10.5px;color:var(--text-3);text-align:center;background:none;position:static;text-transform:none}
+.indisp button{width:100%;min-width:30px;height:22px;border:1px solid var(--line);background:var(--surface-3);border-radius:4px;cursor:pointer;font-size:10px;color:var(--text-3)}
+.indisp button[data-on="1"]{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+
+@media (max-width:640px){
+  main{padding-left:16px;padding-right:16px}
+  .brand h1{font-size:17px}
+  .card{padding:12px}
+}
+@media print{
+  .topbar,.tabs,.toolbar,.no-print{display:none!important}
+  body{background:#fff}
+  main{padding:0;max-width:none}
+  .card{border:0;padding:0;break-inside:avoid}
+  .tt{page-break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="mark">⌗</span>
+    <h1>Orario Facile</h1>
+    <span class="sub" id="brandSub"></span>
+  </div>
+  <div class="bar-actions">
+    <span class="savestate" id="saveState"></span>
+    <button class="btn ghost sm" id="btnTema" title="Chiaro / scuro">◐ Tema</button>
+    <button class="btn ghost sm" id="btnEsempio">Dati di esempio</button>
+    <button class="btn ghost sm" id="btnAzzera">Azzera tutto</button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs" role="tablist"></nav>
+
+<main>
+  <!-- 1 IMPOSTAZIONI -->
+  <section class="panel" id="p-setup" role="tabpanel" hidden>
+    <div class="phead">
+      <h2>Impostazioni e classi</h2>
+      <p>Definisci i giorni di lezione, quante ore si svolgono al mattino e al pomeriggio, e l'elenco delle classi con il loro orario giornaliero.</p>
+    </div>
+    <div class="card">
+      <h3>Scuola</h3>
+      <div class="grid2">
+        <label class="fl">Denominazione<input type="text" id="cfgNome"></label>
+        <label class="fl">Anno scolastico<input type="text" id="cfgAnno"></label>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Settimana scolastica</h3>
+      <div class="row" id="cfgGiorni"></div>
+      <div class="grid2" style="margin-top:12px">
+        <label class="fl">Ore mattutine massime<input type="number" id="cfgOreM" min="1" max="8"></label>
+        <label class="fl">Ore pomeridiane massime<input type="number" id="cfgOreP" min="0" max="5"></label>
+        <label class="fl">Durata ora (min)<input type="number" id="cfgDurata" min="30" max="90" step="5"></label>
+        <label class="fl">Inizio lezioni<input type="text" id="cfgInizio" placeholder="08:00"></label>
+      </div>
+      <p class="hint" style="margin-top:8px">Le ore pomeridiane vengono usate solo dalle classi a tempo prolungato: si impostano classe per classe nella tabella qui sotto.</p>
+    </div>
+    <div class="card">
+      <h3>Classi</h3>
+      <div class="toolbar">
+        <label class="fl" style="flex-direction:row;align-items:center;gap:6px">Prime<input type="number" id="nPrime" min="0" max="15" value="5"></label>
+        <label class="fl" style="flex-direction:row;align-items:center;gap:6px">Seconde<input type="number" id="nSeconde" min="0" max="15" value="5"></label>
+        <label class="fl" style="flex-direction:row;align-items:center;gap:6px">Terze<input type="number" id="nTerze" min="0" max="15" value="5"></label>
+        <button class="btn sm" id="btnGenClassi">Crea elenco classi</button>
+        <span class="hint">Le sezioni vengono nominate A, B, C… e si possono rinominare.</span>
+      </div>
+      <div class="tablewrap"><table id="tbClassi"></table></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost sm" id="btnAddClasse">+ Aggiungi classe</button>
+        <button class="btn ghost sm" id="btnApplicaOrarioTutte">Applica orario della prima classe a tutte</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 DISCIPLINE -->
+  <section class="panel" id="p-discipline" role="tabpanel" hidden>
+    <div class="phead">
+      <h2>Discipline</h2>
+      <p>Sigla e colore compaiono nelle caselle dell'orario. Le preferenze guidano la generazione automatica: sono desiderata, non divieti.</p>
+    </div>
+    <div class="card">
+      <div class="tablewrap"><table id="tbDiscipline"></table></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost sm" id="btnAddDisc">+ Aggiungi disciplina</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 AULE -->
+  <section class="panel" id="p-aule" role="tabpanel" hidden>
+    <div class="phead">
+      <h2>Aule</h2>
+      <p>Le classi si spostano a ogni cambio d'ora: ogni docente lavora in una o più aule. Un'aula può essere condivisa da più docenti, mai nella stessa ora. Il numero dell'aula compare in ogni casella dell'orario.</p>
+    </div>
+    <div class="card">
+      <h3>Quante aule</h3>
+      <div class="toolbar">
+        <label class="fl" style="flex-direction:row;align-items:center;gap:6px">Numero di aule<input type="number" id="nAule" min="0" max="99" value="15"></label>
+        <label class="fl" style="flex-direction:row;align-items:center;gap:6px">Chiamate<input type="text" id="prefAule" value="Aula" style="width:110px"></label>
+        <button class="btn sm" id="btnGenAule">Crea elenco aule</button>
+        <button class="btn ghost sm" id="btnAuleRapide">Aggiungi palestra e laboratori</button>
+      </div>
+      <div id="auleMsg" class="report"></div>
+    </div>
+    <div class="card">
+      <h3>Elenco</h3>
+      <div class="tablewrap"><table id="tbAule"></table></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost sm" id="btnAddAula">+ Aggiungi aula</button>
+      </div>
+      <p class="hint" style="margin-top:8px">Un docente senza aula assegnata non occupa nessuno spazio: la casella dell'orario resterà senza numero.</p>
+    </div>
+  </section>
+
+  <!-- 4 QUADRO ORARIO -->
+  <section class="panel" id="p-quadro" role="tabpanel" hidden>
+    <div class="phead">
+      <h2>Quadro orario settimanale</h2>
+      <p>Ore di ciascuna disciplina in ciascuna classe. L'ultima riga confronta il totale con le ore disponibili in quella classe.</p>
+    </div>
+    <div class="card">
+      <div class="toolbar">
+        <button class="btn ghost sm" id="btnPreset30">Preset 30 ore (tempo normale)</button>
+        <button class="btn ghost sm" id="btnPreset36">Preset 36 ore (tempo prolungato)</button>
+        <button class="btn ghost sm" id="btnCopiaPrima">Copia la prima colonna su tutte</button>
+      </div>
+      <div class="tablewrap"><table id="tbQuadro"></table></div>
+    </div>
+  </section>
+
+  <!-- 5 DOCENTI -->
+  <section class="panel" id="p-docenti" role="tabpanel" hidden>
+    <div class="phead">
+      <h2>Docenti e cattedre</h2>
+      <p>Per ogni docente: le discipline insegnate, le ore in ciascuna classe, le aule in cui lavora e le eventuali indisponibilità.</p>
+    </div>
+    <div class="card no-print">
+      <h3>Copertura del quadro orario</h3>
+      <div id="copertura" class="report"></div>
+    </div>
+    <div class="row" style="margin-bottom:12px">
+      <button class="btn" id="btnAddDoc">+ Aggiungi docente</button>
+      <span class="hint" id="docSummary"></span>
+    </div>
+    <div id="listaDocenti"></div>
+  </section>
+
+  <!-- 6 VINCOLI -->
+  <section class="panel" id="p-vincoli" role="tabpanel" hidden>
+    <div class="phead">
+      <h2>Criteri e vincoli</h2>
+      <p>I vincoli rigidi non vengono mai violati dalla generazione automatica. Le preferenze hanno un peso: più è alto, più l'algoritmo cerca di rispettarle.</p>
+    </div>
+    <div class="card"><h3>Vincoli rigidi</h3><div id="vincoliHard" class="stack"></div></div>
+    <div class="card"><h3>Preferenze</h3><div id="vincoliSoft" class="stack"></div></div>
+  </section>
+
+  <!-- 7 ORARIO -->
+  <section class="panel" id="p-orario" role="tabpanel" hidden>
+    <div class="phead">
+      <h2>Orario</h2>
+      <p>Genera una proposta, poi correggila a mano: trascina una lezione in un'altra casella per spostarla o scambiarla, oppure clicca una casella per assegnarla. Il lucchetto protegge una casella dalle rigenerazioni.</p>
+    </div>
+    <div class="card no-print">
+      <div class="toolbar">
+        <button class="btn" id="btnGenera">Genera orario</button>
+        <label class="fl" style="flex-direction:row;align-items:center;gap:6px">Qualità
+          <select id="selQualita" style="width:auto">
+            <option value="24">Veloce</option>
+            <option value="120" selected>Normale</option>
+            <option value="400">Accurata</option>
+          </select>
+        </label>
+        <label class="row" style="gap:6px"><input type="checkbox" id="chkLock" checked> Mantieni le caselle bloccate</label>
+        <button class="btn ghost sm" id="btnSvuotaOrario">Svuota orario</button>
+        <span id="genState" class="hint"></span>
+      </div>
+      <div class="stats" id="statsOrario"></div>
+      <div id="reportOrario" class="report"></div>
+      <div id="poolWrap" style="margin-top:12px" hidden>
+        <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);margin-bottom:6px">Ore non collocate — trascinale in una casella libera</h3>
+        <div class="pool" id="pool"></div>
+      </div>
+    </div>
+    <div class="card no-print">
+      <h3>Assegnazioni fisse</h3>
+      <p class="hint" style="margin-bottom:8px">Accoppiamenti decisi a tavolino — docente, classe, giorno e ora — che la generazione automatica deve rispettare. Anche il lucchetto su una casella dell'orario crea un'assegnazione fissa.</p>
+      <div id="listaFisse" class="pool"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost sm" id="btnAddFissa">+ Fissa un'ora</button>
+        <button class="btn ghost sm" id="btnSbloccaTutte">Sblocca tutte</button>
+      </div>
+    </div>
+    <div class="toolbar no-print">
+      <div class="seg" id="segVista">
+        <button data-v="classe" aria-pressed="true">Per classe</button>
+        <button data-v="docente" aria-pressed="false">Per docente</button>
+        <button data-v="aula" aria-pressed="false">Per aula</button>
+        <button data-v="generale" aria-pressed="false">Quadro generale</button>
+      </div>
+      <select id="selSoggetto" style="width:auto;max-width:260px"></select>
+      <button class="btn ghost sm" id="btnStampa">Stampa / PDF</button>
+    </div>
+    <div id="vistaOrario"></div>
+  </section>
+
+  <!-- 8 ESPORTA -->
+  <section class="panel" id="p-esporta" role="tabpanel" hidden>
+    <div class="phead">
+      <h2>Salvataggio ed esportazione</h2>
+      <p>Il lavoro viene salvato automaticamente in questo browser. Per spostarlo su un altro computer, o per conservarne una copia, usa il file di backup.</p>
+    </div>
+    <div class="card">
+      <h3>Backup completo (.json)</h3>
+      <div class="row">
+        <button class="btn" id="btnExportJson">Scarica backup</button>
+        <button class="btn ghost" id="btnMostraJson">Mostra testo da copiare</button>
+        <button class="btn ghost" id="btnImportJson">Importa da file</button>
+        <button class="btn ghost" id="btnIncollaJson">Importa da testo</button>
+        <input type="file" id="fileJson" accept=".json,application/json" hidden>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Tabelle (.csv, si aprono in Excel)</h3>
+      <div class="row">
+        <button class="btn ghost" id="btnCsvClassi">Orario di tutte le classi</button>
+        <button class="btn ghost" id="btnCsvDocenti">Orario di tutti i docenti</button>
+        <button class="btn ghost" id="btnCsvCattedre">Elenco cattedre</button>
+      </div>
+      <p class="hint" style="margin-top:8px">Se il download non parte (succede quando l'app è aperta dentro Claude), compare il testo da copiare e incollare in un file.</p>
+    </div>
+  </section>
+</main>
+
+<div class="overlay" id="overlay" hidden><div class="modal" id="modal"></div></div>
+
+<script>
+/* ===========================================================
+   Orario Facile — pianificazione orario scuola secondaria I grado
+   Dati e funzioni di base
+   =========================================================== */
+const GIORNI_ALL = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+const KEY = 'orariofacile.v2';
+let _uid = 1;
+const uid = p => (p||'x') + (_uid++).toString(36) + Math.random().toString(36).slice(2,6);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $ = (s,r) => (r||document).querySelector(s);
+const $$ = (s,r) => Array.from((r||document).querySelectorAll(s));
+const clamp = (n,a,b) => Math.max(a, Math.min(b, n));
+const num = (v,d) => { const n = parseInt(v,10); return isNaN(n) ? (d||0) : n; };
+const cognome = n => { const p = String(n||'').trim().split(/\s+/); return p.length>1 ? p[p.length-1] : (p[0]||''); };
+
+/* ---------------- stato ---------------- */
+let S = null;
+
+function statoVuoto(){
+  return {
+    meta:{ nome:'Istituto Comprensivo', anno:'2026/2027', durata:60, inizio:'08:00' },
+    giorni:['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'],
+    oreM:5, oreP:2,
+    classi:[], discipline:[], aule:[], docenti:[],
+    quadro:{}, orario:{},
+    vincoli:{
+      maxConsec:2, maxConsecDoc:3, maxOreGiorno:5, maxOreDiscGiorno:2,
+      rispettaIndisp:true, unaAula:true, giornoLibero:true,
+      pesoBuchi:6, pesoMattino:5, pesoUnaOra:4, pesoDistribuzione:5,
+      pesoBlocchi:3, pesoAulaStabile:3, pesoUltimaOra:3, pesoCarico:3
+    },
+    ui:{ tab:'setup', vista:'classe', soggetto:'' }
+  };
+}
+
+const DISC_BASE = [
+  ['Italiano','ITA',214,true,5],  ['Storia','STO',268,true,2], ['Geografia','GEO',168,true,2],
+  ['Approfondimento','APP',232,false,1], ['Matematica','MAT',6,true,4], ['Scienze','SCI',128,true,2],
+  ['Inglese','ING',32,true,3], ['Francese','FRA',322,false,2], ['Tecnologia','TEC',196,false,2],
+  ['Arte e immagine','ART',288,false,2], ['Musica','MUS',248,false,2], ['Educazione fisica','MOT',96,false,2],
+  ['Religione / Alternativa','IRC',52,false,1]
+];
+
+function discDefault(){
+  return DISC_BASE.map(([nome,sigla,hue,principale,ore]) => ({
+    id: uid('d'), nome, sigla, hue, principale,
+    blocchi2: ['ART','TEC','MUS'].includes(sigla),
+    ultimaOra: sigla === 'MOT',
+    oreStd: ore
+  }));
+}
+
+function nuovaClasse(anno, sez){
+  const c = { id: uid('c'), nome: anno + sez, anno, g:{} };
+  GIORNI_ALL.forEach(g => c.g[g] = { m:5, p:0 });
+  return c;
+}
+
+function nuovoDocente(nome){
+  return { id: uid('t'), nome: nome||'Nuovo docente', cattedre:[], aule:[], indisp:{}, giornoLibero:'', maxGiorno:0, maxConsec:0 };
+}
+
+/* ---------------- struttura derivata ---------------- */
+const totSlot = () => S.oreM + S.oreP;
+const isPom = i => i >= S.oreM;
+function slotLabel(i){ return isPom(i) ? (i - S.oreM + 1) + 'ª pom.' : (i + 1) + 'ª'; }
+function slotOrario(i){
+  const [h,m] = (S.meta.inizio||'08:00').split(':').map(Number);
+  const start = h*60 + m + i*(S.meta.durata||60) + (isPom(i) ? 60 : 0);
+  const f = t => String(Math.floor(t/60)%24).padStart(2,'0') + ':' + String(t%60).padStart(2,'0');
+  return f(start) + '–' + f(start + (S.meta.durata||60));
+}
+function attivo(c, g, s){
+  const d = c.g[g]; if(!d) return false;
+  return isPom(s) ? (s - S.oreM) < (d.p||0) : s < (d.m||0);
+}
+function oreClasse(c){ return S.giorni.reduce((t,g) => t + (c.g[g] ? (c.g[g].m||0) + (c.g[g].p||0) : 0), 0); }
+function oreQuadro(c){ const q = S.quadro[c.id]||{}; return S.discipline.reduce((t,d) => t + (q[d.id]||0), 0); }
+const disc = id => S.discipline.find(d => d.id===id);
+const cls  = id => S.classi.find(c => c.id===id);
+const doc  = id => S.docenti.find(t => t.id===id);
+const aula = id => S.aule.find(a => a.id===id);
+function oreDocente(t){ return t.cattedre.reduce((s,k) => s + (k.ore||0), 0); }
+function cella(cid, g, s){ const r = S.orario[cid]; return r && r[g] ? (r[g][s]||null) : null; }
+function setCella(cid, g, s, v){
+  if(!S.orario[cid]) S.orario[cid] = {};
+  if(!S.orario[cid][g]) S.orario[cid][g] = new Array(totSlot()).fill(null);
+  S.orario[cid][g][s] = v;
+}
+
+/* normalizza le strutture dopo ogni modifica strutturale */
+function normalizza(){
+  const T = totSlot();
+  S.classi.forEach(c => {
+    GIORNI_ALL.forEach(g => { if(!c.g[g]) c.g[g] = {m:0,p:0}; });
+    S.giorni.forEach(g => {
+      c.g[g].m = clamp(num(c.g[g].m,0), 0, S.oreM);
+      c.g[g].p = clamp(num(c.g[g].p,0), 0, S.oreP);
+    });
+    if(!S.quadro[c.id]) S.quadro[c.id] = {};
+    if(!S.orario[c.id]) S.orario[c.id] = {};
+    GIORNI_ALL.forEach(g => {
+      let r = S.orario[c.id][g];
+      if(!Array.isArray(r)) r = new Array(T).fill(null);
+      if(r.length < T) r = r.concat(new Array(T - r.length).fill(null));
+      if(r.length > T) r = r.slice(0, T);
+      for(let s=0;s<T;s++){
+        const v = r[s];
+        if(!v) continue;
+        const ok = attivo(c,g,s) && S.giorni.includes(g) && doc(v.doc) && disc(v.dis);
+        if(!ok) r[s] = null;
+        else if(v.aula && !aula(v.aula)) v.aula = '';
+      }
+      S.orario[c.id][g] = r;
+    });
+  });
+  Object.keys(S.orario).forEach(k => { if(!cls(k)) delete S.orario[k]; });
+  Object.keys(S.quadro).forEach(k => { if(!cls(k)) delete S.quadro[k]; });
+  S.docenti.forEach(t => {
+    t.cattedre = t.cattedre.filter(k => cls(k.cl) && disc(k.di));
+    t.aule = (t.aule||[]).filter(a => aula(a));
+    if(t.giornoLibero && !S.giorni.includes(t.giornoLibero) && t.giornoLibero!=='auto') t.giornoLibero = '';
+  });
+}
+
+/* ---------------- salvataggio ---------------- */
+let saveTimer = null, saveOk = true;
+function save(now){
+  clearTimeout(saveTimer);
+  const go = () => {
+    try{
+      localStorage.setItem(KEY, JSON.stringify(S));
+      saveOk = true;
+      $('#saveState').textContent = 'Salvato ' + new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+    }catch(e){
+      saveOk = false;
+      $('#saveState').textContent = 'Salvataggio non disponibile — usa il backup';
+    }
+  };
+  if(now) go(); else saveTimer = setTimeout(go, 500);
+}
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return null;
+    const o = JSON.parse(raw);
+    if(!o || !o.classi) return null;
+    const base = statoVuoto();
+    o.vincoli = Object.assign(base.vincoli, o.vincoli||{});
+    o.meta = Object.assign(base.meta, o.meta||{});
+    o.ui = Object.assign(base.ui, o.ui||{});
+    o.aule = o.aule||[];
+    return o;
+  }catch(e){ return null; }
+}
+
+/* ---------------- dati di esempio: 15 classi, 27 docenti, 26 aule ---------------- */
+function datiEsempio(){
+  const st = statoVuoto();
+  st.discipline = discDefault();
+  const D = {}; st.discipline.forEach(d => D[d.sigla] = d.id);
+
+  const nomiAule = [];
+  for(let i=1;i<=13;i++) nomiAule.push(['Aula ' + i, 'Aula']);
+  nomiAule.push(['Lab. scienze','Laboratorio']);
+  for(let i=1;i<=4;i++) nomiAule.push(['Aula lingue ' + i, 'Aula']);
+  nomiAule.push(['Lab. tecnologia 1','Laboratorio'], ['Lab. tecnologia 2','Laboratorio']);
+  nomiAule.push(['Aula arte 1','Laboratorio'], ['Aula arte 2','Laboratorio']);
+  nomiAule.push(['Aula musica 1','Laboratorio'], ['Aula musica 2','Laboratorio']);
+  nomiAule.push(['Palestra A','Palestra'], ['Palestra B','Palestra']);
+  st.aule = nomiAule.map(([nome,tipo]) => ({ id:uid('a'), nome, tipo }));
+  const A = {}; st.aule.forEach(a => A[a.nome] = a.id);
+
+  const SEZ = ['A','B','C','D','E'];
+  [1,2,3].forEach(anno => SEZ.forEach(sez => st.classi.push(nuovaClasse(anno, sez))));
+  st.classi.forEach(c => {
+    st.quadro[c.id] = {};
+    st.discipline.forEach(d => st.quadro[c.id][d.id] = d.oreStd);
+  });
+  const C = {}; st.classi.forEach(c => C[c.nome] = c.id);
+  const N = st.classi.map(c => c.nome);   // 1A…1E, 2A…2E, 3A…3E
+
+  const LET = ['ITA','STO','GEO','APP'];
+  const mk = (nome, aule, classi, sigle, giornoLibero) => {
+    const t = nuovoDocente(nome);
+    t.aule = aule.map(n => A[n]).filter(Boolean);
+    if(giornoLibero) t.giornoLibero = giornoLibero;
+    classi.forEach(cn => sigle.forEach(sg => {
+      const d = st.discipline.find(x => x.sigla===sg);
+      t.cattedre.push({ cl:C[cn], di:D[sg], ore:d.oreStd });
+    }));
+    st.docenti.push(t);
+  };
+
+  // Lettere: 7 cattedre su due classi + 1 spezzone da 10 ore
+  const lettere = ['Anna Rossi','Marco Bianchi','Elena Verdi','Laura Conti','Giulia Neri',
+                   'Paolo Marini','Chiara Fontana','Silvia Caruso'];
+  lettere.forEach((nome,i) => {
+    const gruppo = N.slice(i*2, i*2+2);
+    if(gruppo.length) mk(nome, ['Aula ' + (i+1)], gruppo, LET, gruppo.length===1 ? 'Sabato' : '');
+  });
+  // Matematica e scienze: 5 cattedre su tre classi
+  ['Davide Costa','Federica Greco','Andrea Rizzo','Marta Esposito','Simone De Luca'].forEach((nome,i) => {
+    mk(nome, ['Aula ' + (9+i), 'Lab. scienze'], N.slice(i*3, i*3+3), ['MAT','SCI']);
+  });
+  const LING = ['Aula lingue 1','Aula lingue 2','Aula lingue 3','Aula lingue 4'];
+  mk('Sara Ferraro',  LING, N.slice(0,6),  ['ING']);
+  mk('Luca Moretti',  LING, N.slice(6,12), ['ING']);
+  mk('Alice Barbieri',LING, N.slice(12,15),['ING'], 'Sabato');
+  mk('Nadia Lombardi',LING, N.slice(0,9),  ['FRA']);
+  mk('Roberto Sala',  LING, N.slice(9,15), ['FRA']);
+  mk('Don Marino',    LING, N,             ['IRC']);
+  const TEC = ['Lab. tecnologia 1','Lab. tecnologia 2'];
+  mk('Cinzia Vitale', TEC, N.slice(0,9),  ['TEC']);
+  mk('Enrico Pagano', TEC, N.slice(9,15), ['TEC']);
+  const ART = ['Aula arte 1','Aula arte 2'];
+  mk('Martina Ferri', ART, N.slice(0,9),  ['ART']);
+  mk('Giorgio Amato', ART, N.slice(9,15), ['ART']);
+  const MUS = ['Aula musica 1','Aula musica 2'];
+  mk('Ilaria Testa',  MUS, N.slice(0,9),  ['MUS']);
+  mk('Stefano Bruno', MUS, N.slice(9,15), ['MUS']);
+  const PAL = ['Palestra A','Palestra B'];
+  mk('Fabio Longo',   PAL, N.slice(0,9),  ['MOT']);
+  mk('Valeria Serra', PAL, N.slice(9,15), ['MOT']);
+
+  st.ui.soggetto = st.classi[0].id;
+  return st;
+}
+
+/* ===========================================================
+   Motore di generazione dell'orario
+   Posizionamento greedy randomizzato + riparazione a catena + riavvii
+   =========================================================== */
+
+function costruisciIstanza(keepLocks){
+  const G = S.giorni, T = totSlot(), V = S.vincoli;
+  const CL = S.classi, DC = S.docenti, AU = S.aule;
+  const nG = G.length, NS = nG * T;
+  const kk = (gi,s) => gi*T + s;
+  const ci = {}, ti = {}, ai = {};
+  CL.forEach((c,i) => ci[c.id] = i);
+  DC.forEach((t,i) => ti[t.id] = i);
+  AU.forEach((a,i) => ai[a.id] = i);
+
+  const act = CL.map(c => {
+    const a = new Uint8Array(NS);
+    G.forEach((gn,gi) => { for(let s=0;s<T;s++) if(attivo(c,gn,s)) a[kk(gi,s)] = 1; });
+    return a;
+  });
+  const lastSlot = CL.map((c,cIdx) => G.map((gn,gi) => {
+    let L = -1; for(let s=0;s<T;s++) if(act[cIdx][kk(gi,s)]) L = s; return L;
+  }));
+
+  // giorno libero scelto dal programma: distribuito sui giorni
+  const autoDay = {};
+  let rr = 0;
+  DC.forEach(t => { if(V.giornoLibero && t.giornoLibero === 'auto') autoDay[t.id] = G[G.length - 1 - (rr++ % G.length)]; });
+
+  const avail = DC.map(t => {
+    const a = new Uint8Array(NS).fill(1);
+    G.forEach((gn,gi) => {
+      const ind = (t.indisp && t.indisp[gn]) || [];
+      for(let s=0;s<T;s++) if(ind.indexOf(s) >= 0) a[kk(gi,s)] = 0;
+      const gl = autoDay[t.id] || t.giornoLibero;
+      if(V.giornoLibero && gl && gl !== 'auto' && gl === gn) for(let s=0;s<T;s++) a[kk(gi,s)] = 0;
+    });
+    return a;
+  });
+
+  // unità: una per cattedra-blocco. size 2 = blocco preferito, divisibile se necessario
+  const units = [], fissi = [];
+  DC.forEach(t => {
+    const tIdx = ti[t.id];
+    t.cattedre.forEach(k => {
+      const c = cls(k.cl), d = disc(k.di);
+      if(!c || !d) return;
+      let ore = num(k.ore,0);
+      if(keepLocks){
+        G.forEach(gn => { for(let s=0;s<T;s++){
+          const v = cella(c.id, gn, s);
+          if(v && v.lock && v.doc===t.id && v.dis===d.id) ore--;
+        }});
+      }
+      if(ore <= 0) return;
+      const rooms = (t.aule||[]).map(x => ai[x]).filter(x => x !== undefined);
+      const obbl = d.blocchi2 && d.modoBlocchi === 'obbl';
+      const blocco = d.blocchi2 && (V.pesoBlocchi > 0 || obbl);
+      let rest = ore;
+      while(rest > 0){
+        const size = (blocco && rest >= 2) ? 2 : 1;
+        units.push({ c:ci[c.id], t:tIdx, d:d.id, dObj:d, size, obbl: obbl && size === 2, rooms, clId:c.id, tId:t.id });
+        rest -= size;
+      }
+    });
+  });
+  if(keepLocks){
+    CL.forEach(c => G.forEach((gn,gi) => { for(let s=0;s<T;s++){
+      const v = cella(c.id, gn, s);
+      if(v && v.lock) fissi.push({ c:ci[c.id], gi, s, doc:v.doc, dis:v.dis, aula:v.aula||'' });
+    }}));
+  }
+  return { G, T, V, CL, DC, AU, nG, NS, kk, ci, ti, ai, act, lastSlot, avail, units, fissi, autoDay };
+}
+
+/* ---- un tentativo completo ---- */
+function tentativo(I, rnd){
+  const { T, V, CL, DC, AU, nG, kk, ti, ai, act, lastSlot, avail, units, fissi } = I;
+  const NS = I.NS;
+  const occC = CL.map(() => new Int32Array(NS));
+  const occT = DC.map(() => new Int32Array(NS));
+  const occA = AU.map(() => new Int32Array(NS));
+  const oreTG = DC.map(() => new Int16Array(nG));
+  const discCG = CL.map(() => ({}));
+  const pos = units.map(() => []);
+  const resto = units.map(u => u.size);
+  const maxC = V.maxConsec > 0 ? V.maxConsec : 99;
+  const maxD = V.maxOreDiscGiorno > 0 ? V.maxOreDiscGiorno : 99;
+  const fissiMap = {};
+
+  fissi.forEach(f => {
+    const tIdx = ti[f.doc]; if(tIdx === undefined) return;
+    const k = kk(f.gi, f.s);
+    occC[f.c][k] = -1; occT[tIdx][k] = -1;
+    const aIdx = ai[f.aula]; if(aIdx !== undefined) occA[aIdx][k] = -1;
+    oreTG[tIdx][f.gi]++;
+    const key = f.dis + '|' + f.gi;
+    discCG[f.c][key] = (discCG[f.c][key]||0) + 1;
+    fissiMap[f.c + '|' + k] = tIdx;
+  });
+
+  const docDiSlot = (v, cIdx, gi, s) => v === -1
+    ? (fissiMap[cIdx + '|' + kk(gi,s)] === undefined ? -2 : fissiMap[cIdx + '|' + kk(gi,s)])
+    : units[v-1].t;
+
+  function gapsDay(tIdx, gi){
+    const o = occT[tIdx]; let g = 0;
+    [[0, S.oreM-1], [S.oreM, T-1]].forEach(([a,b]) => {
+      let first = -1, last = -1, n = 0;
+      for(let s=a;s<=b;s++) if(o[kk(gi,s)]){ if(first<0) first = s; last = s; n++; }
+      if(n > 0) g += (last - first + 1) - n;
+    });
+    return g;
+  }
+  const limGiorno = tIdx => DC[tIdx].maxGiorno > 0 ? DC[tIdx].maxGiorno : (V.maxOreGiorno > 0 ? V.maxOreGiorno : 99);
+  const limConsec = tIdx => DC[tIdx].maxConsec > 0 ? DC[tIdx].maxConsec : (V.maxConsecDoc > 0 ? V.maxConsecDoc : 99);
+
+  function fattibile(u, gi, s0, size){
+    if(s0 + size > T) return false;
+    for(let j=1;j<size;j++) if(isPom(s0) !== isPom(s0+j)) return false;
+    for(let j=0;j<size;j++){
+      const k = kk(gi, s0+j);
+      if(!act[u.c][k] || occC[u.c][k] || occT[u.t][k]) return false;
+      if(V.rispettaIndisp && !avail[u.t][k]) return false;
+    }
+    if(oreTG[u.t][gi] + size > limGiorno(u.t)) return false;
+    const key = u.d + '|' + gi;
+    if((discCG[u.c][key]||0) + size > maxD) return false;
+    let run = size;
+    for(let s=s0-1;s>=0 && isPom(s)===isPom(s0);s--){ const v = occC[u.c][kk(gi,s)]; if(v && docDiSlot(v,u.c,gi,s)===u.t) run++; else break; }
+    for(let s=s0+size;s<T && isPom(s)===isPom(s0);s++){ const v = occC[u.c][kk(gi,s)]; if(v && docDiSlot(v,u.c,gi,s)===u.t) run++; else break; }
+    if(run > maxC) return false;
+    const mcd = limConsec(u.t);
+    if(mcd < 99){
+      let rt = size;
+      for(let s=s0-1;s>=0 && isPom(s)===isPom(s0);s--){ if(occT[u.t][kk(gi,s)]) rt++; else break; }
+      for(let s=s0+size;s<T && isPom(s)===isPom(s0);s++){ if(occT[u.t][kk(gi,s)]) rt++; else break; }
+      if(rt > mcd) return false;
+    }
+    return true;
+  }
+  function aulaLibera(u, gi, s0, size){
+    if(!u.rooms.length) return { idx:-1, rank:0 };
+    if(!V.unaAula) return { idx:u.rooms[0], rank:0 };
+    for(let r=0;r<u.rooms.length;r++){
+      const a = u.rooms[r]; let ok = true;
+      for(let j=0;j<size;j++) if(occA[a][kk(gi,s0+j)]){ ok = false; break; }
+      if(ok) return { idx:a, rank:r };
+    }
+    return null;
+  }
+  function punteggio(u, gi, s0, rank, size){
+    let p = rank * V.pesoAulaStabile;
+    const d = u.dObj;
+    for(let j=0;j<size;j++){
+      const s = s0 + j;
+      if(d.principale){
+        if(isPom(s)) p += V.pesoMattino * 3;
+        else p += V.pesoMattino * (s / Math.max(1, S.oreM - 1)) * 1.2;
+      } else if(!isPom(s)) p += V.pesoMattino * 0.25 * (1 - s / Math.max(1, S.oreM - 1));
+      if(d.ultimaOra && s !== lastSlot[u.c][gi]) p += V.pesoUltimaOra;
+    }
+    if(discCG[u.c][u.d + '|' + gi]) p += V.pesoDistribuzione * 2.2;
+    if(size === 1 && u.size === 2) p += V.pesoBlocchi * 2;
+    const g0 = gapsDay(u.t, gi), ore = oreTG[u.t][gi];
+    if(ore === 0) p += V.pesoUnaOra * 0.8;
+    p += V.pesoCarico * Math.max(0, ore + size - 4) * 0.5;
+    for(let j=0;j<size;j++) occT[u.t][kk(gi,s0+j)] = 9999;
+    const dg = gapsDay(u.t, gi) - g0;
+    for(let j=0;j<size;j++) occT[u.t][kk(gi,s0+j)] = 0;
+    p += V.pesoBuchi * Math.max(0, dg);
+    return p;
+  }
+  function metti(ui, gi, s0, aIdx, size){
+    const u = units[ui];
+    for(let j=0;j<size;j++){
+      const k = kk(gi, s0+j);
+      occC[u.c][k] = ui+1; occT[u.t][k] = ui+1;
+      if(aIdx >= 0) occA[aIdx][k] = ui+1;
+    }
+    oreTG[u.t][gi] += size;
+    const key = u.d + '|' + gi;
+    discCG[u.c][key] = (discCG[u.c][key]||0) + size;
+    pos[ui].push({ gi, s0, a:aIdx, size });
+    resto[ui] -= size;
+  }
+  function togli(ui){
+    const u = units[ui];
+    pos[ui].forEach(p => {
+      for(let j=0;j<p.size;j++){
+        const k = kk(p.gi, p.s0+j);
+        occC[u.c][k] = 0; occT[u.t][k] = 0;
+        if(p.a >= 0) occA[p.a][k] = 0;
+      }
+      oreTG[u.t][p.gi] -= p.size;
+      discCG[u.c][u.d + '|' + p.gi] -= p.size;
+      resto[ui] += p.size;
+    });
+    pos[ui] = [];
+  }
+  function candidati(ui, size, vieta){
+    const u = units[ui], out = [];
+    for(let gi=0; gi<nG; gi++) for(let s=0; s<T; s++){
+      if(vieta && vieta(gi, s, size)) continue;
+      if(!fattibile(u, gi, s, size)) continue;
+      const a = aulaLibera(u, gi, s, size);
+      if(!a) continue;
+      out.push({ gi, s, a:a.idx, size, p: punteggio(u, gi, s, a.rank, size) + rnd()*1.4 });
+    }
+    out.sort((x,y) => x.p - y.p);
+    return out;
+  }
+  function scegli(cand){
+    if(cand.length < 3) return cand[0];
+    const r = rnd();
+    return cand[r > .95 ? 2 : r > .82 ? 1 : 0];
+  }
+  // colloca tutte le ore residue di un'unità, spezzando il blocco se serve
+  function colloca(ui, vieta){
+    let guard = 0;
+    while(resto[ui] > 0 && guard++ < 4){
+      const size = resto[ui] >= 2 && units[ui].size >= 2 ? 2 : 1;
+      let cand = candidati(ui, size, vieta);
+      if(!cand.length && size === 2) cand = candidati(ui, 1, vieta);
+      if(!cand.length) break;
+      const s = scegli(cand);
+      metti(ui, s.gi, s.s, s.a, s.size);
+    }
+    return resto[ui];
+  }
+
+  // ordine: prima le unità più vincolate
+  const diff = units.map(u => {
+    const t = DC[u.t];
+    let a = oreDocente(t) * 2 + u.size * 3;
+    if((t.aule||[]).length === 1) a += 12;
+    if(V.giornoLibero && t.giornoLibero) a += 10;
+    a += Object.keys(t.indisp||{}).length * 4;
+    if(u.obbl) a += 15;   // blocchi obbligatori: collocati per primi, a griglia ancora libera
+    return a;
+  });
+  const ord = units.map((u,i) => i).sort((a,b) => (diff[b] - diff[a]) + (rnd() - .5) * 8);
+
+  let nonMesse = [];
+  ord.forEach(ui => { if(colloca(ui, null) > 0) nonMesse.push(ui); });
+
+  // ---- riparazione: sposta chi occupa il posto ----
+  for(let pass=0; pass<3 && nonMesse.length; pass++){
+    for(let q=nonMesse.length-1; q>=0; q--){
+      const ui = nonMesse[q], u = units[ui];
+      const size = Math.min(resto[ui], 1) ? 1 : 1;   // in riparazione si lavora a ore singole
+      let fatto = false;
+      for(let gi=0; gi<nG && !fatto; gi++){
+        for(let s0=0; s0<T && !fatto; s0++){
+          const k = kk(gi, s0);
+          if(!act[u.c][k]) continue;
+          if(V.rispettaIndisp && !avail[u.t][k]) continue;
+          const bloc = new Set();
+          let muro = false;
+          [occC[u.c][k], occT[u.t][k]].forEach(v => { if(v === -1) muro = true; else if(v > 0) bloc.add(v-1); });
+          if(muro || bloc.size === 0 || bloc.size > 2) continue;
+          const salvati = [];
+          bloc.forEach(v => { salvati.push({ v, p: pos[v].map(x => Object.assign({},x)) }); togli(v); });
+          let a = fattibile(u, gi, s0, size) ? aulaLibera(u, gi, s0, size) : null;
+          if(a){
+            metti(ui, gi, s0, a.idx, size);
+            const vieta = (g2,s2,sz) => g2===gi && s2 <= s0 && s2 + sz > s0;
+            let ok = true;
+            salvati.forEach(sv => { if(colloca(sv.v, vieta) > 0) ok = false; });
+            if(ok){ if(resto[ui] === 0) nonMesse.splice(q,1); fatto = true; }
+            else {
+              salvati.forEach(sv => togli(sv.v));
+              togli(ui);
+              salvati.forEach(sv => sv.p.forEach(p => metti(sv.v, p.gi, p.s0, p.a, p.size)));
+            }
+          } else {
+            salvati.forEach(sv => sv.p.forEach(p => metti(sv.v, p.gi, p.s0, p.a, p.size)));
+          }
+        }
+      }
+    }
+    nonMesse = nonMesse.filter(ui => resto[ui] > 0);
+  }
+
+  // ---- blocchi obbligatori: ricompone in 2 ore consecutive i blocchi rimasti spezzati ----
+  const spezzato = ui => units[ui].obbl && resto[ui] === 0 && pos[ui].some(p => p.size === 1);
+  for(let pass=0; pass<2; pass++){
+    units.forEach((u,ui) => {
+      if(!spezzato(ui)) return;
+      const orig = pos[ui].map(x => Object.assign({},x));
+      togli(ui);
+      const cand = candidati(ui, 2, null);
+      if(cand.length){ metti(ui, cand[0].gi, cand[0].s, cand[0].a, 2); return; }
+      // nessuna coppia libera: sposta chi occupa le due ore (docente o classe)
+      for(let gi=0; gi<nG; gi++) for(let s0=0; s0<T-1; s0++){
+        if(isPom(s0) !== isPom(s0+1)) continue;
+        const bloc = new Set(); let muro = false;
+        for(let j=0;j<2 && !muro;j++){
+          const k = kk(gi, s0+j);
+          if(!act[u.c][k] || (V.rispettaIndisp && !avail[u.t][k])){ muro = true; break; }
+          [occC[u.c][k], occT[u.t][k]].forEach(v => { if(v === -1) muro = true; else if(v > 0) bloc.add(v-1); });
+        }
+        if(muro || !bloc.size || bloc.size > 2) continue;
+        if([...bloc].some(v => units[v].obbl)) continue;
+        const salvati = [...bloc].map(v => ({ v, p: pos[v].map(x => Object.assign({},x)) }));
+        salvati.forEach(sv => togli(sv.v));
+        const a = fattibile(u, gi, s0, 2) ? aulaLibera(u, gi, s0, 2) : null;
+        if(a){
+          metti(ui, gi, s0, a.idx, 2);
+          const vieta = (g2,s2,sz) => g2===gi && s2 <= s0+1 && s2 + sz > s0;
+          let ok = true;
+          salvati.forEach(sv => { if(colloca(sv.v, vieta) > 0) ok = false; });
+          if(ok) return;
+          salvati.forEach(sv => togli(sv.v));
+          togli(ui);
+        }
+        salvati.forEach(sv => sv.p.forEach(p => metti(sv.v, p.gi, p.s0, p.a, p.size)));
+      }
+      orig.forEach(p => metti(ui, p.gi, p.s0, p.a, p.size));
+    });
+  }
+
+  let pen = 0, mancanti = 0;
+  resto.forEach(r => mancanti += r);
+  for(let t=0;t<DC.length;t++) for(let gi=0; gi<nG; gi++){
+    pen += gapsDay(t, gi) * V.pesoBuchi * 2;
+    if(oreTG[t][gi] === 1) pen += V.pesoUnaOra * 2;
+  }
+  units.forEach((u,ui) => pos[ui].forEach(p => {
+    for(let j=0;j<p.size;j++){
+      const s = p.s0 + j;
+      if(u.dObj.principale) pen += isPom(s) ? V.pesoMattino * 3 : V.pesoMattino * (s / Math.max(1, S.oreM-1));
+      if(u.dObj.ultimaOra && s !== lastSlot[u.c][p.gi]) pen += V.pesoUltimaOra;
+    }
+    // blocco obbligatorio spezzato: pesa più di qualunque altro criterio soft, meno di un'ora non collocata
+    if(u.size === 2 && p.size === 1) pen += u.obbl ? 1000 : V.pesoBlocchi;
+  }));
+  return { pos, mancanti, pen, costo: mancanti * 10000 + pen };
+}
+
+/* ---- ciclo con riavvii, non bloccante ---- */
+function generaAsync(tentativi, keepLocks, onProgress, onDone){
+  const I = costruisciIstanza(keepLocks);
+  if(!I.units.length && !I.fissi.length){ onDone(null, I); return; }
+  let best = null, n = 0;
+  const t0 = performance.now();
+  const budget = tentativi >= 300 ? 20000 : tentativi >= 100 ? 9000 : 3000;
+  let seed = (Date.now() % 100000) + 7;
+  const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+  function step(){
+    const lotto = Math.max(1, Math.round(tentativi / 12));
+    for(let i=0;i<lotto;i++){
+      const r = tentativo(I, rnd);
+      n++;
+      if(!best || r.costo < best.costo) best = r;
+      if(best.costo === 0) break;
+    }
+    onProgress(n, tentativi, best);
+    if(n >= tentativi || performance.now() - t0 > budget || best.costo === 0) onDone(best, I);
+    else setTimeout(step, 0);
+  }
+  setTimeout(step, 0);
+}
+
+/* ---- scrittura del risultato nello stato ---- */
+function applicaSoluzione(best, I, keepLocks){
+  const T = totSlot();
+  S.classi.forEach(c => S.giorni.forEach(g => {
+    const r = S.orario[c.id][g] || new Array(T).fill(null);
+    for(let s=0;s<T;s++) if(r[s] && !(keepLocks && r[s].lock)) r[s] = null;
+    S.orario[c.id][g] = r;
+  }));
+  const pool = [];
+  if(!best) return pool;
+  I.units.forEach((u,ui) => {
+    let messe = 0;
+    (best.pos[ui]||[]).forEach(p => {
+      messe += p.size;
+      for(let j=0;j<p.size;j++)
+        setCella(u.clId, I.G[p.gi], p.s0+j, { doc:u.tId, dis:u.d, aula: p.a >= 0 ? S.aule[p.a].id : '', lock:false });
+    });
+    if(messe < u.size) pool.push({ cl:u.clId, di:u.d, doc:u.tId, ore:u.size - messe });
+  });
+  return pool;
+}
+
+/* ---- aula libera per una collocazione manuale ---- */
+function aulaPerCella(docId, g, s, escludiClasse){
+  const t = doc(docId); if(!t || !(t.aule||[]).length) return '';
+  for(const aId of t.aule){
+    let libera = true;
+    for(const c of S.classi){
+      if(c.id === escludiClasse) continue;
+      const v = cella(c.id, g, s);
+      if(v && v.aula === aId){ libera = false; break; }
+    }
+    if(libera) return aId;
+  }
+  return t.aule[0];
+}
+
+/* ===========================================================
+   Interfaccia: impostazioni, discipline, aule, quadro, docenti, vincoli
+   =========================================================== */
+const TABS = [
+  ['setup','Impostazioni'], ['discipline','Discipline'], ['aule','Aule'], ['quadro','Quadro orario'],
+  ['docenti','Docenti'], ['vincoli','Vincoli'], ['orario','Orario'], ['esporta','Esporta']
+];
+
+function renderTabs(){
+  $('#tabs').innerHTML = TABS.map(([k,n],i) =>
+    `<button role="tab" data-tab="${k}" aria-selected="${S.ui.tab===k}"><span class="tnum">${i+1}</span>${esc(n)}</button>`).join('');
+}
+function vai(tab){
+  S.ui.tab = tab;
+  TABS.forEach(([k]) => { const p = $('#p-'+k); if(p) p.hidden = (k !== tab); });
+  renderTabs();
+  render();
+  save();
+}
+function render(){
+  $('#brandSub').textContent = (S.meta.nome||'') + (S.meta.anno ? ' · ' + S.meta.anno : '');
+  const f = { setup:renderSetup, discipline:renderDiscipline, aule:renderAule, quadro:renderQuadro,
+              docenti:renderDocenti, vincoli:renderVincoli, orario:renderOrario, esporta:()=>{} }[S.ui.tab];
+  if(f) f();
+}
+
+/* ---------------- 1. impostazioni ---------------- */
+function renderSetup(){
+  $('#cfgNome').value = S.meta.nome||'';
+  $('#cfgAnno').value = S.meta.anno||'';
+  $('#cfgOreM').value = S.oreM;
+  $('#cfgOreP').value = S.oreP;
+  $('#cfgDurata').value = S.meta.durata||60;
+  $('#cfgInizio').value = S.meta.inizio||'08:00';
+  $('#cfgGiorni').innerHTML = GIORNI_ALL.map(g =>
+    `<label class="row" style="gap:6px"><input type="checkbox" data-g="${g}" ${S.giorni.includes(g)?'checked':''}> ${g}</label>`).join('');
+
+  const G = S.giorni;
+  let h = `<thead><tr><th rowspan="2">Classe</th><th rowspan="2">Anno</th>` +
+    G.map(g => `<th colspan="2" style="text-align:center">${esc(g.slice(0,3))}</th>`).join('') +
+    `<th rowspan="2" class="num">Ore</th><th rowspan="2"></th></tr><tr>` +
+    G.map(() => `<th style="font-size:10px">mat</th><th style="font-size:10px">pom</th>`).join('') + `</tr></thead><tbody>`;
+  S.classi.forEach((c,i) => {
+    h += `<tr><td><input type="text" data-i="${i}" data-f="nome" value="${esc(c.nome)}" style="min-width:70px"></td>` +
+      `<td><select data-i="${i}" data-f="anno" style="width:62px">${[1,2,3].map(a=>`<option ${a===c.anno?'selected':''}>${a}</option>`).join('')}</select></td>` +
+      G.map(g => `<td><input type="number" min="0" max="${S.oreM}" style="width:46px" data-i="${i}" data-g="${g}" data-k="m" value="${c.g[g]?c.g[g].m:0}"></td>` +
+                 `<td><input type="number" min="0" max="${S.oreP}" style="width:46px" data-i="${i}" data-g="${g}" data-k="p" value="${c.g[g]?c.g[g].p:0}"></td>`).join('') +
+      `<td class="num"><b>${oreClasse(c)}</b></td><td><button class="iconbtn" data-del="${i}" title="Elimina">✕</button></td></tr>`;
+  });
+  if(!S.classi.length) h += `<tr><td colspan="${3+G.length*2}" class="mini">Nessuna classe: indica quante prime, seconde e terze e premi «Crea elenco classi».</td></tr>`;
+  $('#tbClassi').innerHTML = h + '</tbody>';
+}
+
+/* ---------------- 2. discipline ---------------- */
+function hueToHex(h){
+  const f = n => { const k = (n + h/30) % 12, a = .45 * Math.min(1, Math.max(0, Math.min(k-3, 9-k, 1)));
+    return Math.round(255 * (.55 - a)).toString(16).padStart(2,'0'); };
+  return '#' + f(0) + f(8) + f(4);
+}
+function hexToHue(hex){
+  const r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+  const mx = Math.max(r,g,b), mn = Math.min(r,g,b), d = mx - mn;
+  if(!d) return 210;
+  let h = mx===r ? ((g-b)/d + (g<b?6:0)) : mx===g ? ((b-r)/d + 2) : ((r-g)/d + 4);
+  return Math.round(h * 60);
+}
+function renderDiscipline(){
+  let h = `<thead><tr><th>Disciplina</th><th>Sigla</th><th>Colore</th><th>Ore tipo</th>
+    <th title="Preferibilmente al mattino e nelle prime ore">Principale</th>
+    <th title="Ore appaiate: preferite, oppure obbligatorie quando possibile">Blocchi 2h</th><th title="Preferisce l'ultima ora">Ultima ora</th><th></th></tr></thead><tbody>`;
+  S.discipline.forEach((d,i) => {
+    h += `<tr><td><input type="text" data-i="${i}" data-f="nome" value="${esc(d.nome)}"></td>
+      <td><input type="text" data-i="${i}" data-f="sigla" value="${esc(d.sigla)}" style="width:66px;min-width:0"></td>
+      <td><input type="color" data-i="${i}" data-f="hue" value="${hueToHex(d.hue)}"></td>
+      <td><input type="number" min="0" max="12" data-i="${i}" data-f="oreStd" value="${d.oreStd||0}"></td>
+      <td><input type="checkbox" data-i="${i}" data-f="principale" ${d.principale?'checked':''}></td>
+      <td style="white-space:nowrap"><input type="checkbox" data-i="${i}" data-f="blocchi2" ${d.blocchi2?'checked':''}>
+        <select data-i="${i}" data-f="modoBlocchi" style="width:auto" ${d.blocchi2?'':'disabled'}>
+          <option value="pref">preferito</option>
+          <option value="obbl" ${d.modoBlocchi==='obbl'?'selected':''}>obbligatorio quando possibile</option>
+        </select></td>
+      <td><input type="checkbox" data-i="${i}" data-f="ultimaOra" ${d.ultimaOra?'checked':''}></td>
+      <td><button class="iconbtn" data-del="${i}">✕</button></td></tr>`;
+  });
+  $('#tbDiscipline').innerHTML = h + '</tbody>';
+}
+
+/* ---------------- 3. aule ---------------- */
+function auleServono(){
+  const T = totSlot();
+  let m = 0;
+  S.giorni.forEach(g => { for(let s=0;s<T;s++){ let n = 0; S.classi.forEach(c => { if(attivo(c,g,s)) n++; }); m = Math.max(m,n); } });
+  return m;
+}
+function aulaUsata(id){
+  if(S.docenti.some(t => (t.aule||[]).includes(id))) return true;
+  return S.classi.some(c => S.giorni.some(g => (S.orario[c.id]?.[g]||[]).some(v => v && v.aula===id)));
+}
+function renderAule(){
+  const need = auleServono();
+  $('#auleMsg').innerHTML = S.aule.length >= need
+    ? `<div class="msg ok">${S.aule.length} aule inserite. Con ${S.classi.length} classi ne servono almeno ${need} per coprire l'ora di punta.</div>`
+    : `<div class="msg ${S.aule.length?'warn':'bad'}">${S.aule.length} aule inserite: ne servono almeno ${need}, perché nell'ora di punta ${need} classi fanno lezione insieme.</div>`;
+  const inp = $('#nAule');
+  if(inp && document.activeElement !== inp) inp.value = S.aule.length || need;
+  let h = `<thead><tr><th>Aula</th><th>Tipo</th><th>Docenti assegnati</th><th>Ore occupate</th><th></th></tr></thead><tbody>`;
+  const uso = {};
+  S.classi.forEach(c => S.giorni.forEach(g => (S.orario[c.id]?.[g]||[]).forEach(v => { if(v && v.aula) uso[v.aula] = (uso[v.aula]||0)+1; })));
+  S.aule.forEach((a,i) => {
+    const dn = S.docenti.filter(t => (t.aule||[]).includes(a.id)).map(t => cognome(t.nome));
+    h += `<tr><td><input type="text" data-i="${i}" data-f="nome" value="${esc(a.nome)}"></td>
+      <td><select data-i="${i}" data-f="tipo" style="width:130px">${['Aula','Laboratorio','Palestra','Altro'].map(t=>`<option ${t===a.tipo?'selected':''}>${t}</option>`).join('')}</select></td>
+      <td class="mini">${dn.length ? esc(dn.join(', ')) : '—'}</td>
+      <td class="num">${uso[a.id]||0}</td>
+      <td><button class="iconbtn" data-del="${i}">✕</button></td></tr>`;
+  });
+  if(!S.aule.length) h += `<tr><td colspan="5" class="mini">Nessuna aula inserita: le caselle dell'orario resteranno senza numero.</td></tr>`;
+  $('#tbAule').innerHTML = h + '</tbody>';
+}
+
+/* ---------------- 4. quadro orario ---------------- */
+function renderQuadro(){
+  const CL = S.classi;
+  if(!CL.length){ $('#tbQuadro').innerHTML = '<tbody><tr><td class="mini">Crea prima le classi.</td></tr></tbody>'; return; }
+  let h = `<thead><tr><th style="min-width:150px">Disciplina</th>` +
+    CL.map(c => `<th style="text-align:center">${esc(c.nome)}</th>`).join('') + `<th class="num">Tot</th></tr></thead><tbody>`;
+  S.discipline.forEach(d => {
+    let tot = 0;
+    h += `<tr><td><span class="tag" style="background:hsl(${d.hue} var(--les-s) var(--les-l));color:hsl(${d.hue} var(--les-ts) var(--les-tl))">${esc(d.sigla)}</span> ${esc(d.nome)}</td>`;
+    CL.forEach(c => {
+      const v = (S.quadro[c.id]||{})[d.id]||0; tot += v;
+      h += `<td style="text-align:center"><input type="number" min="0" max="15" style="width:50px" data-c="${c.id}" data-d="${d.id}" value="${v}"></td>`;
+    });
+    h += `<td class="num"><b>${tot}</b></td></tr>`;
+  });
+  h += `<tr style="background:var(--surface-2)"><td><b>Totale assegnato</b></td>` +
+    CL.map(c => { const q = oreQuadro(c), o = oreClasse(c);
+      return `<td style="text-align:center"><b class="${q===o?'':'tag bad'}">${q}</b></td>`; }).join('') +
+    `<td class="num"><b>${CL.reduce((s,c)=>s+oreQuadro(c),0)}</b></td></tr>`;
+  h += `<tr><td class="mini">Ore disponibili in orario</td>` +
+    CL.map(c => `<td style="text-align:center" class="mini">${oreClasse(c)}</td>`).join('') +
+    `<td class="num mini">${CL.reduce((s,c)=>s+oreClasse(c),0)}</td></tr>`;
+  $('#tbQuadro').innerHTML = h + '</tbody>';
+}
+
+/* ---------------- 5. docenti ---------------- */
+function coperturaReport(){
+  const richieste = {}, assegnate = {};
+  S.classi.forEach(c => S.discipline.forEach(d => {
+    const o = (S.quadro[c.id]||{})[d.id]||0; if(o) richieste[c.id+'|'+d.id] = o;
+  }));
+  S.docenti.forEach(t => t.cattedre.forEach(k => {
+    const key = k.cl+'|'+k.di; assegnate[key] = (assegnate[key]||0) + num(k.ore,0);
+  }));
+  const out = [];
+  Object.keys(richieste).forEach(key => {
+    const [cid,did] = key.split('|'), a = assegnate[key]||0, r = richieste[key];
+    if(a < r) out.push({ t:'bad', m:`${cls(cid).nome} · ${disc(did).nome}: mancano ${r-a} ore (assegnate ${a} su ${r})` });
+    else if(a > r) out.push({ t:'warn', m:`${cls(cid).nome} · ${disc(did).nome}: ${a-r} ore in più rispetto al quadro orario` });
+  });
+  Object.keys(assegnate).forEach(key => {
+    if(!richieste[key] && assegnate[key]){
+      const [cid,did] = key.split('|');
+      if(cls(cid) && disc(did)) out.push({ t:'warn', m:`${cls(cid).nome} · ${disc(did).nome}: ${assegnate[key]} ore assegnate ma non previste dal quadro orario` });
+    }
+  });
+  return out;
+}
+function renderDocenti(){
+  const rep = coperturaReport();
+  $('#copertura').innerHTML = rep.length
+    ? rep.slice(0,40).map(r => `<div class="msg ${r.t}">${esc(r.m)}</div>`).join('') + (rep.length>40?`<div class="mini">…e altre ${rep.length-40} segnalazioni</div>`:'')
+    : `<div class="msg ok">Tutte le ore del quadro orario sono coperte dalle cattedre.</div>`;
+  const tot = S.docenti.reduce((s,t) => s + oreDocente(t), 0);
+  const need = S.classi.reduce((s,c) => s + oreQuadro(c), 0);
+  $('#docSummary').textContent = `${S.docenti.length} docenti · ${tot} ore assegnate su ${need} previste`;
+
+  $('#listaDocenti').innerHTML = S.docenti.map((t,i) => {
+    const ore = oreDocente(t);
+    const aule = (t.aule||[]).map(a => aula(a)).filter(Boolean);
+    const nInd = Object.values(t.indisp||{}).reduce((s,a) => s + a.length, 0);
+    return `<details class="card" data-i="${i}" style="padding:0"${APERTI.has(i)?' open':''}>
+      <summary style="cursor:pointer;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <b style="font-family:var(--font-c);font-size:15px">${esc(t.nome)}</b>
+        <span class="tag acc">${ore} ore</span>
+        <span class="tag">${t.cattedre.length} cattedre</span>
+        ${aule.length ? `<span class="tag">${esc(aule.map(a=>a.nome).join(' · '))}</span>` : `<span class="tag warn">nessuna aula</span>`}
+        ${t.giornoLibero ? `<span class="tag">libero: ${esc(t.giornoLibero)}</span>` : ''}
+        ${nInd ? `<span class="tag warn">${nInd} ore non disponibili</span>` : ''}
+        <button class="iconbtn" data-i="${i}" data-deldoc="1" title="Elimina docente" style="margin-left:auto">✕</button>
+      </summary>
+      <div style="padding:0 16px 16px">
+        <div class="grid2" style="margin-bottom:10px">
+          <label class="fl">Nome e cognome<input type="text" data-i="${i}" data-f="nome" value="${esc(t.nome)}"></label>
+          <label class="fl">Giorno libero
+            <select data-i="${i}" data-f="giornoLibero">
+              <option value="">nessuno</option><option value="auto" ${t.giornoLibero==='auto'?'selected':''}>scelto dal programma</option>
+              ${S.giorni.map(g=>`<option ${t.giornoLibero===g?'selected':''}>${esc(g)}</option>`).join('')}
+            </select></label>
+          <label class="fl">Max ore al giorno (0 = criterio generale)<input type="number" min="0" max="10" data-i="${i}" data-f="maxGiorno" value="${t.maxGiorno||0}"></label>
+          <label class="fl">Max ore consecutive (0 = criterio generale)<input type="number" min="0" max="10" data-i="${i}" data-f="maxConsec" value="${t.maxConsec||0}"></label>
+        </div>
+        <div class="stack" style="margin-bottom:10px">
+          <span class="fl">Aule in cui insegna</span>
+          <div class="pool">
+            ${aule.map(a => `<span class="chip" style="cursor:default">${esc(a.nome)} <button class="linkish" data-i="${i}" data-rmaula="${a.id}" title="Togli">✕</button></span>`).join('') || '<span class="mini">nessuna aula: le lezioni non occuperanno spazi</span>'}
+            <select data-i="${i}" data-f="addaula" style="width:auto"><option value="">+ aggiungi aula…</option>
+              ${S.aule.filter(a => !(t.aule||[]).includes(a.id)).map(a => `<option value="${a.id}">${esc(a.nome)}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="tablewrap" style="margin-bottom:8px"><table>
+          <thead><tr><th>Classe</th><th>Disciplina</th><th>Ore</th><th></th></tr></thead><tbody>
+          ${t.cattedre.map((k,j) => `<tr>
+            <td><select data-i="${i}" data-j="${j}" data-f="cl">${S.classi.map(c=>`<option value="${c.id}" ${c.id===k.cl?'selected':''}>${esc(c.nome)}</option>`).join('')}</select></td>
+            <td><select data-i="${i}" data-j="${j}" data-f="di">${S.discipline.map(d=>`<option value="${d.id}" ${d.id===k.di?'selected':''}>${esc(d.nome)}</option>`).join('')}</select></td>
+            <td><input type="number" min="0" max="20" data-i="${i}" data-j="${j}" data-f="ore" value="${k.ore}"></td>
+            <td><button class="iconbtn" data-i="${i}" data-delc="${j}">✕</button></td></tr>`).join('')}
+          ${t.cattedre.length?'':'<tr><td colspan="4" class="mini">Nessuna cattedra.</td></tr>'}
+          </tbody></table></div>
+        <div class="row" style="margin-bottom:12px">
+          <button class="btn ghost sm" data-i="${i}" data-addc="1">+ Cattedra</button>
+          <button class="btn ghost sm" data-i="${i}" data-multi="1">+ Stessa disciplina su più classi</button>
+          <button class="btn ghost sm danger" data-i="${i}" data-deldoc="1">Elimina docente</button>
+        </div>
+        <div class="stack">
+          <span class="fl">Ore di indisponibilità — clicca per bloccarle</span>
+          ${indispGrid(t,i)}
+        </div>
+      </div></details>`;
+  }).join('') || '<p class="hint">Nessun docente inserito.</p>';
+}
+function indispGrid(t,i){
+  const T = totSlot();
+  let h = '<table class="indisp"><thead><tr><th></th>' + S.giorni.map(g=>`<th>${esc(g.slice(0,3))}</th>`).join('') + '</tr></thead><tbody>';
+  for(let s=0;s<T;s++){
+    h += `<tr><th style="text-align:right;padding-right:4px">${slotLabel(s)}</th>` + S.giorni.map(g => {
+      const on = ((t.indisp||{})[g]||[]).includes(s);
+      return `<td><button data-i="${i}" data-ind-g="${g}" data-ind-s="${s}" data-on="${on?1:0}">${on?'✕':''}</button></td>`;
+    }).join('') + '</tr>';
+  }
+  return h + '</tbody></table>';
+}
+
+/* ---------------- 6. vincoli ---------------- */
+const SPEC_HARD = [
+  ['maxConsec','n','Massimo ore consecutive dello stesso docente nella stessa classe','0 = nessun limite. Il valore consigliato è 2.'],
+  ['maxOreDiscGiorno','n','Massimo ore della stessa disciplina in una classe nello stesso giorno','Evita tre ore di italiano di fila nello stesso giorno.'],
+  ['maxConsecDoc','n','Massimo ore consecutive per docente, anche in classi diverse','La pausa fra mattino e pomeriggio interrompe sempre la serie.'],
+  ['maxOreGiorno','n','Massimo ore giornaliere per docente','Vale per tutti; il singolo docente può avere limiti propri nella sua scheda.'],
+  ['rispettaIndisp','b','Rispetta le indisponibilità dei docenti','Le ore segnate nella scheda del docente non vengono mai usate.'],
+  ['giornoLibero','b','Rispetta il giorno libero dei docenti',''],
+  ['unaAula','b','Un\'aula ospita una sola lezione per volta','Disattivalo se più gruppi possono condividere lo stesso spazio.']
+];
+const SPEC_SOFT = [
+  ['pesoMattino','Discipline principali nelle prime ore e mai al pomeriggio'],
+  ['pesoBuchi','Evita le ore buche ai docenti'],
+  ['pesoDistribuzione','Distribuisci le ore di una disciplina su giorni diversi'],
+  ['pesoUnaOra','Evita le giornate con una sola ora di lezione'],
+  ['pesoBlocchi','Accorpa in blocchi da due ore le discipline che lo prevedono'],
+  ['pesoUltimaOra','Colloca all\'ultima ora le discipline che lo prevedono'],
+  ['pesoAulaStabile','Tieni il docente sempre nella sua prima aula'],
+  ['pesoCarico','Distribuisci il carico del docente su tutta la settimana']
+];
+function renderVincoli(){
+  $('#vincoliHard').innerHTML = SPEC_HARD.map(([k,tipo,label,help]) => tipo==='n'
+    ? `<label class="row spread" style="padding:7px 0;border-bottom:1px solid var(--line)">
+         <span><b style="font-weight:500">${esc(label)}</b>${help?`<br><span class="hint">${esc(help)}</span>`:''}</span>
+         <input type="number" min="0" max="10" data-v="${k}" value="${S.vincoli[k]}"></label>`
+    : `<label class="row" style="gap:10px;padding:7px 0;border-bottom:1px solid var(--line)">
+         <input type="checkbox" data-v="${k}" ${S.vincoli[k]?'checked':''}>
+         <span><b style="font-weight:500">${esc(label)}</b>${help?`<br><span class="hint">${esc(help)}</span>`:''}</span></label>`).join('');
+  $('#vincoliSoft').innerHTML = SPEC_SOFT.map(([k,label]) =>
+    `<label class="row spread" style="padding:7px 0;border-bottom:1px solid var(--line)">
+      <span style="flex:1;min-width:200px">${esc(label)}</span>
+      <span class="row" style="gap:8px"><input type="range" min="0" max="10" data-v="${k}" value="${S.vincoli[k]}" style="width:160px">
+      <b style="width:18px;text-align:right" data-vv="${k}">${S.vincoli[k]}</b></span></label>`).join('');
+}
+
+/* ===========================================================
+   Pannello Orario: analisi, griglie, modifica manuale, esportazioni
+   =========================================================== */
+let POOL = [];          // ore non collocate
+let ANALISI = null;
+
+function orePiazzate(docId, clId, disId){
+  let n = 0;
+  S.giorni.forEach(g => { const r = S.orario[clId]?.[g]||[];
+    r.forEach(v => { if(v && v.doc===docId && v.dis===disId) n++; }); });
+  return n;
+}
+
+function analizza(){
+  const T = totSlot(), errori = [], avvisi = [], clash = new Set();
+  let collocate = 0, vuote = 0, buchi = 0;
+  // conflitti docente / aula
+  S.giorni.forEach(g => { for(let s=0;s<T;s++){
+    const perDoc = {}, perAula = {};
+    S.classi.forEach(c => {
+      const v = cella(c.id,g,s); if(!v) return;
+      (perDoc[v.doc] = perDoc[v.doc]||[]).push(c);
+      if(v.aula) (perAula[v.aula] = perAula[v.aula]||[]).push(c);
+    });
+    Object.keys(perDoc).forEach(d => { if(perDoc[d].length>1){
+      perDoc[d].forEach(c => clash.add(c.id+'|'+g+'|'+s));
+      errori.push(`${doc(d)?doc(d).nome:'?'} — ${g} ${slotLabel(s)}: in ${perDoc[d].length} classi contemporaneamente (${perDoc[d].map(c=>c.nome).join(', ')})`);
+    }});
+    if(S.vincoli.unaAula) Object.keys(perAula).forEach(a => { if(perAula[a].length>1){
+      perAula[a].forEach(c => clash.add(c.id+'|'+g+'|'+s));
+      errori.push(`${aula(a)?aula(a).nome:'?'} — ${g} ${slotLabel(s)}: occupata da ${perAula[a].length} classi (${perAula[a].map(c=>c.nome).join(', ')})`);
+    }});
+  }});
+  // classi: ore vuote, consecutive, disciplina ripetuta
+  S.classi.forEach(c => {
+    S.giorni.forEach(g => {
+      let run = 0, prev = '';
+      const contaDisc = {};
+      for(let s=0;s<T;s++){
+        if(!attivo(c,g,s)) continue;
+        const v = cella(c.id,g,s);
+        if(!v){ vuote++; prev=''; run=0; continue; }
+        collocate++;
+        contaDisc[v.dis] = (contaDisc[v.dis]||0)+1;
+        if(v.doc===prev) run++; else { run = 1; prev = v.doc; }
+        if(S.vincoli.maxConsec>0 && run === S.vincoli.maxConsec+1)
+          avvisi.push(`${c.nome} — ${g}: ${run} ore consecutive con ${doc(v.doc)?cognome(doc(v.doc).nome):'?'}`);
+      }
+      if(S.vincoli.maxOreDiscGiorno>0) Object.keys(contaDisc).forEach(d => {
+        if(contaDisc[d] > S.vincoli.maxOreDiscGiorno)
+          avvisi.push(`${c.nome} — ${g}: ${contaDisc[d]} ore di ${disc(d)?disc(d).nome:'?'} nello stesso giorno`);
+      });
+    });
+    // confronto con il quadro orario
+    S.discipline.forEach(d => {
+      const prev = (S.quadro[c.id]||{})[d.id]||0;
+      let n = 0;
+      S.giorni.forEach(g => (S.orario[c.id]?.[g]||[]).forEach(v => { if(v && v.dis===d.id) n++; }));
+      if(n !== prev && (n||prev)) avvisi.push(`${c.nome} — ${d.nome}: ${n} ore in orario contro le ${prev} previste`);
+    });
+    // blocchi da 2 ore obbligatori: ore singole oltre a quelle inevitabili (ore dispari di una cattedra)
+    S.discipline.filter(d => d.blocchi2 && d.modoBlocchi==='obbl').forEach(d => {
+      let singole = 0;
+      S.giorni.forEach(g => {
+        let run = 0;
+        for(let s=0;s<=T;s++){
+          const v = s<T ? cella(c.id,g,s) : null;
+          if(v && v.dis===d.id && (run===0 || isPom(s)===isPom(s-1))) run++;
+          else { singole += run % 2; run = (v && v.dis===d.id) ? 1 : 0; }
+        }
+      });
+      const inevitabili = S.docenti.reduce((t,x) => t + x.cattedre.filter(k => k.cl===c.id && k.di===d.id).reduce((a,k) => a + (k.ore % 2), 0), 0);
+      if(singole > inevitabili)
+        avvisi.push(`${c.nome} — ${d.nome}: ${singole - inevitabili} ore singole invece che in blocchi da 2 (blocchi obbligatori)`);
+    });
+  });
+  // docenti
+  S.docenti.forEach(t => {
+    const perGiorno = {};
+    S.giorni.forEach(g => {
+      const occ = [];
+      for(let s=0;s<T;s++){
+        const c = S.classi.find(c => { const v = cella(c.id,g,s); return v && v.doc===t.id; });
+        if(c) occ.push(s);
+      }
+      perGiorno[g] = occ;
+      if(!occ.length) return;
+      const lim = t.maxGiorno>0 ? t.maxGiorno : S.vincoli.maxOreGiorno;
+      if(lim>0 && occ.length>lim) avvisi.push(`${t.nome} — ${g}: ${occ.length} ore (limite ${lim})`);
+      const limC = t.maxConsec>0 ? t.maxConsec : S.vincoli.maxConsecDoc;
+      if(limC>0){
+        let run = 1, max = 1;
+        for(let i=1;i<occ.length;i++){
+          if(occ[i]===occ[i-1]+1 && isPom(occ[i])===isPom(occ[i-1])) run++; else run = 1;
+          max = Math.max(max, run);
+        }
+        if(max>limC) avvisi.push(`${t.nome} — ${g}: ${max} ore consecutive (limite ${limC})`);
+      }
+      [[0,S.oreM-1],[S.oreM,T-1]].forEach(([a,b]) => {
+        const seg = occ.filter(s => s>=a && s<=b);
+        if(seg.length>1) buchi += (seg[seg.length-1]-seg[0]+1) - seg.length;
+      });
+      const ind = (t.indisp||{})[g]||[];
+      occ.forEach(s => { if(ind.includes(s)) errori.push(`${t.nome} — ${g} ${slotLabel(s)}: ora segnata come non disponibile`); });
+      if(S.vincoli.giornoLibero && t.giornoLibero && t.giornoLibero!=='auto' && t.giornoLibero===g)
+        errori.push(`${t.nome}: ha lezione nel suo giorno libero (${g})`);
+    });
+    t.cattedre.forEach(k => {
+      const n = orePiazzate(t.id,k.cl,k.di);
+      if(n < k.ore && cls(k.cl)) avvisi.push(`${t.nome} — ${cls(k.cl).nome} ${disc(k.di)?disc(k.di).sigla:''}: ${n} ore su ${k.ore} collocate`);
+    });
+  });
+  // aule sufficienti?
+  const maxSim = Math.max(0, ...S.giorni.map(g => { let m = 0;
+    for(let s=0;s<T;s++){ let n = 0; S.classi.forEach(c => { if(attivo(c,g,s)) n++; }); m = Math.max(m,n); } return m; }));
+  if(S.aule.length && S.aule.length < maxSim)
+    avvisi.push(`Servono almeno ${maxSim} aule per far lezione contemporaneamente a tutte le classi: ne risultano ${S.aule.length}.`);
+
+  ANALISI = { errori, avvisi, clash, collocate, vuote, buchi };
+  return ANALISI;
+}
+
+/* ---------------- pannello orario ---------------- */
+function renderOrario(){
+  const a = analizza();
+  const totOre = S.classi.reduce((s,c) => s + oreClasse(c), 0);
+  $('#statsOrario').innerHTML = [
+    ['Ore collocate', a.collocate + ' / ' + totOre],
+    ['Caselle vuote', a.vuote],
+    ['Ore non collocate', POOL.reduce((s,p)=>s+p.ore,0)],
+    ['Conflitti', a.errori.length],
+    ['Ore buche docenti', a.buchi]
+  ].map(([l,v]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join('');
+
+  const msgs = a.errori.slice(0,12).map(m => `<div class="msg bad">${esc(m)}</div>`)
+    .concat(a.avvisi.slice(0,12).map(m => `<div class="msg warn">${esc(m)}</div>`));
+  const extra = (a.errori.length>12?a.errori.length-12:0) + (a.avvisi.length>12?a.avvisi.length-12:0);
+  if(!a.errori.length && !a.avvisi.length && a.collocate)
+    msgs.push('<div class="msg ok">Nessun conflitto: orario valido.</div>');
+  if(extra) msgs.push(`<div class="mini">…e altre ${extra} segnalazioni</div>`);
+  $('#reportOrario').innerHTML = msgs.join('');
+
+  $('#poolWrap').hidden = !POOL.length;
+  $('#pool').innerHTML = POOL.map((p,i) =>
+    `<span class="chip bad" draggable="true" data-pool="${i}">${esc(cls(p.cl)?cls(p.cl).nome:'?')} · ${esc(disc(p.di)?disc(p.di).sigla:'?')} · ${esc(cognome(doc(p.doc)?doc(p.doc).nome:''))}${p.ore>1?' ('+p.ore+'h)':''}</span>`).join('');
+
+  renderFisse();
+  renderSoggetti();
+  renderVista();
+}
+
+function tutteFisse(){
+  const out = [];
+  S.classi.forEach(c => S.giorni.forEach(g => { const r = S.orario[c.id]?.[g]||[];
+    r.forEach((v,s) => { if(v && v.lock) out.push({ c:c.id, g, s, v }); }); }));
+  return out;
+}
+function renderFisse(){
+  const F = tutteFisse();
+  $('#listaFisse').innerHTML = F.length ? F.map(f =>
+    `<span class="chip" style="cursor:default">🔒 ${esc(cls(f.c).nome)} · ${esc(g3(f.g))} ${slotLabel(f.s)} · ${esc(disc(f.v.dis)?disc(f.v.dis).sigla:'?')} ${esc(cognome(doc(f.v.doc)?doc(f.v.doc).nome:''))}
+      <button class="linkish" data-unlock="${f.c}|${f.g}|${f.s}">✕</button></span>`).join('')
+    : '<span class="mini">Nessuna assegnazione fissa.</span>';
+}
+const g3 = g => g.slice(0,3);
+
+function renderSoggetti(){
+  const v = S.ui.vista, sel = $('#selSoggetto');
+  let opts = [];
+  if(v==='classe') opts = S.classi.map(c => [c.id, 'Classe ' + c.nome]);
+  else if(v==='docente') opts = S.docenti.map(t => [t.id, t.nome]);
+  else if(v==='aula') opts = S.aule.map(a => [a.id, a.nome]);
+  else opts = S.giorni.map(g => [g, g]);
+  if(!opts.some(o => o[0]===S.ui.soggetto)) S.ui.soggetto = opts.length ? opts[0][0] : '';
+  sel.innerHTML = opts.map(([k,n]) => `<option value="${esc(k)}" ${k===S.ui.soggetto?'selected':''}>${esc(n)}</option>`).join('');
+  sel.hidden = !opts.length;
+}
+
+function cellHTML(v, modo, cid){
+  if(!v) return '';
+  const d = disc(v.dis), t = doc(v.doc), a = aula(v.aula);
+  const bad = ANALISI && cid && ANALISI.clash.has(cid+'|'+v._g+'|'+v._s);
+  const r1 = modo==='classe' ? (d?d.sigla:'?') : modo==='docente' ? (cls(cid)?cls(cid).nome:'?') : (cls(cid)?cls(cid).nome:'?');
+  const r2 = modo==='classe' ? (t?cognome(t.nome):'') : modo==='docente' ? (d?d.nome:'') : (t?cognome(t.nome):'');
+  const r3 = modo==='aula' ? (d?d.sigla:'') : (a?a.nome:'');
+  return `<div class="lesson${bad?' clash':''}" draggable="${modo==='classe'}" style="--h:${d?d.hue:210}">
+    <span class="d">${esc(r1)}</span>
+    <span class="t">${esc(r2)}</span>
+    ${r3?`<span class="aula">${modo==='aula'?'':'▢ '}${esc(r3)}</span>`:''}
+    ${v.lock?'<span class="lk">🔒</span>':''}</div>`;
+}
+
+function grigliaClasse(c){
+  const T = totSlot();
+  let h = `<div class="tablewrap"><table class="tt"><thead><tr><th></th>` +
+    S.giorni.map(g => `<th>${esc(g)}</th>`).join('') + `</tr></thead><tbody>`;
+  for(let s=0;s<T;s++){
+    h += `<tr><th class="${isPom(s)?'pom':''}">${slotLabel(s)}<br><span style="font-size:10px;opacity:.7">${slotOrario(s)}</span></th>`;
+    S.giorni.forEach(g => {
+      const on = attivo(c,g,s), v = on ? cella(c.id,g,s) : null;
+      if(v){ v._g = g; v._s = s; }
+      h += `<td class="${on?'empty-hint':'off'}" data-cell="${c.id}|${g}|${s}">${on?cellHTML(v,'classe',c.id):''}</td>`;
+    });
+    h += '</tr>';
+  }
+  return h + '</tbody></table></div>';
+}
+function grigliaFiltro(match, modo){
+  const T = totSlot();
+  let h = `<div class="tablewrap"><table class="tt"><thead><tr><th></th>` +
+    S.giorni.map(g => `<th>${esc(g)}</th>`).join('') + `</tr></thead><tbody>`;
+  for(let s=0;s<T;s++){
+    h += `<tr><th class="${isPom(s)?'pom':''}">${slotLabel(s)}<br><span style="font-size:10px;opacity:.7">${slotOrario(s)}</span></th>`;
+    S.giorni.forEach(g => {
+      let found = null, fc = null;
+      for(const c of S.classi){ const v = cella(c.id,g,s); if(v && match(v,c)){ found = v; fc = c; break; } }
+      if(found){ found._g = g; found._s = s; }
+      h += `<td>${found?cellHTML(found,modo,fc.id):''}</td>`;
+    });
+    h += '</tr>';
+  }
+  return h + '</tbody></table></div>';
+}
+function grigliaGenerale(g){
+  const T = totSlot();
+  let h = `<div class="tablewrap"><table class="tt" style="min-width:${120+S.classi.length*86}px"><thead><tr><th>${esc(g)}</th>` +
+    S.classi.map(c => `<th>${esc(c.nome)}</th>`).join('') + `</tr></thead><tbody>`;
+  for(let s=0;s<T;s++){
+    h += `<tr><th class="${isPom(s)?'pom':''}">${slotLabel(s)}</th>`;
+    S.classi.forEach(c => {
+      const on = attivo(c,g,s), v = on ? cella(c.id,g,s) : null;
+      if(v){ v._g = g; v._s = s; }
+      h += `<td class="${on?'':'off'}">${on?cellHTML(v,'classe',c.id):''}</td>`;
+    });
+    h += '</tr>';
+  }
+  return h + '</tbody></table></div>';
+}
+function legenda(){
+  return '<div class="legend">' + S.discipline.map(d =>
+    `<span><i style="background:hsl(${d.hue} var(--les-bs) var(--les-bl))"></i>${esc(d.sigla)} — ${esc(d.nome)}</span>`).join('') + '</div>';
+}
+function renderVista(){
+  const v = S.ui.vista, k = S.ui.soggetto, box = $('#vistaOrario');
+  let titolo = '', corpo = '';
+  if(v==='classe'){
+    const c = cls(k); if(!c){ box.innerHTML = '<p class="hint">Nessuna classe.</p>'; return; }
+    titolo = 'Classe ' + c.nome; corpo = grigliaClasse(c);
+  } else if(v==='docente'){
+    const t = doc(k); if(!t){ box.innerHTML = '<p class="hint">Nessun docente.</p>'; return; }
+    titolo = t.nome + ' · ' + oreDocente(t) + ' ore';
+    corpo = grigliaFiltro(x => x.doc===t.id, 'docente');
+  } else if(v==='aula'){
+    const a = aula(k); if(!a){ box.innerHTML = '<p class="hint">Nessuna aula.</p>'; return; }
+    titolo = a.nome; corpo = grigliaFiltro(x => x.aula===a.id, 'aula');
+  } else {
+    titolo = 'Quadro generale · ' + k; corpo = grigliaGenerale(k);
+  }
+  box.innerHTML = `<div class="card"><div class="row spread" style="margin-bottom:10px">
+      <h3 style="font-family:var(--font-c);font-size:17px;text-transform:none;letter-spacing:0;color:var(--text)">${esc(titolo)}</h3>
+      <span class="mini">${esc(S.meta.nome||'')} · ${esc(S.meta.anno||'')}</span></div>
+    ${corpo}${legenda()}</div>`;
+}
+
+/* ---------------- modifica manuale ---------------- */
+function scambia(aKey, bKey){
+  const [c1,g1,s1] = aKey.split('|'), [c2,g2,s2] = bKey.split('|');
+  const v1 = cella(c1,g1,+s1), v2 = cella(c2,g2,+s2);
+  setCella(c1,g1,+s1, v2 ? Object.assign({}, v2) : null);
+  setCella(c2,g2,+s2, v1 ? Object.assign({}, v1) : null);
+  ['a','b'].forEach(() => {});
+  [[c1,g1,+s1],[c2,g2,+s2]].forEach(([c,g,s]) => {
+    const v = cella(c,g,s);
+    if(v){ delete v._g; delete v._s; v.aula = aulaPerCella(v.doc, g, s, c) || v.aula; }
+  });
+  save(); renderOrario();
+}
+function modalCella(key){
+  const [cid,g,s0] = key.split('|'), s = +s0, c = cls(cid), v = cella(cid,g,s);
+  const cand = [];
+  S.docenti.forEach(t => t.cattedre.forEach(k => { if(k.cl===cid){
+    const p = orePiazzate(t.id,cid,k.di);
+    cand.push({ v:t.id+'|'+k.di, l:`${disc(k.di)?disc(k.di).nome:'?'} — ${t.nome} (${p}/${k.ore} ore)`, over:p>=k.ore });
+  }}));
+  const cur = v ? v.doc+'|'+v.dis : '';
+  apriModal(`<h3>${esc(c.nome)} · ${esc(g)} · ${slotLabel(s)}</h3>
+    <label class="fl" style="margin-bottom:10px">Docente e disciplina
+      <select id="mSel"><option value="">— ora libera —</option>
+        ${cand.map(x => `<option value="${x.v}" ${x.v===cur?'selected':''}>${esc(x.l)}${x.over?' · ore già complete':''}</option>`).join('')}
+      </select></label>
+    <label class="fl" style="margin-bottom:10px">Aula
+      <select id="mAula"><option value="">— nessuna —</option>
+        ${S.aule.map(a => `<option value="${a.id}" ${v&&v.aula===a.id?'selected':''}>${esc(a.nome)}</option>`).join('')}
+      </select></label>
+    <label class="row" style="gap:8px"><input type="checkbox" id="mLock" ${v&&v.lock?'checked':''}> Blocca questa casella (assegnazione fissa)</label>
+    ${cand.length?'':'<p class="hint" style="margin-top:8px">Nessun docente ha cattedre in questa classe: aggiungile nella scheda Docenti.</p>'}
+    <div class="foot">
+      <button class="btn ghost" data-close="1">Annulla</button>
+      <button class="btn ghost danger" id="mDel">Svuota</button>
+      <button class="btn" id="mOk">Conferma</button>
+    </div>`, box => {
+    $('#mSel',box).addEventListener('change', e => {
+      const val = e.target.value; if(!val) return;
+      const t = doc(val.split('|')[0]);
+      const sugg = aulaPerCella(t.id, g, s, cid);
+      if(sugg) $('#mAula',box).value = sugg;
+    });
+    $('#mDel',box).addEventListener('click', () => { setCella(cid,g,s,null); chiudiModal(); save(); renderOrario(); });
+    $('#mOk',box).addEventListener('click', () => {
+      const val = $('#mSel',box).value;
+      if(!val) setCella(cid,g,s,null);
+      else setCella(cid,g,s,{ doc:val.split('|')[0], dis:val.split('|')[1], aula:$('#mAula',box).value, lock:$('#mLock',box).checked });
+      chiudiModal(); save(); renderOrario();
+    });
+  });
+}
+function modalFissa(){
+  apriModal(`<h3>Fissa un'ora prima della generazione</h3>
+    <div class="grid2">
+      <label class="fl">Classe<select id="fCl">${S.classi.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('')}</select></label>
+      <label class="fl">Giorno<select id="fG">${S.giorni.map(g=>`<option>${esc(g)}</option>`).join('')}</select></label>
+      <label class="fl">Ora<select id="fS">${Array.from({length:totSlot()},(_,s)=>`<option value="${s}">${slotLabel(s)}</option>`).join('')}</select></label>
+      <label class="fl">Docente e disciplina<select id="fD"></select></label>
+      <label class="fl">Aula<select id="fA"><option value="">automatica</option>${S.aule.map(a=>`<option value="${a.id}">${esc(a.nome)}</option>`).join('')}</select></label>
+    </div>
+    <div class="foot"><button class="btn ghost" data-close="1">Annulla</button><button class="btn" id="fOk">Fissa</button></div>`, box => {
+    const agg = () => {
+      const cid = $('#fCl',box).value, o = [];
+      S.docenti.forEach(t => t.cattedre.forEach(k => { if(k.cl===cid)
+        o.push(`<option value="${t.id}|${k.di}">${esc(disc(k.di)?disc(k.di).nome:'?')} — ${esc(t.nome)}</option>`); }));
+      $('#fD',box).innerHTML = o.join('') || '<option value="">nessuna cattedra in questa classe</option>';
+    };
+    $('#fCl',box).addEventListener('change', agg); agg();
+    $('#fOk',box).addEventListener('click', () => {
+      const cid = $('#fCl',box).value, g = $('#fG',box).value, s = +$('#fS',box).value, val = $('#fD',box).value;
+      if(!val) return chiudiModal();
+      const au = $('#fA',box).value || aulaPerCella(val.split('|')[0], g, s, cid);
+      setCella(cid,g,s,{ doc:val.split('|')[0], dis:val.split('|')[1], aula:au, lock:true });
+      chiudiModal(); save(); renderOrario();
+    });
+  });
+}
+
+/* ---------------- modale ---------------- */
+function apriModal(html, after){
+  const box = $('#modal'); box.innerHTML = html; $('#overlay').hidden = false;
+  $$('[data-close]', box).forEach(b => b.addEventListener('click', chiudiModal));
+  if(after) after(box);
+}
+function chiudiModal(){ $('#overlay').hidden = true; $('#modal').innerHTML = ''; }
+/* conferme interne: le finestre del browser sono bloccate quando l'app gira dentro Claude */
+function chiedi(testo, onOk, okLabel, pericolo){
+  apriModal(`<h3>${esc(pericolo ? 'Conferma eliminazione' : 'Conferma')}</h3><p>${esc(testo)}</p>
+    <div class="foot"><button class="btn ghost" data-close="1">Annulla</button>
+      <button class="btn${pericolo?' danger':''}" id="cOk">${esc(okLabel || 'Conferma')}</button></div>`,
+    box => $('#cOk',box).addEventListener('click', () => { chiudiModal(); onOk(); }));
+}
+function avvisa(testo){
+  apriModal(`<h3>Avviso</h3><p>${esc(testo)}</p>
+    <div class="foot"><button class="btn" data-close="1">Ho capito</button></div>`);
+}
+
+/* ---------------- esportazioni ---------------- */
+async function scarica(nome, testo, mime){
+  // dentro Claude il salvataggio passa dalla richiesta di conferma al lettore
+  try{
+    const d = window.claude && window.claude.use ? await window.claude.use('downloads') : null;
+    if(d){ await d.save({ filename:nome, data:testo }); return true; }
+  }catch(e){ if(e && e.code === 'declined') return true; }
+  try{
+    const b = new Blob([testo], { type:(mime||'text/plain') + ';charset=utf-8' });
+    const u = URL.createObjectURL(b), a = document.createElement('a');
+    a.href = u; a.download = nome; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(u); a.remove(); }, 1500);
+    return true;
+  }catch(e){ return false; }
+}
+function mostraTesto(titolo, testo, nome, mime){
+  apriModal(`<h3>${esc(titolo)}</h3>
+    <p class="hint">Premi «Scarica» per salvare il file. In alternativa seleziona il testo, copialo e incollalo in un file chiamato <b>${esc(nome)}</b>.</p>
+    <textarea id="tOut" rows="12" style="width:100%"></textarea>
+    <div class="foot"><button class="btn ghost" data-close="1">Chiudi</button>
+      <button class="btn ghost" id="tCopy">Copia</button>
+      <button class="btn" id="tDl">Scarica</button></div>`, box => {
+    $('#tOut',box).value = testo;
+    $('#tCopy',box).addEventListener('click', async () => {
+      const el = $('#tOut',box); el.select();
+      try{ await navigator.clipboard.writeText(testo); $('#tCopy',box).textContent = 'Copiato'; }
+      catch(e){ try{ document.execCommand('copy'); $('#tCopy',box).textContent = 'Copiato'; }catch(_){ } }
+    });
+    $('#tDl',box).addEventListener('click', () => scarica(nome, testo, mime));
+  });
+}
+const csvCell = s => '"' + String(s==null?'':s).replace(/"/g,'""') + '"';
+function csvClassi(){
+  const T = totSlot(), out = [];
+  S.classi.forEach(c => {
+    out.push([c.nome].concat(S.giorni).map(csvCell).join(';'));
+    for(let s=0;s<T;s++){
+      const r = [slotLabel(s)];
+      S.giorni.forEach(g => { const v = attivo(c,g,s) ? cella(c.id,g,s) : null;
+        r.push(v ? `${disc(v.dis)?disc(v.dis).sigla:''} ${cognome(doc(v.doc)?doc(v.doc).nome:'')}${v.aula?' ['+aula(v.aula).nome+']':''}` : ''); });
+      out.push(r.map(csvCell).join(';'));
+    }
+    out.push('');
+  });
+  return out.join('\r\n');
+}
+function csvDocenti(){
+  const T = totSlot(), out = [];
+  S.docenti.forEach(t => {
+    out.push([t.nome + ' (' + oreDocente(t) + ' ore)'].concat(S.giorni).map(csvCell).join(';'));
+    for(let s=0;s<T;s++){
+      const r = [slotLabel(s)];
+      S.giorni.forEach(g => {
+        let txt = '';
+        for(const c of S.classi){ const v = cella(c.id,g,s); if(v && v.doc===t.id){
+          txt = `${c.nome} ${disc(v.dis)?disc(v.dis).sigla:''}${v.aula?' ['+aula(v.aula).nome+']':''}`; break; } }
+        r.push(txt);
+      });
+      out.push(r.map(csvCell).join(';'));
+    }
+    out.push('');
+  });
+  return out.join('\r\n');
+}
+function csvCattedre(){
+  const out = [['Docente','Classe','Disciplina','Ore','Aule','Giorno libero'].map(csvCell).join(';')];
+  S.docenti.forEach(t => t.cattedre.forEach(k => out.push([
+    t.nome, cls(k.cl)?cls(k.cl).nome:'', disc(k.di)?disc(k.di).nome:'', k.ore,
+    (t.aule||[]).map(a => aula(a)?aula(a).nome:'').join(' / '), t.giornoLibero||''
+  ].map(csvCell).join(';'))));
+  return out.join('\r\n');
+}
+
+/* ===========================================================
+   Eventi e avvio
+   =========================================================== */
+const APERTI = new Set();
+let DRAG = null;
+
+/* ---- tema ---- */
+function applicaTema(t){
+  if(t==='auto') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', t);
+  try{ localStorage.setItem('orariofacile.tema', t); }catch(e){}
+}
+function temaCorrente(){ try{ return localStorage.getItem('orariofacile.tema')||'auto'; }catch(e){ return 'auto'; } }
+
+/* ---- barra superiore ---- */
+$('#btnTema').addEventListener('click', () => {
+  const ordine = ['auto','light','dark'], t = ordine[(ordine.indexOf(temaCorrente())+1) % 3];
+  applicaTema(t);
+  $('#btnTema').textContent = t==='auto' ? '◐ Tema' : t==='light' ? '☀ Chiaro' : '☾ Scuro';
+});
+$('#btnEsempio').addEventListener('click', () => {
+  chiedi('Sostituisco i dati attuali con la scuola di esempio: 15 classi, 27 docenti, 26 aule.', () => {
+    S = datiEsempio(); normalizza(); POOL = []; save(true); vai('setup');
+  }, 'Carica l\'esempio');
+});
+$('#btnAzzera').addEventListener('click', () => {
+  chiedi('Cancello tutto e riparto da zero. Conviene prima scaricare un backup dalla scheda Esporta.', () => {
+    S = statoVuoto(); S.discipline = discDefault(); normalizza(); POOL = []; save(true); vai('setup');
+  }, 'Azzera tutto', true);
+});
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('button[data-tab]'); if(b) vai(b.dataset.tab); });
+
+/* ---- 1. impostazioni ---- */
+function bindCfg(id, fn){ const el = $(id); el.addEventListener('change', () => { fn(el.value); normalizza(); save(); render(); }); }
+bindCfg('#cfgNome', v => S.meta.nome = v);
+bindCfg('#cfgAnno', v => S.meta.anno = v);
+bindCfg('#cfgInizio', v => S.meta.inizio = v);
+bindCfg('#cfgDurata', v => S.meta.durata = clamp(num(v,60),30,90));
+bindCfg('#cfgOreM', v => S.oreM = clamp(num(v,5),1,8));
+bindCfg('#cfgOreP', v => S.oreP = clamp(num(v,0),0,5));
+$('#cfgGiorni').addEventListener('change', e => {
+  const g = e.target.dataset.g; if(!g) return;
+  S.giorni = GIORNI_ALL.filter(x => x===g ? e.target.checked : S.giorni.includes(x));
+  normalizza(); save(); render();
+});
+$('#tbClassi').addEventListener('input', e => {
+  const i = e.target.dataset.i; if(i===undefined) return;
+  const c = S.classi[+i]; if(!c) return;
+  if(e.target.dataset.g) c.g[e.target.dataset.g][e.target.dataset.k] = clamp(num(e.target.value,0), 0, e.target.dataset.k==='m'?S.oreM:S.oreP);
+  else if(e.target.dataset.f==='nome') c.nome = e.target.value;
+  save();
+});
+$('#tbClassi').addEventListener('change', e => {
+  const i = e.target.dataset.i;
+  if(i!==undefined && e.target.dataset.f==='anno'){ S.classi[+i].anno = num(e.target.value,1); }
+  if(e.target.dataset.g || e.target.dataset.f==='anno'){ normalizza(); save(); renderSetup(); }
+});
+$('#tbClassi').addEventListener('click', e => {
+  const d = e.target.dataset.del; if(d===undefined) return;
+  const c = S.classi[+d];
+  chiedi('Elimino la classe ' + c.nome + ' con il suo orario?', () => {
+    S.classi.splice(+d,1); normalizza(); save(); renderSetup();
+  }, 'Elimina', true);
+});
+$('#btnGenClassi').addEventListener('click', () => {
+  const n = [num($('#nPrime').value,0), num($('#nSeconde').value,0), num($('#nTerze').value,0)];
+  if(S.classi.length){ chiedi('Sostituisco l\'elenco delle classi esistenti e il loro orario?', () => creaClassi(n), 'Sostituisci', true); return; }
+  creaClassi(n);
+});
+function creaClassi(n){
+  const modello = S.classi[0] ? JSON.parse(JSON.stringify(S.classi[0].g)) : null;
+  S.classi = []; S.orario = {}; S.quadro = {};
+  const SEZ = 'ABCDEFGHILMNOPQ'.split('');
+  [1,2,3].forEach((anno,k) => { for(let i=0;i<n[k];i++){
+    const c = nuovaClasse(anno, SEZ[i]);
+    if(modello) c.g = JSON.parse(JSON.stringify(modello));
+    else GIORNI_ALL.forEach(g => c.g[g] = { m: S.giorni.includes(g) ? S.oreM : 0, p:0 });
+    S.classi.push(c);
+  }});
+  S.classi.forEach(c => { S.quadro[c.id] = {}; S.discipline.forEach(d => S.quadro[c.id][d.id] = d.oreStd||0); });
+  normalizza(); save(); renderSetup();
+}
+$('#btnAddClasse').addEventListener('click', () => {
+  const c = nuovaClasse(1,'X');
+  GIORNI_ALL.forEach(g => c.g[g] = { m: S.giorni.includes(g) ? S.oreM : 0, p:0 });
+  S.classi.push(c); S.quadro[c.id] = {}; S.discipline.forEach(d => S.quadro[c.id][d.id] = d.oreStd||0);
+  normalizza(); save(); renderSetup();
+});
+$('#btnApplicaOrarioTutte').addEventListener('click', () => {
+  if(!S.classi.length) return;
+  const m = JSON.parse(JSON.stringify(S.classi[0].g));
+  S.classi.forEach(c => c.g = JSON.parse(JSON.stringify(m)));
+  normalizza(); save(); renderSetup();
+});
+
+/* ---- 2. discipline ---- */
+$('#tbDiscipline').addEventListener('input', e => {
+  const i = e.target.dataset.i, f = e.target.dataset.f; if(i===undefined) return;
+  const d = S.discipline[+i];
+  if(f==='nome') d.nome = e.target.value;
+  else if(f==='sigla') d.sigla = e.target.value.toUpperCase().slice(0,5);
+  else if(f==='oreStd') d.oreStd = clamp(num(e.target.value,0),0,12);
+  save();
+});
+$('#tbDiscipline').addEventListener('change', e => {
+  const i = e.target.dataset.i, f = e.target.dataset.f; if(i===undefined) return;
+  const d = S.discipline[+i];
+  if(f==='hue') d.hue = hexToHue(e.target.value);
+  else if(['principale','blocchi2','ultimaOra'].includes(f)) d[f] = e.target.checked;
+  else if(f==='modoBlocchi') d.modoBlocchi = e.target.value;
+  save(); if(f==='hue' || f==='blocchi2') renderDiscipline();
+});
+$('#tbDiscipline').addEventListener('click', e => {
+  const i = e.target.dataset.del; if(i===undefined) return;
+  const d = S.discipline[+i];
+  chiedi('Elimino la disciplina ' + d.nome + '? Sparirà anche dalle cattedre e dall\'orario.', () => {
+    S.discipline.splice(+i,1);
+    S.docenti.forEach(t => t.cattedre = t.cattedre.filter(k => k.di !== d.id));
+    Object.values(S.quadro).forEach(q => delete q[d.id]);
+    normalizza(); save(); renderDiscipline();
+  }, 'Elimina', true);
+});
+$('#btnAddDisc').addEventListener('click', () => {
+  S.discipline.push({ id:uid('d'), nome:'Nuova disciplina', sigla:'XXX', hue: Math.round(Math.random()*360),
+    principale:false, blocchi2:false, ultimaOra:false, oreStd:1 });
+  save(); renderDiscipline();
+});
+
+/* ---- 3. aule ---- */
+$('#tbAule').addEventListener('input', e => {
+  const i = e.target.dataset.i; if(i===undefined || e.target.dataset.f!=='nome') return;
+  S.aule[+i].nome = e.target.value; save();
+});
+$('#tbAule').addEventListener('change', e => {
+  const i = e.target.dataset.i; if(i===undefined || e.target.dataset.f!=='tipo') return;
+  S.aule[+i].tipo = e.target.value; save();
+});
+$('#tbAule').addEventListener('click', e => {
+  const i = e.target.dataset.del; if(i===undefined) return;
+  const a = S.aule[+i];
+  chiedi('Elimino ' + a.nome + '? Sparirà dai docenti che la usano e dalle caselle dell\'orario.', () => {
+    S.aule.splice(+i,1);
+    S.docenti.forEach(t => t.aule = (t.aule||[]).filter(x => x!==a.id));
+    normalizza(); save(); renderAule();
+  }, 'Elimina', true);
+});
+$('#btnAddAula').addEventListener('click', () => { S.aule.push({ id:uid('a'), nome:'Nuova aula', tipo:'Aula' }); save(); renderAule(); });
+$('#btnAuleRapide').addEventListener('click', () => {
+  [['Palestra','Palestra'],['Lab. informatica','Laboratorio'],['Lab. tecnologia','Laboratorio'],
+   ['Lab. scienze','Laboratorio'],['Aula musica','Laboratorio'],['Aula arte','Laboratorio']]
+    .forEach(([nome,tipo]) => { if(!S.aule.some(a => a.nome===nome)) S.aule.push({ id:uid('a'), nome, tipo }); });
+  save(); renderAule();
+});
+$('#btnGenAule').addEventListener('click', () => {
+  const n = clamp(num($('#nAule').value,0),0,99);
+  const pref = ($('#prefAule').value||'Aula').trim() || 'Aula';
+  let create = 0;
+  for(let i=1;i<=n;i++){
+    const nome = pref + ' ' + i;
+    if(!S.aule.some(a => a.nome===nome)){ S.aule.push({ id:uid('a'), nome, tipo:'Aula' }); create++; }
+  }
+  const rex = new RegExp('^' + pref.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ' (\\d+)$');
+  const extra = S.aule.filter(a => { const m = a.nome.match(rex); return m && +m[1] > n; });
+  const esito = (create, tolte, tenute) => {
+    normalizza(); save(); renderAule();
+    $('#auleMsg').insertAdjacentHTML('beforeend',
+      `<div class="msg ok">${create} aule create${tolte?', ' + tolte + ' eliminate':''}${tenute?', ' + tenute + ' conservate perché già assegnate a un docente o usate nell\'orario':''}.</div>`);
+  };
+  if(extra.length){
+    chiedi(`Ci sono ${extra.length} aule numerate oltre la ${n}: le elimino?`, () => {
+      let tolte = 0, tenute = 0;
+      extra.forEach(a => { if(aulaUsata(a.id)) tenute++; else { S.aule = S.aule.filter(x => x !== a); tolte++; } });
+      esito(create, tolte, tenute);
+    }, 'Elimina', true);
+    normalizza(); save(); renderAule();
+    return;
+  }
+  esito(create, 0, 0);
+});
+
+/* ---- 4. quadro orario ---- */
+$('#tbQuadro').addEventListener('input', e => {
+  const c = e.target.dataset.c, d = e.target.dataset.d; if(!c||!d) return;
+  if(!S.quadro[c]) S.quadro[c] = {};
+  S.quadro[c][d] = clamp(num(e.target.value,0),0,15);
+  save();
+});
+$('#tbQuadro').addEventListener('change', () => renderQuadro());
+$('#btnPreset30').addEventListener('click', () => {
+  S.classi.forEach(c => { S.quadro[c.id] = {}; S.discipline.forEach(d => S.quadro[c.id][d.id] = d.oreStd||0); });
+  save(); renderQuadro();
+});
+$('#btnPreset36').addEventListener('click', () => {
+  chiedi('Imposto 36 ore con due rientri pomeridiani (lunedì e mercoledì) per tutte le classi?', preset36, 'Imposta');
+});
+function preset36(){
+  let mensa = S.discipline.find(d => /mensa/i.test(d.nome));
+  if(!mensa){ mensa = { id:uid('d'), nome:'Mensa', sigla:'MEN', hue:30, principale:false, blocchi2:true, ultimaOra:false, oreStd:2 };
+    S.discipline.push(mensa); }
+  S.oreP = Math.max(S.oreP,3);
+  const extra = { ITA:6, APP:2, MAT:5, SCI:3, MEN:2 };
+  S.classi.forEach(c => {
+    S.quadro[c.id] = {};
+    S.discipline.forEach(d => S.quadro[c.id][d.id] = extra[d.sigla] !== undefined ? extra[d.sigla] : (d.oreStd||0));
+    S.giorni.forEach(g => c.g[g] = { m:5, p: (g==='Lunedì'||g==='Mercoledì') ? 3 : 0 });
+  });
+  normalizza(); save(); renderQuadro();
+}
+$('#btnCopiaPrima').addEventListener('click', () => {
+  if(!S.classi.length) return;
+  const src = S.quadro[S.classi[0].id]||{};
+  S.classi.forEach(c => S.quadro[c.id] = JSON.parse(JSON.stringify(src)));
+  save(); renderQuadro();
+});
+
+/* ---- 5. docenti ---- */
+$('#btnAddDoc').addEventListener('click', () => { S.docenti.push(nuovoDocente()); APERTI.add(S.docenti.length-1); save(); renderDocenti(); });
+$('#listaDocenti').addEventListener('toggle', e => {
+  const d = e.target.closest('details'); if(!d) return;
+  const i = +d.dataset.i; if(d.open) APERTI.add(i); else APERTI.delete(i);
+}, true);
+$('#listaDocenti').addEventListener('input', e => {
+  const i = e.target.dataset.i, j = e.target.dataset.j, f = e.target.dataset.f;
+  if(i===undefined) return;
+  const t = S.docenti[+i]; if(!t) return;
+  if(j!==undefined && f==='ore') t.cattedre[+j].ore = clamp(num(e.target.value,0),0,20);
+  else if(f==='nome') t.nome = e.target.value;
+  else if(f==='maxGiorno') t.maxGiorno = clamp(num(e.target.value,0),0,10);
+  else if(f==='maxConsec') t.maxConsec = clamp(num(e.target.value,0),0,10);
+  save();
+});
+$('#listaDocenti').addEventListener('change', e => {
+  const i = e.target.dataset.i, j = e.target.dataset.j, f = e.target.dataset.f;
+  if(i===undefined) return;
+  const t = S.docenti[+i]; if(!t) return;
+  if(j!==undefined && (f==='cl'||f==='di')) t.cattedre[+j][f] = e.target.value;
+  else if(f==='giornoLibero') t.giornoLibero = e.target.value;
+  else if(f==='addaula'){ if(e.target.value){ t.aule = (t.aule||[]).concat([e.target.value]); } }
+  else if(f==='ore'){ save(); renderDocenti(); return; }
+  save(); renderDocenti();
+});
+$('#listaDocenti').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  const i = b.dataset.i; if(i===undefined) return;
+  const t = S.docenti[+i]; if(!t) return;
+  if(b.dataset.rmaula){ t.aule = (t.aule||[]).filter(x => x!==b.dataset.rmaula); save(); renderDocenti(); }
+  else if(b.dataset.delc!==undefined){ t.cattedre.splice(+b.dataset.delc,1); save(); renderDocenti(); }
+  else if(b.dataset.addc){ t.cattedre.push({ cl:(S.classi[0]||{}).id, di:(S.discipline[0]||{}).id, ore:1 }); save(); renderDocenti(); }
+  else if(b.dataset.deldoc){
+    e.preventDefault();
+    chiedi('Elimino il docente ' + t.nome + ' con tutte le sue cattedre e le sue ore in orario?', () => {
+      S.docenti.splice(+i,1); APERTI.clear(); normalizza(); save(); renderDocenti();
+    }, 'Elimina docente', true);
+  }
+  else if(b.dataset.multi){ modalMulti(+i); }
+  else if(b.dataset.indG!==undefined){
+    const g = b.dataset.indG, s = +b.dataset.indS;
+    t.indisp = t.indisp||{}; t.indisp[g] = t.indisp[g]||[];
+    const k = t.indisp[g].indexOf(s);
+    if(k>=0) t.indisp[g].splice(k,1); else t.indisp[g].push(s);
+    b.dataset.on = k>=0 ? '0' : '1'; b.textContent = k>=0 ? '' : '✕';
+    save();
+  }
+});
+function modalMulti(i){
+  const t = S.docenti[i];
+  apriModal(`<h3>Aggiungi una disciplina su più classi</h3>
+    <div class="grid2" style="margin-bottom:10px">
+      <label class="fl">Disciplina<select id="mD">${S.discipline.map(d=>`<option value="${d.id}">${esc(d.nome)}</option>`).join('')}</select></label>
+      <label class="fl">Ore per classe<input type="number" id="mO" min="1" max="20" value="2"></label>
+    </div>
+    <div class="fl">Classi</div>
+    <div class="pool" style="margin-top:6px">
+      ${S.classi.map(c=>`<label class="chip" style="cursor:pointer"><input type="checkbox" value="${c.id}" class="mC"> ${esc(c.nome)}</label>`).join('')}
+    </div>
+    <div class="row" style="margin-top:8px"><button class="linkish" id="mAll">Seleziona tutte</button></div>
+    <div class="foot"><button class="btn ghost" data-close="1">Annulla</button><button class="btn" id="mGo">Aggiungi</button></div>`, box => {
+    const d0 = $('#mD',box);
+    const sync = () => { const d = disc(d0.value); if(d) $('#mO',box).value = d.oreStd||2; };
+    d0.addEventListener('change', sync); sync();
+    $('#mAll',box).addEventListener('click', () => $$('.mC',box).forEach(x => x.checked = true));
+    $('#mGo',box).addEventListener('click', () => {
+      const di = d0.value, ore = clamp(num($('#mO',box).value,1),1,20);
+      $$('.mC',box).filter(x => x.checked).forEach(x => {
+        if(!t.cattedre.some(k => k.cl===x.value && k.di===di)) t.cattedre.push({ cl:x.value, di, ore });
+      });
+      chiudiModal(); save(); renderDocenti();
+    });
+  });
+}
+
+/* ---- 6. vincoli ---- */
+function bindVincoli(sel){
+  $(sel).addEventListener('input', e => {
+    const k = e.target.dataset.v; if(!k) return;
+    S.vincoli[k] = e.target.type==='checkbox' ? e.target.checked : clamp(num(e.target.value,0),0,10);
+    const out = $(`[data-vv="${k}"]`); if(out) out.textContent = S.vincoli[k];
+    save();
+  });
+}
+bindVincoli('#vincoliHard'); bindVincoli('#vincoliSoft');
+
+/* ---- 7. orario ---- */
+$('#btnGenera').addEventListener('click', () => {
+  const q = num($('#selQualita').value,120), keep = $('#chkLock').checked;
+  const b = $('#btnGenera'); b.disabled = true;
+  $('#genState').textContent = 'Calcolo in corso…';
+  generaAsync(q, keep,
+    (n,tot,best) => { $('#genState').textContent = `tentativo ${n}/${tot} · ore non collocate: ${best ? best.mancanti : '—'}`; },
+    (best, I) => {
+      POOL = applicaSoluzione(best, I, keep);
+      b.disabled = false;
+      const auto = Object.keys(I.autoDay||{}).length;
+      $('#genState').textContent = 'Generazione completata' + (auto ? ` · ${auto} giorni liberi assegnati dal programma` : '');
+      normalizza(); save(true); renderOrario();
+    });
+});
+$('#btnSvuotaOrario').addEventListener('click', () => {
+  chiedi('Svuoto tutte le caselle non bloccate?', () => {
+    S.classi.forEach(c => S.giorni.forEach(g => { const r = S.orario[c.id][g]; for(let s=0;s<r.length;s++) if(r[s] && !r[s].lock) r[s] = null; }));
+    POOL = []; save(); renderOrario();
+  }, 'Svuota', true);
+});
+$('#segVista').addEventListener('click', e => {
+  const b = e.target.closest('button[data-v]'); if(!b) return;
+  S.ui.vista = b.dataset.v; S.ui.soggetto = '';
+  $$('#segVista button').forEach(x => x.setAttribute('aria-pressed', x===b));
+  renderSoggetti(); renderVista(); save();
+});
+$('#selSoggetto').addEventListener('change', e => { S.ui.soggetto = e.target.value; renderVista(); save(); });
+$('#btnStampa').addEventListener('click', () => window.print());
+$('#btnAddFissa').addEventListener('click', modalFissa);
+$('#btnSbloccaTutte').addEventListener('click', () => {
+  S.classi.forEach(c => S.giorni.forEach(g => (S.orario[c.id][g]||[]).forEach(v => { if(v) v.lock = false; })));
+  save(); renderOrario();
+});
+$('#listaFisse').addEventListener('click', e => {
+  const k = e.target.dataset.unlock; if(!k) return;
+  const [c,g,s] = k.split('|'); const v = cella(c,g,+s); if(v) v.lock = false;
+  save(); renderOrario();
+});
+$('#pool').addEventListener('dragstart', e => {
+  const c = e.target.closest('[data-pool]'); if(!c) return;
+  DRAG = { type:'pool', idx:+c.dataset.pool };
+  e.dataTransfer.setData('text/plain','pool'); e.dataTransfer.effectAllowed = 'move';
+});
+const vista = $('#vistaOrario');
+vista.addEventListener('dragstart', e => {
+  const l = e.target.closest('.lesson'); if(!l) return;
+  const td = l.closest('td[data-cell]'); if(!td){ e.preventDefault(); return; }
+  DRAG = { type:'cell', key: td.dataset.cell };
+  e.dataTransfer.setData('text/plain','cell'); e.dataTransfer.effectAllowed = 'move';
+});
+vista.addEventListener('dragover', e => {
+  const td = e.target.closest('td[data-cell]'); if(!td || !DRAG) return;
+  e.preventDefault(); td.classList.add('drop');
+});
+vista.addEventListener('dragleave', e => { const td = e.target.closest('td'); if(td) td.classList.remove('drop'); });
+vista.addEventListener('drop', e => {
+  const td = e.target.closest('td[data-cell]'); if(!td || !DRAG) return;
+  e.preventDefault(); td.classList.remove('drop');
+  const [cid,g,s0] = td.dataset.cell.split('|'), s = +s0;
+  if(DRAG.type==='cell'){ if(DRAG.key !== td.dataset.cell) scambia(DRAG.key, td.dataset.cell); }
+  else {
+    const p = POOL[DRAG.idx]; if(!p) return;
+    if(p.cl !== cid){ avvisa('Questa lezione appartiene alla classe ' + (cls(p.cl)?cls(p.cl).nome:'?') + ': aprila per collocarla.'); DRAG = null; return; }
+    const vecchio = cella(cid,g,s);
+    if(vecchio) POOL.push({ cl:cid, di:vecchio.dis, doc:vecchio.doc, ore:1 });
+    setCella(cid,g,s,{ doc:p.doc, dis:p.di, aula: aulaPerCella(p.doc,g,s,cid), lock:false });
+    if(p.ore>1) p.ore--; else POOL.splice(DRAG.idx,1);
+    save(); renderOrario();
+  }
+  DRAG = null;
+});
+vista.addEventListener('click', e => {
+  const td = e.target.closest('td[data-cell]'); if(!td) return;
+  modalCella(td.dataset.cell);
+});
+
+/* ---- 8. esportazioni ---- */
+const nomeFile = e => (S.meta.nome||'orario').replace(/[^\w\-]+/g,'_').slice(0,40) + '_' + (S.meta.anno||'').replace(/\D/g,'') + e;
+$('#btnExportJson').addEventListener('click', async () => {
+  const txt = JSON.stringify(S,null,1);
+  if(!(await scarica(nomeFile('.json'), txt, 'application/json')))
+    mostraTesto('Backup', txt, nomeFile('.json'), 'application/json');
+});
+$('#btnMostraJson').addEventListener('click', () => mostraTesto('Backup da copiare', JSON.stringify(S,null,1), nomeFile('.json'), 'application/json'));
+$('#btnImportJson').addEventListener('click', () => $('#fileJson').click());
+$('#fileJson').addEventListener('change', e => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => { importa(r.result); e.target.value = ''; };
+  r.readAsText(f);
+});
+$('#btnIncollaJson').addEventListener('click', () => {
+  apriModal(`<h3>Incolla il backup</h3><textarea id="iTxt" rows="10" style="width:100%" placeholder="Incolla qui il contenuto del file .json"></textarea>
+    <div class="foot"><button class="btn ghost" data-close="1">Annulla</button><button class="btn" id="iGo">Importa</button></div>`,
+    box => $('#iGo',box).addEventListener('click', () => { importa($('#iTxt',box).value); chiudiModal(); }));
+});
+function importa(txt){
+  try{
+    const o = JSON.parse(txt);
+    if(!o.classi || !o.discipline) throw new Error('formato');
+    const base = statoVuoto();
+    o.vincoli = Object.assign(base.vincoli, o.vincoli||{});
+    o.meta = Object.assign(base.meta, o.meta||{});
+    o.ui = Object.assign(base.ui, o.ui||{});
+    o.aule = o.aule||[];
+    S = o; POOL = []; normalizza(); save(true); vai('orario');
+    avvisa('Backup importato.');
+  }catch(err){ avvisa('Il file non sembra un backup di Orario Facile.'); }
+}
+$('#btnCsvClassi').addEventListener('click', () => mostraTesto('Orario delle classi', csvClassi(), nomeFile('_classi.csv'), 'text/csv'));
+$('#btnCsvDocenti').addEventListener('click', () => mostraTesto('Orario dei docenti', csvDocenti(), nomeFile('_docenti.csv'), 'text/csv'));
+$('#btnCsvCattedre').addEventListener('click', () => mostraTesto('Elenco cattedre', csvCattedre(), nomeFile('_cattedre.csv'), 'text/csv'));
+
+/* ---- modale ---- */
+$('#overlay').addEventListener('mousedown', e => { if(e.target.id==='overlay') chiudiModal(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') chiudiModal(); });
+
+/* ---- avvio ---- */
+(function boot(){
+  applicaTema(temaCorrente());
+  const salvato = load();
+  S = salvato || datiEsempio();
+  normalizza();
+  renderTabs();
+  TABS.forEach(([k]) => { const p = $('#p-'+k); if(p) p.hidden = (k !== S.ui.tab); });
+  $$('#segVista button').forEach(x => x.setAttribute('aria-pressed', x.dataset.v === S.ui.vista));
+  render();
+  $('#saveState').textContent = salvato ? 'Ripreso dall\'ultimo salvataggio' : 'Scuola di esempio';
+  if(!salvato){
+    // prima apertura: prepara subito una proposta di orario
+    S.ui.tab = 'orario';
+    TABS.forEach(([k]) => { const p = $('#p-'+k); if(p) p.hidden = (k !== 'orario'); });
+    renderTabs(); render();
+    $('#genState').textContent = 'Preparo una prima proposta…';
+    generaAsync(24, false, (n,tot,best) => { $('#genState').textContent = `tentativo ${n}/${tot} · ore non collocate: ${best?best.mancanti:'—'}`; },
+      (best,I) => { POOL = applicaSoluzione(best,I,false); normalizza(); save(true);
+        $('#genState').textContent = 'Proposta iniziale pronta — premi «Genera orario» per cercarne una migliore.'; renderOrario(); });
+  }
+})();
+
+</script>
+</body>
+</html>
