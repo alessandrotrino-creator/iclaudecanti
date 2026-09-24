@@ -1,0 +1,141 @@
+/*
+  viste.js – disegna la tabella dell'orario.
+
+  La tabella ha sempre le ORE in riga. In colonna si sceglie una variabile:
+  CLASSI, DOCENTI, AULE oppure GIORNI (la settimana).
+  I filtri (classe, docente, aula) si possono combinare tra loro liberamente.
+*/
+const Viste = (() => {
+  const DIMENSIONI = {
+    classe:  { singolare: 'Classe',  plurale: 'Classi' },
+    docente: { singolare: 'Docente', plurale: 'Docenti' },
+    aula:    { singolare: 'Aula',    plurale: 'Aule' },
+    giorno:  { singolare: 'Giorno',  plurale: 'Giorni' }
+  };
+  const FILTRI = ['classe', 'docente', 'aula'];
+
+  // Evita che testi presi dai dati vengano interpretati come HTML
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // Un colore diverso per ogni materia: le materie vengono messe in ordine alfabetico
+  // e distanziate sul cerchio dei colori (angolo aureo), così colori vicini non si ripetono
+  const tinte = new WeakMap();
+  function tinta(D, materia) {
+    if (!tinte.has(D)) {
+      const mappa = new Map();
+      [...new Set(D.lezioni.map(l => l.materia))].sort().forEach((m, i) => mappa.set(m, Math.round((i * 137.508 + 200) % 360)));
+      tinte.set(D, mappa);
+    }
+    return tinte.get(D).get(materia) || 0;
+  }
+
+  // Lezioni che rispettano giorno (se serve) e filtri attivi
+  function lezioniFiltrate(D, stato) {
+    return D.lezioni.filter(l =>
+      (stato.colonne === 'giorno' || l.giorno === stato.giorno) &&
+      FILTRI.every(k => !stato.filtri[k] || l[k] === stato.filtri[k]));
+  }
+
+  // Le colonne da mostrare
+  function colonne(D, stato, lezioni) {
+    if (stato.colonne === 'giorno') return D.giorni.map(g => ({ id: g, nome: g }));
+    const k = stato.colonne;
+    let elenco = D[k];
+    if (stato.filtri[k]) elenco = elenco.filter(e => e.id === stato.filtri[k]);
+    // Con filtri su altre variabili, tengo solo le colonne che hanno almeno una lezione
+    const altriFiltri = FILTRI.some(f => f !== k && stato.filtri[f]);
+    if (altriFiltri) elenco = elenco.filter(e => lezioni.some(l => l[k] === e.id));
+    return elenco;
+  }
+
+  // Contenuto di una cella: materia + le informazioni che non sono già nella colonna
+  function cella(D, lezioniCella, stato) {
+    return lezioniCella.map(l => {
+      const righe = FILTRI
+        .filter(k => k !== stato.colonne && !stato.filtri[k])
+        .map(k => `<span class="dato dato-${k}"><span class="solo-lettori">${DIMENSIONI[k].singolare}: </span>${esc(Dati.nome(k, l[k]))}</span>`)
+        .join('');
+      return `<div class="lezione" style="--tinta:${tinta(D, l.materia)}"><strong class="materia">${esc(l.materia || '—')}</strong>${righe}</div>`;
+    }).join('');
+  }
+
+  // Titolo della tabella, es. "Martedì · Classi · docente Anna Rossi"
+  function descrizione(stato) {
+    const parti = [stato.colonne === 'giorno' ? 'Settimana' : stato.giorno];
+    const filtri = FILTRI.filter(k => stato.filtri[k]).map(k => DIMENSIONI[k].singolare.toLowerCase() + ' ' + Dati.nome(k, stato.filtri[k]));
+    // Il nome delle colonne serve solo se non è già chiaro (es. "Classi" senza filtro sulla classe)
+    if (stato.colonne !== 'giorno' && !stato.filtri[stato.colonne]) parti.push(DIMENSIONI[stato.colonne].plurale);
+    return parti.concat(filtri).join(' · ');
+  }
+
+  /*
+    Disegna la tabella nell'elemento indicato.
+    adesso = { giorno, ora } serve per evidenziare l'ora in corso.
+    Restituisce il numero di lezioni mostrate.
+  */
+  function disegna(tabella, D, stato, adesso) {
+    const lezioni = lezioniFiltrate(D, stato);
+    const cols = colonne(D, stato, lezioni);
+    const giornoCol = c => stato.colonne === 'giorno' ? c.id : stato.giorno;
+    // Indice veloce: "giorno|ora|colonna" -> lezioni
+    const indice = new Map();
+    lezioni.forEach(l => {
+      const chiave = (stato.colonne === 'giorno' ? l.giorno : l[stato.colonne]) + '|' + l.ora;
+      if (!indice.has(chiave)) indice.set(chiave, []);
+      indice.get(chiave).push(l);
+    });
+
+    let html = `<caption id="didascalia">${esc(descrizione(stato))}</caption><thead><tr><th scope="col" class="angolo">Ora</th>`;
+    cols.forEach(c => {
+      const oggi = stato.colonne === 'giorno' && adesso && c.id === adesso.giorno;
+      html += `<th scope="col"${oggi ? ' class="col-oggi"' : ''}>${esc(c.nome)}${oggi ? ' <span class="etichetta-oggi">oggi</span>' : ''}</th>`;
+    });
+    html += '</tr></thead><tbody>';
+    D.ore.forEach(o => {
+      const rigaCorrente = adesso && adesso.ora === o.n && stato.colonne !== 'giorno' && stato.giorno === adesso.giorno;
+      html += `<tr${rigaCorrente ? ' class="ora-corrente"' : ''}><th scope="row"><span class="num-ora">${o.n}ª</span><span class="orario-ora">${esc(o.inizio)}–${esc(o.fine)}</span>${rigaCorrente ? '<span class="solo-lettori"> (ora in corso)</span>' : ''}</th>`;
+      cols.forEach(c => {
+        const corrente = adesso && adesso.ora === o.n && giornoCol(c) === adesso.giorno;
+        const contenuto = indice.get(c.id + '|' + o.n) || [];
+        html += `<td${corrente ? ' class="cella-corrente"' : ''}>${cella(D, contenuto, stato)}</td>`;
+      });
+      html += '</tr>';
+    });
+    tabella.innerHTML = html + '</tbody>';
+    tabella.dataset.colonne = cols.length;
+    return lezioni.length;
+  }
+
+  // Riquadro "adesso / dopo" quando si guarda un solo docente, classe o aula.
+  // adesso = { giorno, ora, minuto }: giorno e ora di scuola in questo momento.
+  function riquadroAdesso(D, stato, adesso) {
+    if (stato.colonne === 'giorno' || !FILTRI.some(k => stato.filtri[k])) return '';
+    const delGiorno = D.lezioni.filter(l => l.giorno === stato.giorno && FILTRI.every(k => !stato.filtri[k] || l[k] === stato.filtri[k]));
+    const descrivi = l => [l.materia]
+      .concat(FILTRI.filter(k => !stato.filtri[k]).map(k => Dati.nome(k, l[k])))
+      .filter(Boolean).map(esc).join(' · ');
+    const minutiInizio = n => { const o = D.ore.find(x => x.n === n); const [h, m] = (o ? o.inizio : '0:0').split(':').map(Number); return h * 60 + m; };
+    const blocco = (classe, etichetta, lezioni) =>
+      `<div class="${classe}"><span class="etichetta">${etichetta}</span><span class="valore">${lezioni.length ? lezioni.map(descrivi).join('<br>') : 'Nessuna lezione'}</span></div>`;
+    const etichettaOra = n => { const o = D.ore.find(x => x.n === n); return `${n}ª ora (${esc(o ? o.inizio : '')})`; };
+
+    // Si guarda un altro giorno (es. domani): mostro solo la prima lezione di quel giorno
+    const oggi = adesso && adesso.giorno === stato.giorno;
+    const future = oggi ? delGiorno.filter(l => minutiInizio(l.ora) > adesso.minuto) : delGiorno;
+    const nProssima = future.length ? Math.min(...future.map(l => l.ora)) : null;
+    const prossime = future.filter(l => l.ora === nProssima);
+    let html = '';
+    if (oggi && adesso.ora) {
+      html += blocco('blocco-adesso', 'Adesso · ' + etichettaOra(adesso.ora), delGiorno.filter(l => l.ora === adesso.ora));
+    }
+    if (prossime.length) {
+      const titolo = oggi ? (adesso.ora ? 'Dopo' : 'Prima lezione') : 'Prima lezione di ' + esc(stato.giorno.toLowerCase());
+      html += blocco('blocco-dopo', titolo + ' · ' + etichettaOra(nProssima), prossime);
+    } else if (oggi && adesso.ora) {
+      html += '<div class="blocco-dopo"><span class="etichetta">Dopo</span><span class="valore">Nessun’altra lezione oggi</span></div>';
+    }
+    return html;
+  }
+
+  return { disegna, riquadroAdesso, DIMENSIONI, FILTRI, esc };
+})();

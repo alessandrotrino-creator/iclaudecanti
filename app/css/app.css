@@ -1,0 +1,258 @@
+/*
+  app.css – stile dell'app Orario DADA
+  Mobile first: prima le regole per il telefono, poi quelle per schermi più grandi.
+*/
+
+/* ---------- Colori (tema chiaro e scuro) ---------- */
+:root {
+  --sfondo: #f4f6fa;
+  --superficie: #ffffff;
+  --testo: #1a1f2b;
+  --testo-tenue: #566074;
+  --bordo: #d8dde7;
+  --primario: #1c56b8;
+  --primario-testo: #ffffff;
+  --evidenza: #fff3c4;
+  --evidenza-bordo: #d9a300;
+  --avviso: #eef3fd;
+  --errore: #b3261e;
+  --lezione-l: 94%;   /* luminosità dello sfondo delle lezioni */
+  --lezione-s: 70%;
+  --lezione-bordo-l: 42%;
+  --ombra: 0 1px 3px rgba(20, 30, 50, .12);
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sfondo: #11151c;
+    --superficie: #1a2029;
+    --testo: #e8ecf3;
+    --testo-tenue: #a3adbf;
+    --bordo: #313a48;
+    --primario: #7fa8f5;
+    --primario-testo: #0d1a33;
+    --evidenza: #3d3413;
+    --evidenza-bordo: #e6b422;
+    --avviso: #1d2738;
+    --errore: #ff8a80;
+    --lezione-l: 20%;
+    --lezione-s: 40%;
+    --lezione-bordo-l: 62%;
+    --ombra: 0 1px 3px rgba(0, 0, 0, .5);
+  }
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  background: var(--sfondo);
+  color: var(--testo);
+}
+[hidden] { display: none !important; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--primario); outline-offset: 2px; }
+
+/* Testo letto solo dai lettori di schermo */
+.solo-lettori {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+.salta { position: absolute; left: -9999px; top: 0; }
+.salta:focus { left: 8px; top: 8px; z-index: 100; background: var(--superficie); padding: 8px 12px; }
+
+/* ---------- Pulsanti ---------- */
+.pulsante, .voce-menu, .segmenti button, .giorni button {
+  min-height: 44px;              /* dimensione comoda da toccare */
+  padding: 8px 14px;
+  border: 1px solid var(--bordo);
+  border-radius: 10px;
+  background: var(--superficie);
+  cursor: pointer;
+}
+.pulsante.primario { background: var(--primario); color: var(--primario-testo); border-color: var(--primario); }
+.pulsante.leggero { background: transparent; }
+.pulsante:disabled { opacity: .45; cursor: default; }
+select {
+  min-height: 44px; padding: 6px 10px; border: 1px solid var(--bordo);
+  border-radius: 10px; background: var(--superficie); max-width: 100%;
+}
+
+/* ---------- Caricamento ---------- */
+.caricamento {
+  min-height: 100vh; display: flex; flex-direction: column; gap: 12px;
+  align-items: center; justify-content: center; padding: 16px; text-align: center;
+}
+
+/* ---------- Accesso ---------- */
+.accesso {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.scheda-accesso {
+  width: 100%; max-width: 380px; background: var(--superficie); border-radius: 18px;
+  box-shadow: var(--ombra); padding: 28px 22px; text-align: center;
+}
+.scheda-accesso h1 { margin: 8px 0 4px; font-size: 1.6rem; }
+.ricordami { display: flex; gap: 10px; align-items: center; justify-content: center; margin: 18px 0; min-height: 44px; cursor: pointer; }
+.ricordami input { width: 22px; height: 22px; }
+.pulsante-google { display: flex; justify-content: center; min-height: 44px; }
+.modulo-demo { display: grid; gap: 10px; text-align: left; }
+.modulo-demo input { min-height: 44px; padding: 8px 12px; border: 1px solid var(--bordo); border-radius: 10px; background: var(--superficie); }
+.avviso-demo { background: var(--evidenza); border-left: 4px solid var(--evidenza-bordo); padding: 10px 12px; border-radius: 8px; margin: 0 0 4px; font-size: .9rem; }
+.errore { color: var(--errore); min-height: 1.4em; margin: 12px 0 0; }
+
+/* ---------- Barra in alto ---------- */
+.barra {
+  position: relative; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 8px 16px; padding-top: max(8px, env(safe-area-inset-top));
+  background: var(--superficie); border-bottom: 1px solid var(--bordo);
+}
+.marchio { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 4px; cursor: pointer; text-align: left; min-height: 44px; }
+.testo-marchio { display: flex; flex-direction: column; }
+.nome-app { font-weight: 700; font-size: 1.15rem; }
+.info-scuola { font-size: .8rem; color: var(--testo-tenue); }
+.titolo-monitor { display: none; }
+.azioni-barra { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.orologio { display: none; color: var(--testo-tenue); font-variant-numeric: tabular-nums; }
+.pulsante-utente {
+  width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--primario); color: var(--primario-testo); font-weight: 700;
+}
+.menu {
+  position: absolute; right: 16px; top: calc(100% + 4px); z-index: 20;
+  width: min(320px, calc(100vw - 32px)); display: grid; gap: 8px;
+  background: var(--superficie); border: 1px solid var(--bordo); border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .18); padding: 14px;
+}
+.menu .utente { margin: 0 0 6px; word-break: break-all; }
+.menu .utente span { color: var(--testo-tenue); font-size: .9rem; }
+.menu label { font-size: .9rem; color: var(--testo-tenue); }
+.voce-menu { text-align: left; }
+
+/* ---------- Controlli ---------- */
+.controlli { padding: 10px 16px 0; display: grid; gap: 10px; }
+.riga-controlli { display: grid; gap: 10px; }
+.etichetta-controllo { display: block; font-size: .8rem; color: var(--testo-tenue); margin-bottom: 4px; }
+.segmenti { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.segmenti button { border-radius: 0; margin-left: -1px; padding: 8px 6px; }
+.segmenti button:first-child { border-radius: 10px 0 0 10px; margin-left: 0; }
+.segmenti button:last-child { border-radius: 0 10px 10px 0; }
+.segmenti button[aria-pressed="true"], .giorni button[aria-pressed="true"] {
+  background: var(--primario); color: var(--primario-testo); border-color: var(--primario); font-weight: 600;
+}
+.filtri { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: end; }
+.filtri label { display: grid; gap: 4px; font-size: .8rem; color: var(--testo-tenue); min-width: 0; }
+.filtri select { color: var(--testo); width: 100%; }
+.giorni { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.giorni button { flex: 1 0 auto; position: relative; }
+.giorni button.e-oggi::after {       /* pallino sotto il giorno di oggi */
+  content: ""; position: absolute; left: 50%; bottom: 5px; width: 5px; height: 5px;
+  margin-left: -2.5px; border-radius: 50%; background: currentColor;
+}
+.giorno-lungo { display: none; }
+
+/* ---------- Contenuto ---------- */
+main#contenuto { padding: 10px 16px 16px; outline: none; }
+.avviso { background: var(--avviso); border-radius: 10px; padding: 10px 14px; margin: 0 0 10px; }
+.adesso {
+  display: grid; gap: 8px; margin-bottom: 10px;
+}
+.blocco-adesso, .blocco-dopo {
+  display: grid; gap: 2px; padding: 10px 14px; border-radius: 12px;
+  background: var(--superficie); box-shadow: var(--ombra);
+}
+.blocco-adesso { border-left: 5px solid var(--evidenza-bordo); background: var(--evidenza); }
+.etichetta { font-size: .8rem; color: var(--testo-tenue); }
+.valore { font-weight: 600; font-size: 1.05rem; }
+
+/* ---------- Tabella dell'orario ---------- */
+.contenitore-tabella {
+  overflow: auto; max-height: calc(100vh - 150px); max-height: calc(100dvh - 150px);
+  background: var(--superficie); border: 1px solid var(--bordo); border-radius: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+.tabella-orario { border-collapse: separate; border-spacing: 0; width: 100%; }
+.tabella-orario caption {
+  caption-side: top; text-align: left; font-weight: 600; padding: 10px 12px;
+  position: sticky; left: 0;
+}
+.tabella-orario th, .tabella-orario td {
+  border-bottom: 1px solid var(--bordo); border-right: 1px solid var(--bordo);
+  padding: 4px; vertical-align: top;
+}
+.tabella-orario td { min-width: 118px; }
+.tabella-orario[data-colonne="1"] td { min-width: 0; width: 100%; }
+.tabella-orario thead th {
+  position: sticky; top: 0; z-index: 2; background: var(--superficie);
+  font-size: .9rem; padding: 8px 6px; white-space: nowrap;
+}
+.tabella-orario tbody th {       /* colonna delle ore, sempre visibile */
+  position: sticky; left: 0; z-index: 1; background: var(--superficie);
+  text-align: left; white-space: nowrap; width: 1%; padding: 6px 8px;
+}
+.tabella-orario thead th.angolo { left: 0; z-index: 3; }
+.num-ora { display: block; font-weight: 700; font-size: 1.05rem; }
+.orario-ora { display: block; font-size: .72rem; color: var(--testo-tenue); font-variant-numeric: tabular-nums; }
+.etichetta-oggi { font-size: .7rem; font-weight: 400; color: var(--testo-tenue); }
+
+/* Ora in corso evidenziata */
+.ora-corrente th, .ora-corrente td, .cella-corrente { background: var(--evidenza) !important; }
+.ora-corrente th { box-shadow: inset 5px 0 0 var(--evidenza-bordo); }
+.col-oggi { box-shadow: inset 0 -3px 0 var(--primario); }
+
+/* Singola lezione: colore di sfondo in base alla materia */
+.lezione {
+  display: grid; gap: 1px; padding: 6px 8px; border-radius: 8px;
+  background: hsl(var(--tinta) var(--lezione-s) var(--lezione-l));
+  border-left: 4px solid hsl(var(--tinta) 60% var(--lezione-bordo-l));
+}
+.lezione + .lezione { margin-top: 4px; }
+.materia { font-size: .92rem; line-height: 1.2; }
+.dato { font-size: .8rem; color: var(--testo-tenue); line-height: 1.25; }
+.dato-aula::before { content: "📍 "; content: "📍 " / ""; }  /* la puntina non viene letta ad alta voce */
+
+.piede { padding: 0 16px 20px; padding-bottom: max(20px, env(safe-area-inset-bottom)); font-size: .8rem; color: var(--testo-tenue); }
+
+/* ---------- Schermi più larghi (tablet, PC) ---------- */
+@media (min-width: 700px) {
+  .filtri { grid-template-columns: repeat(3, minmax(120px, 1fr)) auto; }
+  .giorno-lungo { display: inline; }
+  .giorno-corto { display: none; }
+  .giorni button { flex: 0 1 140px; }
+  .orologio { display: inline; }
+  .adesso { grid-template-columns: 1fr 1fr; }
+  .contenitore-tabella { max-height: none; }
+  .tabella-orario td { min-width: 130px; }
+}
+
+/* Schermi larghi: pulsanti e filtri sulla stessa riga */
+@media (min-width: 1000px) {
+  .riga-controlli { grid-template-columns: auto 1fr; align-items: end; gap: 16px; }
+}
+
+/* ---------- Modalità monitor di classe: tutto più grande ---------- */
+body.modalita-monitor { font-size: 20px; }
+body.modalita-monitor .titolo-monitor {
+  display: block; font-size: 1.6rem; font-weight: 700; flex: 1; text-align: center;
+}
+body.modalita-monitor .orologio { display: inline; font-size: 1.3rem; font-weight: 600; color: var(--testo); }
+body.modalita-monitor .info-scuola { display: none; }
+body.modalita-monitor .valore { font-size: 1.5rem; }
+body.modalita-monitor .materia { font-size: 1.15rem; }
+body.modalita-monitor .dato { font-size: 1rem; }
+body.modalita-monitor .num-ora { font-size: 1.3rem; }
+body.modalita-monitor .orario-ora { font-size: .9rem; }
+body.modalita-monitor .contenitore-tabella { max-height: none; }
+
+/* ---------- Stampa ---------- */
+@media print {
+  .barra, .controlli, .adesso, .piede, .salta { display: none !important; }
+  .contenitore-tabella { overflow: visible; max-height: none; border: 0; }
+  .tabella-orario thead th, .tabella-orario tbody th { position: static; }
+}
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

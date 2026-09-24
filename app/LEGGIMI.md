@@ -1,0 +1,103 @@
+# Orario DADA – app di visualizzazione
+
+App per consultare l'orario da **smartphone, tablet (iPhone/iPad e Android)** e **monitor interattivi di classe** (Android di bordo oppure PC OPS con Windows 10/11).
+È una *web app installabile* (PWA): si apre dal browser, si può aggiungere alla schermata Home come un'app vera e funziona anche senza connessione, con l'ultimo orario scaricato.
+
+Indirizzo: **https://alessandrotrino-creator.github.io/iclaudecanti/app/**
+
+## Schermata iniziale
+
+All'apertura l'app sceglie da sola cosa mostrare:
+
+| Chi apre l'app | Cosa vede |
+|---|---|
+| **Monitor di classe** | l'orario di oggi della **sua aula**, a caratteri grandi, con "Adesso / Dopo" |
+| **Docente** (riconosciuto dall'email) | il **suo orario di oggi**, con "Adesso / Dopo" |
+| **Tutti gli altri** | l'**orario di oggi**: ore in riga (1ª 8–9 … 8ª 15–16), **classi in colonna** |
+
+- L'ora in corso è evidenziata in giallo.
+- Nel weekend, o quando le lezioni del giorno sono finite, compare il giorno di scuola successivo (con un avviso).
+- Il logo in alto a sinistra riporta sempre alla schermata iniziale.
+
+## Cambiare visualizzazione
+
+- **In colonna**: Classi, Docenti, Aule oppure **Settimana** (i giorni in colonna).
+- **Filtri** Classe, Docente e Aula, combinabili tra loro. Esempi:
+  - Docenti in colonna + classe 2B → tutti i docenti che entrano in 2B quel giorno
+  - Settimana + docente Rossi → la settimana della prof.ssa Rossi
+  - Classi in colonna + aula Palestra → quali classi vanno in palestra e quando
+  - Settimana + classe 1A + docente Costa → le ore di Costa nella 1A
+- I pulsanti dei giorni cambiano giorno; "Oggi" torna al giorno corrente.
+
+## Accesso con l'account della scuola
+
+Si entra con **"Accedi con Google"**: sono accettati solo gli account **@comprensivoalmese.it** (la scuola usa Google Workspace).
+La password la vede solo Google. Con **"Ricordami su questo dispositivo"** l'accesso resta memorizzato per 30 giorni (lo si cambia in `js/config.js`).
+
+### Da fare una volta sola (amministratore Google Workspace della scuola)
+
+Finché non si fa questo passaggio l'app è in **modalità dimostrativa**: chiede solo l'email e **non la verifica**.
+
+1. Aprire https://console.cloud.google.com/ con un account della scuola e creare un progetto (es. "Orario DADA").
+2. *API e servizi → Schermata consenso OAuth*: tipo **Interno** (così possono entrare solo gli utenti della scuola), nome app "Orario DADA".
+3. *API e servizi → Credenziali → Crea credenziali → ID client OAuth*:
+   - Tipo: **Applicazione web**
+   - Origini JavaScript autorizzate: `https://alessandrotrino-creator.github.io` (e, per le prove, `http://localhost:8765`)
+4. Copiare l'**ID client** (finisce con `.apps.googleusercontent.com`) in `js/config.js`, nel campo `googleClientId`.
+
+> **Attenzione – limite di GitHub Pages.** L'accesso impedisce di usare l'app a chi non è della scuola, ma il file `dati/orario.json` resta scaricabile da chi conosce l'indirizzo esatto, perché GitHub Pages pubblica tutto. Un orario scolastico di solito non contiene dati riservati. Se però si vuole proteggerlo davvero, bisogna servire i dati da un servizio con controllo di accesso (per esempio un Google Apps Script limitato al dominio della scuola) e indicarne l'indirizzo in `urlDati`.
+
+## Monitor interattivi di classe
+
+1. Sul monitor aprire l'indirizzo dell'app con il nome dell'aula, per esempio
+   `https://alessandrotrino-creator.github.io/iclaudecanti/app/?monitor=Aula%203`
+   (oppure: menu in alto a destra → "Questo dispositivo è il monitor dell'aula").
+2. Accedere una volta con "Ricordami" spuntato.
+3. Installare l'app:
+   - **Android di bordo** (Chrome): menu ⋮ → *Installa app* / *Aggiungi a schermata Home*
+   - **OPS Windows 10/11** (Edge): icona "Installa" nella barra degli indirizzi, oppure menu … → *App → Installa questo sito come app*. Per aprirla all'avvio: *edge://apps* → clic destro sull'app → *Avvia all'accesso*.
+4. Il monitor torna da solo all'orario dell'aula dopo 2 minuti senza tocchi e si aggiorna ogni 15 minuti.
+
+Su **iPhone/iPad** l'app si installa da Safari: *Condividi → Aggiungi alla schermata Home*.
+
+## Aggiornare l'orario
+
+L'app legge **`dati/orario.json`** (nella radice del repo). Va bene:
+
+- il **backup JSON di Orario Facile** (scheda Esporta → "Scarica backup"): basta salvarlo come `dati/orario.json`;
+- oppure il formato dell'app, facile da scrivere anche a mano:
+
+```json
+{
+  "scuola": "IC Almese", "anno": "2026/2027", "aggiornato": "2026-09-24",
+  "giorni": ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì"],
+  "ore": [{ "n": 1, "inizio": "08:00", "fine": "09:00" }],
+  "classi": ["1A", "1B"],
+  "docenti": [{ "id": "rossi-anna", "nome": "Anna Rossi", "email": "anna.rossi@comprensivoalmese.it" }],
+  "aule": [{ "id": "aula-1", "nome": "Aula 1" }],
+  "lezioni": [
+    { "giorno": "Lunedì", "ora": 1, "classe": "1A", "materia": "Italiano", "docente": "rossi-anna", "aula": "aula-1" }
+  ]
+}
+```
+
+Il docente viene riconosciuto dal campo `email`. Se manca, l'app prova con *nome.cognome@comprensivoalmese.it* ricavato dal nome.
+L'orario di esempio attuale è **inventato**.
+
+## File
+
+```
+app/
+  index.html            struttura della pagina
+  css/app.css           stile (telefono, tablet, monitor, tema scuro)
+  js/config.js          impostazioni (dominio, ID client Google, durata "Ricordami"...)
+  js/dati.js            lettura dell'orario (anche dal backup di Orario Facile)
+  js/accesso.js         accesso con Google
+  js/viste.js           disegno della tabella
+  js/app.js             schermata iniziale, pulsanti, monitor, aggiornamenti
+  sw.js                 funzionamento senza connessione
+  manifest.webmanifest  installazione come app
+  icone/                icone dell'app
+```
+
+Per provarla sul PC serve un piccolo server (dalla cartella del repo): `py -m http.server 8765`, poi aprire http://localhost:8765/app/
