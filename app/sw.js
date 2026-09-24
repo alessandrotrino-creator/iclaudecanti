@@ -21,7 +21,9 @@ self.addEventListener('fetch', evento => {
   // Solo file del nostro sito (non Google, non altri siti)
   if (richiesta.method !== 'GET' || new URL(richiesta.url).origin !== location.origin) return;
   evento.respondWith(
-    fetch(richiesta)
+    // cache: 'no-cache' = chiede sempre al sito se il file è cambiato, invece di usare
+    // la copia che il browser tiene per 10 minuti (così le modifiche si vedono subito)
+    fetch(richiesta, { cache: 'no-cache' })
       .then(risposta => {
         if (risposta.ok) {
           const copia = risposta.clone();
