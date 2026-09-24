@@ -132,6 +132,8 @@ select {
 .menu .utente span { color: var(--testo-tenue); font-size: .9rem; }
 .menu label { font-size: .9rem; color: var(--testo-tenue); }
 .voce-menu { text-align: left; }
+a.voce-menu { display: flex; align-items: center; text-decoration: none; color: var(--primario); }
+.gruppo-menu { display: grid; gap: 6px; }
 
 /* ---------- Controlli ---------- */
 .controlli { padding: 10px 16px 0; display: grid; gap: 10px; }

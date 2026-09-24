@@ -97,6 +97,9 @@
     $('#btnUtente').setAttribute('aria-label', 'Menu di ' + utente.nome);
     $('#btnMioOrario').hidden = !mioDocente;
     $('#btnSchermoIntero').hidden = !document.fullscreenEnabled;
+    // Scelta tra la bozza di Orario Facile e l'orario pubblicato
+    $('#gruppoFonte').hidden = !D.bozzaDisponibile;
+    $('#sceltaFonte').value = D.fonte;
   }
 
   /* ---------- disegno della pagina ---------- */
@@ -137,7 +140,8 @@
     $('#piede').innerHTML = [
       D.aggiornato ? 'Orario aggiornato al ' + Viste.esc(new Date(D.aggiornato).toLocaleDateString('it-IT')) : '',
       D.offline ? '<strong>Senza connessione: stai vedendo l\'ultima copia salvata.</strong>' : '',
-      utente.metodo === 'demo' ? '<strong>Modalità dimostrativa: accesso non verificato.</strong>' : ''
+      utente.metodo === 'demo' ? '<strong>Modalità dimostrativa: accesso non verificato.</strong>' : '',
+      D.fonte === 'bozza' ? 'Stai vedendo l’orario di <a href="../orario-facile/" target="orariofacile">Orario Facile</a> salvato su questo dispositivo: si aggiorna da solo mentre lo modifichi.' : ''
     ].filter(Boolean).join(' · ');
   }
 
@@ -190,6 +194,9 @@
       chiudiMenu();
     });
     $('#btnRicarica').addEventListener('click', async () => { chiudiMenu(); await ricaricaDati(true); });
+    $('#sceltaFonte').addEventListener('change', e => { Dati.impostaFonte(e.target.value); chiudiMenu(); ricaricaDati(true); });
+    // Quando Orario Facile (aperto in un'altra scheda) salva, l'app si aggiorna subito
+    window.addEventListener('storage', e => { if (e.key === Dati.CHIAVE_BOZZA) ricaricaDati(false); });
     $('#btnEsci').addEventListener('click', () => Accesso.esci());
 
     ['pointerdown', 'keydown'].forEach(t => document.addEventListener(t, tocco, { passive: true }));
@@ -198,14 +205,20 @@
   /* ---------- aggiornamenti automatici ---------- */
   async function ricaricaDati(manuale) {
     try {
+      const fontePrima = D.fonte, filtri = Object.assign({}, stato.filtri);
       D = await Dati.carica();
       mioDocente = Dati.docentePerEmail(utente.email);
-      const s = JSON.stringify(stato.filtri);
       preparaControlli();
-      stato.filtri = JSON.parse(s);
+      if (aulaMonitor && !D.mappa.aula.has(aulaMonitor)) aulaMonitor = '';
+      $('#sceltaMonitor').value = aulaMonitor;
+      // Cambiata la fonte (bozza <-> pubblicato): classi, docenti e aule sono diversi, si riparte
+      if (D.fonte !== fontePrima) { schermataIniziale(); return; }
+      // Stessa fonte aggiornata: tengo la vista, ma solo i filtri che esistono ancora
+      Viste.FILTRI.forEach(k => { stato.filtri[k] = D.mappa[k].has(filtri[k]) ? filtri[k] : ''; });
+      if (!D.giorni.includes(stato.giorno)) stato.giorno = giornoIniziale().giorno;
       aggiorna();
     } catch (e) {
-      if (manuale) { $('#avviso').hidden = false; $('#avviso').textContent = 'Non è stato possibile aggiornare l\'orario.'; }
+      if (manuale) { $('#avviso').hidden = false; $('#avviso').textContent = 'Non è stato possibile aggiornare l’orario.'; }
     }
   }
 

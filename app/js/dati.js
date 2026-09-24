@@ -4,6 +4,11 @@
 */
 const Dati = (() => {
   const CHIAVE_COPIA = 'orariodada.copiaDati';
+  // Orario Facile salva il suo lavoro qui. Le due app stanno sullo stesso sito,
+  // quindi condividono la memoria del browser e possiamo leggerlo direttamente.
+  const CHIAVE_BOZZA = 'orariofacile.v2';
+  // Quale orario mostrare: '' = automatico (la bozza se c'è), 'bozza' o 'pubblicato'
+  const CHIAVE_FONTE = 'orariodada.fonte';
 
   // Toglie accenti e simboli: "Nicolò D'Amico" -> "nicolo damico"
   function semplifica(testo) {
@@ -50,7 +55,7 @@ const Dati = (() => {
       });
     }));
     return {
-      scuola: S.meta && S.meta.nome, anno: S.meta && S.meta.anno,
+      scuola: S.meta && S.meta.nome, anno: S.meta && S.meta.anno, aggiornato: S.pubblicato || '',
       giorni: S.giorni, ore,
       classi: (S.classi || []).map(c => ({ id: c.id, nome: c.nome })),
       docenti: (S.docenti || []).map(t => ({ id: t.id, nome: t.nome, email: t.email || '' })),
@@ -103,22 +108,58 @@ const Dati = (() => {
 
   let D = null;
 
-  // Scarica l'orario; se non c'è rete usa l'ultima copia salvata sul dispositivo
-  async function carica() {
+  const leggi = k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
+  const fonte = () => leggi(CHIAVE_FONTE);
+  function impostaFonte(valore) {
+    try { valore ? localStorage.setItem(CHIAVE_FONTE, valore) : localStorage.removeItem(CHIAVE_FONTE); } catch (e) { /* ignorato */ }
+  }
+
+  // La bozza di Orario Facile su questo dispositivo (null se non c'è o non ha ancora lezioni)
+  function leggiBozza() {
+    try {
+      const testo = leggi(CHIAVE_BOZZA);
+      if (!testo) return null;
+      const B = normalizza(JSON.parse(testo));
+      return B.lezioni.length ? B : null;
+    } catch (e) { return null; }
+  }
+
+  // Scarica l'orario pubblicato (dati/orario.json); se non c'è rete usa l'ultima copia salvata
+  async function caricaPubblicato() {
+    let P;
     try {
       const r = await fetch(CONFIG.urlDati, { cache: 'no-cache' });
       if (!r.ok) throw new Error('Errore ' + r.status);
       const testo = await r.text();
-      D = normalizza(JSON.parse(testo));
-      D.offline = false;
+      P = normalizza(JSON.parse(testo));
+      P.offline = false;
       try { localStorage.setItem(CHIAVE_COPIA, testo); } catch (e) { /* spazio pieno o bloccato: pazienza */ }
     } catch (errore) {
-      let copia = null;
-      try { copia = localStorage.getItem(CHIAVE_COPIA); } catch (e) { /* ignorato */ }
+      const copia = leggi(CHIAVE_COPIA);
       if (!copia) throw errore;
-      D = normalizza(JSON.parse(copia));
-      D.offline = true;
+      P = normalizza(JSON.parse(copia));
+      P.offline = true;
     }
+    return P;
+  }
+
+  // Sceglie l'orario da mostrare: la bozza di Orario Facile (se c'è e non si è scelto
+  // "pubblicato") oppure il file pubblicato
+  async function carica() {
+    const bozza = leggiBozza();
+    if (bozza && fonte() !== 'pubblicato') {
+      D = bozza;
+      D.fonte = 'bozza';
+    } else {
+      try {
+        D = await caricaPubblicato();
+      } catch (errore) {
+        if (!bozza) throw errore;
+        D = bozza;                 // niente rete e niente copia: meglio la bozza che niente
+      }
+      D.fonte = D === bozza ? 'bozza' : 'pubblicato';
+    }
+    D.bozzaDisponibile = !!bozza;
     return D;
   }
 
@@ -137,5 +178,5 @@ const Dati = (() => {
 
   const nome = (tipo, id) => { const e = D && D.mappa[tipo].get(id); return e ? e.nome : id; };
 
-  return { carica, get: () => D, docentePerEmail, nome, emailDaNome, normalizza };
+  return { carica, get: () => D, docentePerEmail, nome, emailDaNome, normalizza, fonte, impostaFonte, CHIAVE_BOZZA };
 })();

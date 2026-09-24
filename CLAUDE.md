@@ -17,6 +17,10 @@ Le parti del progetto:
 - **`orario-facile/` – Orario Facile**: app per *creare* l'orario. Il suo backup JSON salvato come
   `dati/orario.json` viene letto direttamente dall'app di visualizzazione: se cambi il formato del backup,
   aggiorna anche `daOrarioFacile()` in `app/js/dati.js`.
+- **Integrazione**: sullo stesso dispositivo l'app legge direttamente la bozza di Orario Facile dal
+  `localStorage` (chiave `orariofacile.v2`) e si aggiorna con l'evento `storage`. Non cambiare quella chiave
+  senza aggiornare `CHIAVE_BOZZA` in `app/js/dati.js`. Orario Facile ha il pulsante "Vedi nell'app" e, in Esporta,
+  "Scarica orario.json" per pubblicare (il file va caricato in `dati/`).
 
 ## Il gruppo
 - Gruppo **iclaudecanti**, studenti **principianti** in programmazione e git.

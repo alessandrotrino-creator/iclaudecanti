@@ -60,11 +60,22 @@ Finché non si fa questo passaggio l'app è in **modalità dimostrativa**: chied
 
 Su **iPhone/iPad** l'app si installa da Safari: *Condividi → Aggiungi alla schermata Home*.
 
+## Collegamento con Orario Facile
+
+Le due app stanno sullo stesso sito, quindi **sullo stesso dispositivo condividono i dati**:
+
+- **Anteprima in tempo reale**: sul computer dove si prepara l'orario con Orario Facile, l'app Orario DADA mostra direttamente quell'orario (la "bozza") e **si aggiorna da sola** mentre lo si modifica in un'altra scheda. In Orario Facile il pulsante **📱 Vedi nell'app** apre l'app; nell'app il menu → **Modifica in Orario Facile** fa il percorso inverso.
+- Dal menu dell'app, **"Orario da mostrare"** permette di passare dalla bozza all'orario pubblicato e viceversa.
+- **Pubblicare per tutti** (telefoni dei docenti, monitor di classe):
+  1. Orario Facile → scheda **Esporta** → **Scarica orario.json**
+  2. aprire la [cartella dati su GitHub](https://github.com/alessandrotrino-creator/iclaudecanti/upload/main/dati), trascinare il file (sostituisce quello vecchio) e premere **Commit changes**
+  3. dopo un paio di minuti tutti i dispositivi vedono il nuovo orario (si aggiornano da soli ogni 15 minuti)
+
 ## Aggiornare l'orario
 
 L'app legge **`dati/orario.json`** (nella radice del repo). Va bene:
 
-- il **backup JSON di Orario Facile** (scheda Esporta → "Scarica backup"): basta salvarlo come `dati/orario.json`;
+- il file **orario.json di Orario Facile** (vedi sopra) oppure il suo backup JSON;
 - oppure il formato dell'app, facile da scrivere anche a mano:
 
 ```json

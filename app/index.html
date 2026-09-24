@@ -71,6 +71,15 @@
         <p class="utente"><strong id="nomeUtente"></strong><br><span id="emailUtente"></span></p>
         <label for="sceltaMonitor">Questo dispositivo è il monitor dell'aula:</label>
         <select id="sceltaMonitor"></select>
+        <!-- Compare solo se su questo dispositivo c'è un orario preparato con Orario Facile -->
+        <div id="gruppoFonte" class="gruppo-menu" hidden>
+          <label for="sceltaFonte">Orario da mostrare:</label>
+          <select id="sceltaFonte">
+            <option value="bozza">Bozza di Orario Facile (questo dispositivo)</option>
+            <option value="pubblicato">Orario pubblicato</option>
+          </select>
+        </div>
+        <a id="linkOrarioFacile" class="voce-menu" href="../orario-facile/" target="orariofacile">Modifica in Orario Facile</a>
         <button type="button" id="btnSchermoIntero" class="voce-menu">Schermo intero</button>
         <button type="button" id="btnRicarica" class="voce-menu">Aggiorna l'orario</button>
         <button type="button" id="btnEsci" class="voce-menu">Esci</button>
