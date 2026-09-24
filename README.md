@@ -20,12 +20,15 @@ git config rebase.autoStash true
 
 ## Il sito
 
-Orario scolastico di una scuola DADA, in HTML/CSS/JS puro, pubblicato con GitHub Pages.
+Orario scolastico di una scuola DADA, in HTML/CSS/JS puro.
+
+**Sito online:** https://alessandrotrino-creator.github.io/iclaudecanti/
 Regole e convenzioni complete in [CLAUDE.md](CLAUDE.md).
 
 ## Struttura
 
-- `index.html` – pagina iniziale
+- `index.html` – reindirizza all'app
+- `orario-facile/` – l'app Orario Facile
 - `css/` – stili
 - `js/` – script
 - `dati/` – dati dell'orario (JSON)

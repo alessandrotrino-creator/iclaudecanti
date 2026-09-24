@@ -5,7 +5,11 @@ Sito web con l'**orario scolastico di una scuola DADA** (Didattiche per Ambienti
 nelle scuole DADA le aule sono assegnate alle materie/ai docenti e sono **gli studenti a spostarsi**.
 Il sito deve quindi mostrare chiaramente, per ogni ora: classe, materia, docente e **aula**.
 
-Viene pubblicato con **GitHub Pages** direttamente da `main` (la pagina iniziale è `index.html` nella radice).
+Viene pubblicato con **GitHub Pages** direttamente da `main`, cartella radice:
+https://alessandrotrino-creator.github.io/iclaudecanti/ (reindirizza a `orario-facile/`).
+Non rompere mai questi requisiti: percorsi relativi, niente build, `.nojekyll` presente,
+`localStorage` sempre dentro `try/catch` (su github.io è condiviso tra tutti i repo dello stesso utente,
+quindi usa chiavi con prefisso, es. `orariofacile.`).
 
 ## Il gruppo
 - Gruppo **iclaudecanti**, studenti **principianti** in programmazione e git.
@@ -20,7 +24,10 @@ Viene pubblicato con **GitHub Pages** direttamente da `main` (la pagina iniziale
 
 ## Struttura
 ```
-index.html        pagina iniziale
+index.html        porta all'app (reindirizza a orario-facile/)
+404.html          pagina per indirizzi inesistenti su GitHub Pages
+.nojekyll         dice a GitHub Pages di pubblicare i file così come sono
+orario-facile/    l'app Orario Facile (un unico index.html autonomo + modelli CSV)
 css/              fogli di stile (un file per area, es. base.css, orario.css)
 js/               script (un file per funzionalità, es. orario.js, filtri.js)
 dati/             dati dell'orario in JSON (classi, docenti, aule, orario)
