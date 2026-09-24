@@ -12,6 +12,7 @@
   const $ = sel => document.querySelector(sel);
   const $$ = sel => Array.from(document.querySelectorAll(sel));
   const CHIAVE_MONITOR = 'orariodada.monitor';
+  const CHIAVE_BREVE = 'orariodada.breve';   // di chi si è scelto di vedere la giornata in "In breve"
   const NOMI_GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
 
   let D = null;             // dati dell'orario
@@ -21,6 +22,7 @@
   let avvisoGiorno = null;  // { giorno, testo } es. "le lezioni di oggi sono finite"
   let ultimoMinuto = -1;
   let timerInattivita = null;
+  let breveAperta = false;  // true quando si vede la vista "In breve" al posto della tabella
   const stato = { colonne: 'classe', giorno: '', filtri: { classe: '', docente: '', aula: '' } };
 
   const leggi = k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
@@ -55,6 +57,7 @@
   }
 
   function schermataIniziale() {
+    apriBreve(false);
     const gi = giornoIniziale();
     stato.giorno = gi.giorno;
     avvisoGiorno = gi.testo ? gi : null;
@@ -146,6 +149,35 @@
       utente.metodo === 'demo' ? '<strong>Modalità dimostrativa: accesso non verificato.</strong>' : '',
       D.fonte === 'bozza' ? 'Stai vedendo l’orario di <a href="../orario-facile/" target="orariofacile">Orario Facile</a> salvato su questo dispositivo: si aggiorna da solo mentre lo modifichi.' : ''
     ].filter(Boolean).join(' · ');
+    if (breveAperta) disegnaBreve();
+  }
+
+  /* ---------- vista "In breve" ---------- */
+  // Di chi mostrare la giornata: la scelta salvata, altrimenti il docente che ha fatto
+  // l'accesso, altrimenti il filtro attivo nella tabella (null = va scelto)
+  function soggettoBreve() {
+    const valido = s => s && D.mappa[s.tipo] && D.mappa[s.tipo].has(s.id) ? s : null;
+    const salvato = leggi(CHIAVE_BREVE), i = salvato.indexOf('|');
+    return valido(i > 0 ? { tipo: salvato.slice(0, i), id: salvato.slice(i + 1) } : null) ||
+      (mioDocente ? { tipo: 'docente', id: mioDocente.id } : null) ||
+      valido(['docente', 'classe', 'aula'].filter(k => stato.filtri[k]).map(k => ({ tipo: k, id: stato.filtri[k] }))[0]);
+  }
+
+  function disegnaBreve() {
+    const gi = giornoIniziale(), s = soggettoBreve();
+    Breve.disegna($('#vistaBreve'), {
+      D, adesso: adesso(), giorno: gi.giorno, avviso: gi.testo, soggetto: s, nomeUtente: utente.nome,
+      eIo: !!(s && mioDocente && s.tipo === 'docente' && s.id === mioDocente.id)
+    });
+  }
+
+  // Apre (true) o chiude (false) la vista "In breve"; sui monitor di classe non si apre
+  function apriBreve(apri) {
+    breveAperta = apri && !aulaMonitor;
+    document.body.classList.toggle('breve-aperta', breveAperta);
+    $('#vistaBreve').hidden = !breveAperta;
+    $('#btnBreve').setAttribute('aria-pressed', String(breveAperta));
+    if (breveAperta) { disegnaBreve(); window.scrollTo(0, 0); $('#vistaBreve').focus({ preventScroll: true }); }
   }
 
   function aggiornaOrologio() {
@@ -184,8 +216,20 @@
       const b = e.target.closest('[data-giorno]');
       if (b) { stato.giorno = b.dataset.giorno; aggiorna(); }
     });
-    $('#btnOggi').addEventListener('click', () => { const gi = giornoIniziale(); stato.giorno = gi.giorno; if (stato.colonne === 'giorno') stato.colonne = 'classe'; aggiorna(); mostraOraCorrente(); });
+    // "In breve": il tasto apre e chiude; dentro la vista, "Tabella" chiude e la tendina sceglie di chi è la giornata
+    $('#btnBreve').addEventListener('click', () => apriBreve(!breveAperta));
+    $('#vistaBreve').addEventListener('click', e => {
+      if (e.target.closest('#btnChiudiBreve')) { apriBreve(false); $('#btnBreve').focus(); }
+    });
+    $('#vistaBreve').addEventListener('change', e => {
+      if (e.target.id !== 'sceltaBreve') return;
+      scrivi(CHIAVE_BREVE, e.target.value);
+      disegnaBreve();
+      $('#sceltaBreve').focus();
+    });
+    $('#btnOggi').addEventListener('click', () => { apriBreve(false); const gi = giornoIniziale(); stato.giorno = gi.giorno; if (stato.colonne === 'giorno') stato.colonne = 'classe'; aggiorna(); mostraOraCorrente(); });
     $('#btnMioOrario').addEventListener('click', () => {
+      apriBreve(false);
       stato.colonne = 'docente'; stato.filtri = { classe: '', docente: mioDocente.id, aula: '' };
       stato.giorno = giornoIniziale().giorno; aggiorna(); mostraOraCorrente();
     });

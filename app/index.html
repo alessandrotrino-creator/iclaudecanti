@@ -15,6 +15,7 @@
   <meta name="apple-mobile-web-app-title" content="Orario">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/brief.css">
   <!-- Impostazioni e tema prima della pagina, per non vedere un lampo di colore sbagliato -->
   <script src="js/config.js"></script>
   <script src="js/tema.js"></script>
@@ -65,6 +66,11 @@
       <span id="titoloMonitor" class="titolo-monitor"></span>
       <div class="azioni-barra">
         <span id="orologio" class="orologio"></span>
+        <!-- Apre/chiude la vista "In breve" (la giornata a schede) -->
+        <button type="button" id="btnBreve" class="pulsante pulsante-breve" aria-pressed="false" aria-controls="vistaBreve">
+          <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M2 2h5v5H2zM9 2h5v3H9zM9 7h5v7H9zM2 9h5v5H2z"/></svg>
+          In breve
+        </button>
         <button type="button" id="btnMioOrario" class="pulsante" hidden>Il mio orario</button>
         <button type="button" id="btnOggi" class="pulsante">Oggi</button>
         <button type="button" id="btnUtente" class="pulsante-utente" aria-haspopup="true" aria-expanded="false" aria-controls="menu"></button>
@@ -99,6 +105,9 @@
         <button type="button" id="btnInstalla" class="voce-menu installa">📲 Installa l'app su questo dispositivo</button>
       </div>
     </header>
+
+    <!-- Vista "In breve": la disegna js/brief.js quando si preme il tasto -->
+    <section id="vistaBreve" class="vista-breve" tabindex="-1" aria-labelledby="titoloBreve" hidden></section>
 
     <!-- Scelta di cosa vedere -->
     <nav class="controlli" aria-label="Scelta della visualizzazione">
@@ -156,6 +165,7 @@
   <script src="js/dati.js"></script>
   <script src="js/accesso.js"></script>
   <script src="js/viste.js"></script>
+  <script src="js/brief.js"></script>
   <script src="js/installa.js"></script>
   <script src="js/condividi.js"></script>
   <script src="js/app.js"></script>

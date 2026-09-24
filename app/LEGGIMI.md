@@ -19,6 +19,17 @@ All'apertura l'app sceglie da sola cosa mostrare:
 - Nel weekend, o quando le lezioni del giorno sono finite, compare il giorno di scuola successivo (con un avviso).
 - Il logo in alto a sinistra riporta sempre alla schermata iniziale.
 
+## In breve: la giornata a schede
+
+Il tasto **In breve** nella barra in alto apre la giornata a schede, comoda sul telefono. Il tasto **Tabella** (o di nuovo *In breve*) riporta alla tabella.
+
+- **Adesso**: la lezione in corso con l'**aula in grande** e quanto manca alla fine dell'ora.
+- **Dopo**: la lezione successiva; se l'aula cambia compare *"si cambia aula: Aula 1 → Aula 4"*.
+- **Il resto della giornata**: schede piccole da scorrere (ore già fatte più chiare, ore libere tratteggiate).
+- **Giornata di**: si sceglie la classe, il docente o l'aula. Il docente che ha fatto l'accesso vede subito la sua giornata; la scelta resta memorizzata sul dispositivo.
+- I colori della testata cambiano con il momento della giornata (mattina, pomeriggio, sera) e seguono il tema chiaro/scuro.
+- Sui monitor di classe il tasto non c'è: lì resta la tabella a caratteri grandi.
+
 ## Cambiare visualizzazione
 
 - **In colonna**: Classi, Docenti, Aule oppure **Settimana** (i giorni in colonna).
@@ -111,6 +122,7 @@ L'orario di esempio attuale è **inventato**.
 app/
   index.html            struttura della pagina
   css/app.css           stile (telefono, tablet, monitor, tema scuro)
+  css/brief.css         stile della vista "In breve"
   js/config.js          impostazioni (dominio, ID client Google, durata "Ricordami", orari del tema...)
   js/tema.js            tema chiaro / scuro / secondo l'ora
   js/installa.js        pulsante "Installa l'app"
@@ -119,6 +131,7 @@ app/
   js/dati.js            lettura dell'orario (anche dal backup di Orario Facile)
   js/accesso.js         accesso con Google
   js/viste.js           disegno della tabella
+  js/brief.js           vista "In breve" (la giornata a schede)
   js/app.js             schermata iniziale, pulsanti, monitor, aggiornamenti
   sw.js                 funzionamento senza connessione
   manifest.webmanifest  installazione come app
