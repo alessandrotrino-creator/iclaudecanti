@@ -25,8 +25,40 @@
 <body>
   <a class="salta" href="#contenuto">Vai all'orario</a>
 
-  <!-- Messaggio di caricamento / errore -->
-  <div id="caricamento" class="caricamento" role="status">Caricamento…</div>
+  <!-- Caricamento: il robot sorridente (la mascotte dell'app, come nell'icona) dondola mentre l'app si prepara.
+       È disegnato qui dentro, così compare subito senza aspettare altri file. In caso di errore
+       app.js sostituisce il contenuto con il messaggio e il pulsante "Riprova". -->
+  <div id="caricamento" class="caricamento" role="status">
+    <svg class="robot-caricamento" viewBox="70 40 372 520" aria-hidden="true" focusable="false">
+      <ellipse class="robot-ombra" cx="256" cy="540" rx="110" ry="14"/>
+      <g class="robot-tutto">
+        <!-- corpo con l'orologio: la lancetta gira -->
+        <rect x="150" y="392" width="212" height="120" rx="48" fill="#dfe8fb"/>
+        <circle cx="256" cy="452" r="36" fill="#ffcf3f"/>
+        <path class="robot-lancetta" d="M256 452v-22" stroke="#163f96" stroke-width="9" stroke-linecap="round"/>
+        <circle cx="256" cy="452" r="6" fill="#163f96"/>
+        <!-- antenna con la luce che pulsa -->
+        <rect x="247" y="96" width="18" height="64" rx="9" fill="#dfe8fb"/>
+        <circle class="robot-luce" cx="256" cy="86" r="27" fill="#ffcf3f"/>
+        <!-- orecchie -->
+        <rect x="90" y="232" width="42" height="100" rx="19" fill="#ffcf3f"/>
+        <rect x="380" y="232" width="42" height="100" rx="19" fill="#ffcf3f"/>
+        <!-- testa e viso -->
+        <rect x="114" y="148" width="284" height="250" rx="74" fill="#fff"/>
+        <rect x="148" y="186" width="216" height="172" rx="58" fill="#10275a"/>
+        <g class="robot-occhi">
+          <ellipse cx="211" cy="254" rx="23" ry="27" fill="#7fe7ff"/>
+          <ellipse cx="301" cy="254" rx="23" ry="27" fill="#7fe7ff"/>
+          <circle cx="219" cy="244" r="8" fill="#fff"/>
+          <circle cx="309" cy="244" r="8" fill="#fff"/>
+        </g>
+        <circle cx="178" cy="306" r="14" fill="#ff8fb1" opacity=".9"/>
+        <circle cx="334" cy="306" r="14" fill="#ff8fb1" opacity=".9"/>
+        <path d="M214 300 Q256 338 298 300" stroke="#7fe7ff" stroke-width="13" stroke-linecap="round" fill="none"/>
+      </g>
+    </svg>
+    <p class="testo-caricamento">Preparo l'orario<span class="puntini" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></p>
+  </div>
 
   <!-- ===== Schermata di accesso ===== -->
   <main id="schermataAccesso" class="accesso" hidden aria-labelledby="titoloAccesso">

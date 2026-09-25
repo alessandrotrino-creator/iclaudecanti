@@ -594,13 +594,33 @@
   }
 
   /* ---------- avvio ---------- */
+  // Il robot del caricamento resta almeno un secondo dall'apertura (così l'animazione si vede),
+  // poi sfuma lasciando il posto all'app o alla schermata di accesso
+  const DURATA_MINIMA_ROBOT = 1000;
+  let timerRobot = null;
+  function nascondiCaricamento() {
+    const box = $('#caricamento');
+    clearTimeout(timerRobot);
+    // performance.now() = millisecondi passati da quando la pagina ha cominciato a caricarsi
+    timerRobot = setTimeout(() => {
+      box.classList.add('uscita');
+      timerRobot = setTimeout(() => { box.hidden = true; box.classList.remove('uscita'); }, 400);
+    }, Math.max(0, DURATA_MINIMA_ROBOT - performance.now()));
+  }
+  function mostraCaricamento() {
+    clearTimeout(timerRobot);
+    const box = $('#caricamento');
+    box.classList.remove('uscita');
+    box.hidden = false;
+  }
+
   function mostraErroreAvvio(testo) {
     $('#caricamento').innerHTML = `<p>${Viste.esc(testo)}</p><button type="button" class="pulsante" onclick="location.reload()">Riprova</button>`;
   }
 
   async function dopoAccesso(s) {
     utente = s;
-    $('#caricamento').hidden = false;
+    mostraCaricamento();
     try {
       D = await Dati.carica();
     } catch (e) {
@@ -639,7 +659,7 @@
     $('#sceltaMonitor').value = valoreUso();
     collegaEventi();
     Campanella.avvia(() => D);   // tasto campanella (vedi campanella.js)
-    $('#caricamento').hidden = true;
+    nascondiCaricamento();       // il robot sfuma sopra l'app già pronta
     $('#app').hidden = false;
     schermataIniziale();
     avviaTimer();
@@ -658,6 +678,8 @@
     navigator.serviceWorker.register('sw.js').catch(() => { /* l'app funziona anche senza */ });
   }
 
-  $('#caricamento').hidden = true;
+  // Se bisogna fare l'accesso, il robot lascia il posto alla schermata di accesso;
+  // altrimenti resta finché l'orario è pronto (vedi dopoAccesso)
+  if (!Accesso.sessione()) nascondiCaricamento();
   Accesso.avvia(dopoAccesso);
 })();

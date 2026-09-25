@@ -105,10 +105,47 @@ select {
   border-radius: 10px; background: var(--superficie); max-width: 100%;
 }
 
-/* ---------- Caricamento ---------- */
+/* ---------- Caricamento: il robot sorridente (vedi index.html) ---------- */
+/* Copre tutta la pagina con lo stesso blu dell'icona; quando l'app è pronta sfuma (classe "uscita") */
 .caricamento {
-  min-height: 100vh; display: flex; flex-direction: column; gap: 12px;
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column; gap: 12px;
   align-items: center; justify-content: center; padding: 16px; text-align: center;
+  background: linear-gradient(135deg, #2f6fe0, #153c8f); color: #fff;
+  transition: opacity .4s ease;
+}
+.caricamento[hidden] { display: none; }
+.caricamento.uscita { opacity: 0; pointer-events: none; }
+.robot-caricamento { width: min(46vw, 210px); height: auto; overflow: visible; }
+.testo-caricamento { margin: 0; font-size: 1.2rem; font-weight: 600; letter-spacing: .02em; }
+
+/* Il robot dondola su e giù, inclinandosi un poco */
+.robot-tutto { transform-box: view-box; transform-origin: 256px 500px; animation: robot-dondola 1.6s ease-in-out infinite; }
+@keyframes robot-dondola {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-22px) rotate(3deg); }
+}
+/* L'ombra si stringe quando il robot sale */
+.robot-ombra { fill: rgba(0, 0, 0, .22); transform-box: fill-box; transform-origin: center; animation: robot-ombra 1.6s ease-in-out infinite; }
+@keyframes robot-ombra { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(.75); opacity: .6; } }
+/* Sbatte le palpebre ogni tanto */
+.robot-occhi { transform-box: fill-box; transform-origin: center; animation: robot-sbatte 3.2s infinite; }
+@keyframes robot-sbatte { 0%, 90%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.1); } }
+/* La luce dell'antenna pulsa */
+.robot-luce { transform-box: fill-box; transform-origin: center; animation: robot-luce .8s ease-in-out infinite alternate; }
+@keyframes robot-luce { from { transform: scale(.9); fill: #ffcf3f; } to { transform: scale(1.15); fill: #fff4c2; } }
+/* La lancetta dell'orologio gira */
+.robot-lancetta { transform-box: view-box; transform-origin: 256px 452px; animation: robot-gira 2s linear infinite; }
+@keyframes robot-gira { to { transform: rotate(360deg); } }
+/* I puntini di "Preparo l'orario..." si accendono uno dopo l'altro */
+.puntini span { animation: puntino 1.2s infinite; opacity: .2; }
+.puntini span:nth-child(2) { animation-delay: .2s; }
+.puntini span:nth-child(3) { animation-delay: .4s; }
+@keyframes puntino { 0%, 60%, 100% { opacity: .2; } 30% { opacity: 1; } }
+/* Chi ha chiesto meno animazioni vede il robot fermo */
+@media (prefers-reduced-motion: reduce) {
+  .robot-tutto, .robot-ombra, .robot-occhi, .robot-luce, .robot-lancetta, .puntini span { animation: none; }
+  .puntini span { opacity: 1; }
 }
 
 /* ---------- Accesso ---------- */
