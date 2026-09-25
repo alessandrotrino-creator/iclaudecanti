@@ -127,7 +127,7 @@ Ci sono due tipi di utenti, tutti con l'account della scuola:
 | Ruolo | Cosa può fare |
 |---|---|
 | **Fruitore** (tutti) | consultare l'orario nell'app Orario DADA |
-| **Modificatore** | in più, usare **Orario Facile** (preparare l'orario, sostituzioni); nel menu dell'app vede "Modifica in Orario Facile" |
+| **Modificatore** | in più, usare **Orario Facile** (preparare l'orario, sostituzioni); nel menu dell'app vede "Modifica in Orario Facile" e "📋 Sostituzioni docenti" (apre direttamente la scheda Sostituzioni) |
 
 - Chi apre Orario Facile deve accedere con l'account della scuola (se è già entrato nell'app non lo richiede).
   Se non è un modificatore vede "Solo consultazione", il link all'orario e il suo **codice**.

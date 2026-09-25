@@ -1510,9 +1510,15 @@ const TABS = [
 function renderTabs(){
   $('#tabs').innerHTML = TABS.map(([k,n],i) =>
     `<button role="tab" data-tab="${k}" aria-selected="${S.ui.tab===k}"><span class="tnum">${i+1}</span>${esc(n)}</button>`).join('');
+  // sugli schermi stretti la fila delle schede scorre di lato: porto in vista quella scelta
+  // (così per esempio "9 Sostituzioni" non resta nascosta a destra)
+  const scelta = $('#tabs [aria-selected="true"]');
+  if(scelta) scelta.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 }
 function vai(tab){
   S.ui.tab = tab;
+  // passando a un'altra scheda tolgo "#sostituzioni" dall'indirizzo, così il link dell'app funziona di nuovo
+  if(tab !== 'sostituzioni' && location.hash === '#sostituzioni') history.replaceState(null, '', location.pathname + location.search);
   TABS.forEach(([k]) => { const p = $('#p-'+k); if(p) p.hidden = (k !== tab); });
   renderTabs();
   render();
@@ -3624,6 +3630,8 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') chiudiModal(); 
   if(!salvato) S.ui.tab = 'orario';
   // l'indirizzo .../orario-facile/#sostituzioni apre direttamente la scheda Sostituzioni
   if(location.hash === '#sostituzioni') S.ui.tab = 'sostituzioni';
+  // ...anche se Orario Facile è già aperto (per esempio dal menu dell'app "Sostituzioni docenti")
+  window.addEventListener('hashchange', () => { if(location.hash === '#sostituzioni') vai('sostituzioni'); });
   normalizza();
   renderTabs();
   TABS.forEach(([k]) => { const p = $('#p-'+k); if(p) p.hidden = (k !== S.ui.tab); });
