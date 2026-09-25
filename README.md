@@ -4,6 +4,11 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**25/09/2026 – Manuali per fruitori e modificatori** (Alessandro)
+
+- due guide, in breve e dettagliate: una per chi consulta l'orario ([manuali/orario-dada-fruitori.md](manuali/orario-dada-fruitori.md)) e una per chi lo modifica e fa le sostituzioni ([manuali/orario-facile-modificatori.md](manuali/orario-facile-modificatori.md));
+- per ora sono solo file da sfogliare nel repository: non sono collegati all'app né a Orario Facile.
+
 **25/09/2026 – Nuova icona e caricamento con il robot** (Chiara)
 
 - l'app ha una mascotte: un **robot sorridente** con l'orologio sul petto; è la nuova **icona** (anche nella schermata di accesso);
