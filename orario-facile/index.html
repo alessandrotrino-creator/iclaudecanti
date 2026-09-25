@@ -1534,7 +1534,13 @@ function renderSostituzioni(){
     box.innerHTML = '<p class="hint">La scheda Sostituzioni non è disponibile: mancano i file della cartella <b>sostituzioni/</b> o <b>app/js/dati.js</b>.</p>';
     return;
   }
-  Sostituzioni.monta(box, () => Dati.normalizza(S));
+  // con «👁 Nomi» attivo la scheda riceve i nomi veri (il codice DOC01… resta in .codice):
+  // così abbina da sola i docenti alle righe del foglio del conteggio ore
+  Sostituzioni.monta(box, () => {
+    const D = Dati.normalizza(S);
+    if(NOMI) D.docente.forEach(e => { e.codice = e.nome; e.nome = nomeDoc(e.nome); });
+    return D;
+  });
 }
 
 /* ---------------- 1. impostazioni ---------------- */

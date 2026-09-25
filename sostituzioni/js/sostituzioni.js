@@ -134,8 +134,11 @@ const Sostituzioni = (() => {
     return r ? nomeRiga(r) : nome('docente', id);
   }
 
-  // Vero se accanto al nome completo conviene mostrare anche le iniziali dell'orario ("F. A.")
-  const conSigla = t => !!rigaDi(t.id) && t.nome.includes('.');
+  // Come compare il docente nell'orario: il codice (DOC07) anche quando Orario Facile passa il nome vero
+  // (con «👁 Nomi» attivo il nome è in t.nome e il codice in t.codice), oppure le iniziali ("F. A.")
+  const sigla = t => t.codice || t.nome;
+  // Vero se accanto al nome completo conviene mostrare anche il codice o le iniziali dell'orario
+  const conSigla = t => !!rigaDi(t.id) && /\.|^DOC\d+$/i.test(sigla(t));
 
   // Sostituzioni fatte da una riga del foglio e non ancora riportate nel foglio
   function daRiportarePer(chiave) {
@@ -274,6 +277,8 @@ const Sostituzioni = (() => {
       (daControllare ? ` · ${daControllare} da controllare` : ' ✔');
 
     const righeOrdinate = foglio.docenti.slice().sort((a, b) => nomeRiga(a).localeCompare(nomeRiga(b), 'it'));
+    // Docenti dell'orario indicati solo con il codice (DOC01…): senza i nomi veri non si possono abbinare da soli
+    const soloCodici = D.docente.some(t => /^DOC\d+$/i.test(t.nome));
     const tabella = el('table', { class: 'sost-tabella' },
       el('caption', {}, 'Ogni docente dell\'orario è collegato a una riga del foglio. Se è sbagliato o manca, sceglilo dall\'elenco.'),
       el('thead', {}, el('tr', {},
@@ -304,10 +309,11 @@ const Sostituzioni = (() => {
           mancante: '⚠ non trovato nel foglio'
         };
         return el('tr', {},
-          el('th', { scope: 'row' }, el('label', { for: idSelect }, t.nome)),
+          el('th', { scope: 'row' }, el('label', { for: idSelect }, t.nome + (t.codice && t.codice !== t.nome ? ` (${t.codice})` : ''))),
           el('td', {}, scelta),
           el('td', { class: a.chiave || a.come === 'manuale' ? '' : 'sost-attenzione' }, stati[a.come] || ''));
       })));
+    if (soloCodici) box.append(el('p', { class: 'hint' }, 'Nell\'orario i docenti sono codici (DOC01…): premi «👁 Nomi» in alto per abbinarli da soli alle righe del foglio (serve il permesso sul file dei nomi), oppure sceglili a mano.'));
     box.append(el('div', { class: 'tablewrap' }, tabella));
   }
 
@@ -323,7 +329,7 @@ const Sostituzioni = (() => {
     const select = $('docenteAssente');
     const prima = select.value;
     select.replaceChildren(el('option', { value: '' }, '— scegli —'),
-      ...D.docente.slice().sort((a, b) => nomeDocente(a.id).localeCompare(nomeDocente(b.id), 'it')).map(t => el('option', { value: t.id }, nomeDocente(t.id) + (conSigla(t) ? ` (${t.nome})` : ''))));
+      ...D.docente.slice().sort((a, b) => nomeDocente(a.id).localeCompare(nomeDocente(b.id), 'it')).map(t => el('option', { value: t.id }, nomeDocente(t.id) + (conSigla(t) ? ` (${sigla(t)})` : ''))));
     select.value = D.mappa.docente.has(prima) ? prima : '';
     select.disabled = !giorno;
     disegnaOreAssenza();
@@ -442,7 +448,7 @@ const Sostituzioni = (() => {
     const voce = c => el('li', { class: 'sost-candidato' },
       el('div', { class: 'sost-info' },
         el('strong', {}, nomeDocente(c.t.id)),
-        conSigla(c.t) ? el('span', { class: 'mini' }, ` (${c.t.nome})`) : null,
+        conSigla(c.t) ? el('span', { class: 'mini' }, ` (${sigla(c.t)})`) : null,
         el('span', { class: 'sost-etichette' },
           etichettaSaldo(c.saldo),
           el('span', { class: 'tag' }, TESTI_POSIZIONE[c.posizione]),

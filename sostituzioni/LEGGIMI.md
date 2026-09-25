@@ -22,8 +22,9 @@ Il foglio del conteggio ore contiene i nomi completi dei docenti, quindi **non v
 ## Come si usa
 
 1. **Carica il foglio** del conteggio ore (.ods, .xlsx oppure .csv, anche scaricato da Fogli Google).
-2. Controlla gli **abbinamenti**: ogni docente dell'orario (con le iniziali, es. "F. A.") viene collegato
-   in automatico alla sua riga del foglio. Se un abbinamento manca o è dubbio, sceglilo dall'elenco.
+2. Controlla gli **abbinamenti**: nell'orario i docenti sono codici (DOC01, DOC02…). Premi **«👁 Nomi»**
+   in alto (serve il permesso sul file riservato dei nomi, su Google Drive): ogni docente viene collegato
+   in automatico alla sua riga del foglio. Senza i nomi, o se un abbinamento manca o è dubbio, sceglilo dall'elenco.
 3. Scegli il **giorno** e registra il **docente assente** spuntando le ore di assenza.
 4. In **"Ore da coprire"**, per ogni ora compare l'elenco dei docenti liberi: premi **Assegna**.
 5. A fine settimana copia nel foglio le ore della tabella **"Da aggiungere nel foglio"** (+1 per ogni ora

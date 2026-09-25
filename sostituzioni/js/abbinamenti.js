@@ -1,8 +1,8 @@
 /*
   abbinamenti.js – collega i docenti dell'orario alle righe del foglio del conteggio ore.
 
-  Nell'orario pubblicato i docenti compaiono con le iniziali ("F. A.", "Mi. Bo.") oppure
-  con il nome intero ("Anna Rossi"); nel foglio ci sono COGNOME e NOME separati.
+  Nell'orario pubblicato i docenti sono codici (DOC01…): con «👁 Nomi» attivo Orario Facile passa il nome
+  intero ("Anna Rossi", codice in .codice); vanno bene anche le iniziali ("F. A."). Nel foglio ci sono COGNOME e NOME.
   Un docente dell'orario è abbinato a una riga se il suo nome "combacia" con l'inizio
   del nome e del cognome della riga ("A. R." -> Anna ROSSI).
   Se le righe compatibili sono zero o più di una, l'abbinamento va scelto a mano.
