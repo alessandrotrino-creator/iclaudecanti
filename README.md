@@ -4,6 +4,16 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**25/09/2026 – Schermo all'ingresso con le viste a rotazione** (Chiara)
+
+Nuova modalità dell'app Orario DADA per il televisore o il proiettore all'ingresso:
+[.../app/?ingresso](https://alessandrotrino-creator.github.io/iclaudecanti/app/?ingresso) (o dal menu: "Uso di questo dispositivo").
+
+- l'orario di oggi cambia vista da solo: **Classi → Docenti → Aule**, ogni 20 secondi (`?ingresso=30` per 30 secondi, oppure dal menu);
+- se le colonne non stanno nello schermo, vengono divise in pagine che ruotano anch'esse: niente da scorrere;
+- un tocco mette in pausa la rotazione, che riparte da sola dopo 2 minuti senza tocchi;
+- istruzioni in [app/LEGGIMI.md](app/LEGGIMI.md#schermo-allingresso-proiezione-a-rotazione).
+
 **25/09/2026 – Sostituzioni docenti dentro Orario Facile** (Chiara)
 
 Le sostituzioni sono ora la **scheda 9 «Sostituzioni»** di

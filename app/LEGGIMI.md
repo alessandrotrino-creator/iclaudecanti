@@ -12,6 +12,7 @@ All'apertura l'app sceglie da sola cosa mostrare:
 | Chi apre l'app | Cosa vede |
 |---|---|
 | **Monitor di classe** | l'orario di oggi della **sua aula**, a caratteri grandi, con "Adesso / Dopo" |
+| **Schermo all'ingresso** | l'orario di oggi con le viste **Classi → Docenti → Aule** che cambiano da sole ogni tot secondi |
 | **Docente** (riconosciuto dall'email) | il **suo orario di oggi**, con "Adesso / Dopo" |
 | **Tutti gli altri** | l'**orario di oggi**: ore in riga (1ª 8–9 … 8ª 15–16), **classi in colonna** |
 
@@ -72,7 +73,7 @@ Per rifare la configurazione da zero (per esempio con un nuovo progetto Google),
 
 1. Sul monitor aprire l'indirizzo dell'app con il nome dell'aula, per esempio
    `https://alessandrotrino-creator.github.io/iclaudecanti/app/?monitor=Aula%203`
-   (oppure: menu in alto a destra → "Questo dispositivo è il monitor dell'aula").
+   (oppure: menu in alto a destra → "Uso di questo dispositivo" → l'aula, sotto "Monitor dell'aula").
 2. Accedere una volta con "Ricordami" spuntato.
 3. Installare l'app:
    - **Android di bordo** (Chrome): menu ⋮ → *Installa app* / *Aggiungi a schermata Home*
@@ -80,6 +81,29 @@ Per rifare la configurazione da zero (per esempio con un nuovo progetto Google),
 4. Il monitor torna da solo all'orario dell'aula dopo 2 minuti senza tocchi e si aggiorna ogni 15 minuti.
 
 Su **iPhone/iPad** l'app si installa da Safari: *Condividi → Aggiungi alla schermata Home*.
+
+## Schermo all'ingresso (proiezione a rotazione)
+
+Per il televisore o il proiettore all'ingresso, dove nessuno tocca lo schermo: l'app mostra l'orario di oggi
+e **cambia vista da sola** ogni tot secondi, nell'ordine **Classi → Docenti → Aule**.
+
+1. Aprire l'indirizzo `https://alessandrotrino-creator.github.io/iclaudecanti/app/?ingresso`
+   (ogni 20 secondi) oppure `.../app/?ingresso=30` per scegliere i secondi (da 5 a 600).
+   In alternativa: menu in alto a destra → "Uso di questo dispositivo" → **📺 Schermo all'ingresso**,
+   e sotto "Cambia vista ogni" si scelgono i secondi.
+2. Accedere una volta con "Ricordami" spuntato; la scelta resta memorizzata su quel dispositivo.
+3. Mettere a schermo intero (menu → *Schermo intero*, oppure F11).
+
+Come funziona:
+
+- si vedono solo le classi, i docenti e le aule che **quel giorno hanno lezione**;
+- se le colonne non stanno nello schermo vengono divise in **pagine** (es. "Docenti · 2 di 3"), che ruotano anch'esse:
+  su uno schermo Full HD sono circa 9 colonne per pagina;
+- in alto si vede quale vista è in onda, un pallino per ogni passo e una barretta che si riempie fino al cambio;
+- l'ora in corso resta evidenziata in giallo; finite le lezioni si passa all'orario del giorno dopo;
+- se qualcuno **tocca lo schermo** la rotazione va in pausa e ricompaiono i comandi; riparte da sola dopo
+  2 minuti senza tocchi (lo stesso tempo del monitor di classe, `minutiRitornoMonitor` in `js/config.js`);
+- i secondi predefiniti si cambiano in `js/config.js` (`secondiRotazioneIngresso`).
 
 ## Collegamento con Orario Facile
 
@@ -132,6 +156,7 @@ app/
   js/accesso.js         accesso con Google
   js/viste.js           disegno della tabella
   js/brief.js           vista "In breve" (la giornata a schede)
+  js/ingresso.js        schermo all'ingresso: viste a rotazione
   js/app.js             schermata iniziale, pulsanti, monitor, aggiornamenti
   sw.js                 funzionamento senza connessione
   manifest.webmanifest  installazione come app
