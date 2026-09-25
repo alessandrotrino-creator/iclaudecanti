@@ -311,7 +311,10 @@ body.modalita-ingresso .tabella-orario caption { font-size: 1.3rem; }
 body.modalita-ingresso:not(.ingresso-in-pausa) .controlli,
 body.modalita-ingresso:not(.ingresso-in-pausa) .pulsante-breve,
 body.modalita-ingresso:not(.ingresso-in-pausa) #btnOggi,
+body.modalita-ingresso:not(.ingresso-in-pausa) #btnNomi,
 body.modalita-ingresso:not(.ingresso-in-pausa) #btnMioOrario { display: none; }
+/* Sotto i 960 px nella barra non c'è posto per «Nomi» (con «Il mio orario» andrebbe a capo): resta la voce nel menu utente */
+@media (max-width: 959px) { #btnNomi { display: none; } }
 /* Le colonne della pagina si dividono lo schermo in parti uguali: niente da scorrere */
 body.modalita-ingresso:not(.ingresso-in-pausa) .contenitore-tabella { max-height: none; overflow: hidden; }
 body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario { table-layout: fixed; }

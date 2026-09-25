@@ -156,7 +156,11 @@
       e.nome = v ? (v.cognome + ' ' + v.nome).trim() : e.codice;
     });
     D.docente.sort((a, b) => a.nome.localeCompare(b.nome, 'it', { numeric: true }));
-    $('#btnNomi').textContent = nomi ? '🙈 Mostra solo i codici dei docenti' : '👁 Mostra i nomi dei docenti';
+    const b = $('#btnNomi');
+    b.textContent = nomi ? '🙈 Codici' : '👁 Nomi';
+    b.setAttribute('aria-pressed', String(!!nomi));
+    b.title = nomi ? 'Torna a mostrare i codici dei docenti (DOC01…)' : 'Mostra i nomi dei docenti al posto dei codici (DOC01…)';
+    $('#btnNomiMenu').textContent = nomi ? '🙈 Mostra solo i codici dei docenti' : '👁 Mostra i nomi dei docenti';
   }
 
   /* ---------- costruzione dei controlli ---------- */
@@ -502,8 +506,8 @@
       chiudiMenu();
     });
     $('#btnRicarica').addEventListener('click', async () => { chiudiMenu(); await ricaricaDati(true); });
-    // "Mostra i nomi": li legge dal file riservato su Drive (serve il permesso sul file), "Mostra solo i codici" li toglie
-    $('#btnNomi').addEventListener('click', async () => {
+    // "Nomi" (barra o menu): li legge dal file riservato su Drive (serve il permesso sul file); "Codici" li toglie
+    const cambiaNomi = async () => {
       chiudiMenu();
       if (nomi) nomi = null;
       else {
@@ -514,7 +518,9 @@
       mioDocente = Dati.docentePerEmail(utente.email);
       preparaControlli();
       aggiorna();
-    });
+    };
+    $('#btnNomi').addEventListener('click', cambiaNomi);
+    $('#btnNomiMenu').addEventListener('click', cambiaNomi);
     $('#sceltaTema').addEventListener('change', e => Tema.imposta(e.target.value));
     $('#sceltaFonte').addEventListener('change', e => { Dati.impostaFonte(e.target.value); chiudiMenu(); ricaricaDati(true); });
     // Quando Orario Facile (aperto in un'altra scheda) salva, l'app si aggiorna subito

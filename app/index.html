@@ -77,6 +77,8 @@
           In breve
         </button>
         <button type="button" id="btnMioOrario" class="pulsante" hidden>Il mio orario</button>
+        <!-- Nomi veri dei docenti, dal file riservato su Google Drive (js/nomi.js): solo per chi ha accesso al file -->
+        <button type="button" id="btnNomi" class="pulsante" aria-pressed="false" title="Mostra i nomi dei docenti al posto dei codici (DOC01…)">👁 Nomi</button>
         <button type="button" id="btnOggi" class="pulsante">Oggi</button>
         <button type="button" id="btnUtente" class="pulsante-utente" aria-haspopup="true" aria-expanded="false" aria-controls="menu"></button>
       </div>
@@ -115,8 +117,8 @@
         <a id="linkOrarioFacile" class="voce-menu" href="../orario-facile/" target="orariofacile">Modifica in Orario Facile</a>
         <button type="button" id="btnSchermoIntero" class="voce-menu">Schermo intero</button>
         <button type="button" id="btnRicarica" class="voce-menu">Aggiorna l'orario</button>
-        <!-- nomi veri dei docenti, dal file riservato su Google Drive (js/nomi.js): solo per chi ha accesso al file -->
-        <button type="button" id="btnNomi" class="voce-menu">👁 Mostra i nomi dei docenti</button>
+        <!-- come il pulsante «Nomi» della barra, che sugli schermi stretti è nascosto per mancanza di spazio -->
+        <button type="button" id="btnNomiMenu" class="voce-menu">👁 Mostra i nomi dei docenti</button>
         <button type="button" id="btnEsci" class="voce-menu">Esci</button>
         <hr>
         <button type="button" id="btnCondividi" class="voce-menu">🔗 Condividi l'app con i colleghi</button>
