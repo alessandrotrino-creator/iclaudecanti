@@ -1,8 +1,8 @@
 /*
   intervallo.js – schermata dell'intervallo sulle LIM delle aule (modalità monitor).
 
-  In una scuola DADA dopo l'intervallo i ragazzi cambiano aula. Agli orari degli intervalli
-  (config.js, campo intervalliLim) la LIM mostra a tutto schermo, per qualche minuto:
+  In una scuola DADA dopo l'intervallo i ragazzi cambiano aula. Durante gli intervalli
+  (config.js, campo intervalliLim: inizio e fine) la LIM mostra a tutto schermo:
   - per ogni classe che era in quest'aula prima dell'intervallo, DOVE ANDARE nell'ora successiva
     (aula, materia, docente);
   - quale classe ARRIVA in quest'aula dopo l'intervallo.
@@ -14,19 +14,22 @@ const Intervallo = (() => {
   const minuti = hhmm => { const [h, m] = String(hhmm).split(':').map(Number); return h * 60 + (m || 0); };
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-  // Se adesso siamo dentro un intervallo restituisce il suo orario d'inizio (es. "09:55"), altrimenti null
-  function inCorso(data, intervalli, durata) {
+  // Se adesso siamo dentro un intervallo restituisce l'intervallo ({ inizio: "09:55", fine: "10:05" }),
+  // altrimenti null. La schermata resta dall'inizio fino alla fine dell'intervallo.
+  function inCorso(data, intervalli) {
     const m = data.getHours() * 60 + data.getMinutes();
-    return (intervalli || []).find(i => minuti(i) <= m && m < minuti(i) + durata) || null;
+    return (intervalli || []).find(i => i && minuti(i.inizio) <= m && m < minuti(i.fine)) || null;
   }
 
   /*
     Disegna la schermata nell'elemento box. Restituisce false se non c'è niente da mostrare
     (per esempio dopo l'intervallo non ci sono più lezioni).
-    - D: l'orario; giorno: "Lunedì"…; aula: id dell'aula della LIM; inizio: "09:55"
+    - D: l'orario; giorno: "Lunedì"…; aula: id dell'aula della LIM
+    - intervallo: { inizio: "09:55", fine: "10:05" }
     - nome(tipo, id): il nome da mostrare per classe, aula o docente
   */
-  function disegna(box, D, giorno, aula, inizio, nome) {
+  function disegna(box, D, giorno, aula, intervallo, nome) {
+    const inizio = intervallo.inizio;
     const m = minuti(inizio);
     const orePrima = D.ore.filter(o => minuti(o.inizio) < m);
     const oraPrima = orePrima[orePrima.length - 1];
@@ -66,7 +69,7 @@ const Intervallo = (() => {
 
     box.innerHTML = `
       <div class="intervallo-scheda">
-        <p class="intervallo-etichetta">☕ Intervallo · si riprende alle ${esc(oraDopo.inizio)} (${oraDopo.n}ª ora)</p>
+        <p class="intervallo-etichetta">☕ Intervallo fino alle ${esc(intervallo.fine)} · poi ${oraDopo.n}ª ora</p>
         <h2 id="titoloIntervallo">${classiQui.length ? 'Dopo l\'intervallo andate in:' : 'Dopo l\'intervallo'}</h2>
         ${righe ? `<ul class="intervallo-classi">${righe}</ul>` : ''}
         <p class="intervallo-arrivo">${testoArrivo}</p>

@@ -246,18 +246,17 @@
   function aggiornaIntervallo() {
     const box = $('#schermataIntervallo');
     const a = adesso();
-    const inizio = aulaMonitor && a.giorno
-      ? Intervallo.inCorso(new Date(), CONFIG.intervalliLim, CONFIG.minutiSchermataIntervallo || 10)
-      : null;
-    const mostra = inizio && intervalloChiuso !== a.giorno + inizio &&
-      Intervallo.disegna(box, D, a.giorno, aulaMonitor, inizio, Dati.nome);
+    // intervallo = { inizio, fine } se adesso siamo in un intervallo (vedi intervalliLim in config.js)
+    const intervallo = aulaMonitor && a.giorno ? Intervallo.inCorso(new Date(), CONFIG.intervalliLim) : null;
+    const mostra = intervallo && intervalloChiuso !== a.giorno + intervallo.inizio &&
+      Intervallo.disegna(box, D, a.giorno, aulaMonitor, intervallo, Dati.nome);
     if (mostra) {
       box.hidden = false;
       document.body.classList.add('intervallo-aperto');
     } else if (!box.hidden) {
       box.hidden = true;
       document.body.classList.remove('intervallo-aperto');
-      if (!inizio) chiudiFinestraIntervallo();   // intervallo finito
+      if (!intervallo) chiudiFinestraIntervallo();   // intervallo finito
     }
   }
 

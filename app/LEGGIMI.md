@@ -134,14 +134,14 @@ Su **iPhone/iPad** l'app si installa da Safari: *Condividi → Aggiungi alla sch
 ## LIM: dove andare dopo l'intervallo
 
 Nelle scuole DADA dopo l'intervallo i ragazzi cambiano aula. Sulle LIM in modalità **monitor dell'aula**, agli orari
-degli intervalli (**9:55 e 11:50**) l'app mostra per 10 minuti, a tutto schermo e a caratteri grandi:
+degli intervalli (**9:55–10:05 e 11:50–12:05**) l'app mostra per tutto l'intervallo, a tutto schermo e a caratteri grandi:
 
 - per ogni classe che era in quell'aula prima dell'intervallo, **dove andare** nell'ora successiva (aula, materia, docente),
   oppure "Restate qui";
 - quale classe **arriva** in quell'aula dopo l'intervallo.
 
-Il tasto **Chiudi** la toglie fino all'intervallo successivo. Orari e durata si cambiano in `js/config.js`
-(`intervalliLim` e `minutiSchermataIntervallo`).
+Il tasto **Chiudi** la toglie fino all'intervallo successivo. Gli orari si cambiano in `js/config.js`, campo
+`intervalliLim`, con inizio e fine di ogni intervallo: `{ inizio: '09:55', fine: '10:05' }`.
 
 ### Aprire l'app sulla LIM anche quando è chiusa
 
@@ -157,10 +157,10 @@ quando è chiusa serve l'aiuto del sistema della LIM.
 3. Doppio clic su **`installa-apertura-intervallo.bat`** e scrivere il nome dell'aula (es. `110ITA4`).
    Lo script crea nell'*Utilità di pianificazione* di Windows due attività, dal lunedì al venerdì alle 9:55 e alle 11:50,
    che aprono Edge sull'app, già sul monitor di quell'aula e a schermo intero.
-4. Finito l'intervallo (o premendo *Chiudi*) l'app chiude da sola la finestra che era stata aperta dallo script.
+4. Finito l'intervallo (alle 10:05 e alle 12:05, o premendo *Chiudi*) l'app chiude da sola la finestra che era stata aperta dallo script.
 5. Per togliere tutto: doppio clic su **`rimuovi-apertura-intervallo.bat`**.
 
-Se si cambiano gli orari degli intervalli, vanno cambiati sia in `js/config.js` sia nello script
+Se si cambia l'inizio degli intervalli, va cambiato sia in `js/config.js` sia nello script
 (`-Orari "10:50","12:45"`) e lo script va rilanciato. Per vedere cosa farebbe senza cambiare niente:
 `powershell -ExecutionPolicy Bypass -File apertura-intervallo.ps1 -Aula "110ITA4" -Prova`.
 
