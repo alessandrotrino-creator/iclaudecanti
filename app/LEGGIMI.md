@@ -89,10 +89,12 @@ e **cambia vista da sola** ogni tot secondi, nell'ordine **Classi → Docenti �
 
 1. Aprire l'indirizzo `https://alessandrotrino-creator.github.io/iclaudecanti/app/?ingresso`
    (ogni 20 secondi) oppure `.../app/?ingresso=30` per scegliere i secondi (da 5 a 600).
-   In alternativa: menu in alto a destra → "Uso di questo dispositivo" → **📺 Schermo all'ingresso**,
-   e sotto "Cambia vista ogni" si scelgono i secondi.
-2. Accedere una volta con "Ricordami" spuntato; la scelta resta memorizzata su quel dispositivo.
-3. Mettere a schermo intero (menu → *Schermo intero*, oppure F11).
+   In alternativa: menu in alto a destra → "Uso di questo dispositivo" → **📺 Schermo all'ingresso**.
+2. **Ogni quanti secondi** lo decide l'utente: nel menu, sotto "Cambia vista ogni quanti secondi?", si scrive il numero
+   (da 5 a 600, conferma con Invio) oppure lo si regola con **−** e **+** (di 5 in 5). Il cambio vale subito
+   e resta memorizzato su quel dispositivo.
+3. Accedere una volta con "Ricordami" spuntato; le scelte restano memorizzate su quel dispositivo.
+4. Mettere a schermo intero (menu → *Schermo intero*, oppure F11).
 
 Come funziona:
 

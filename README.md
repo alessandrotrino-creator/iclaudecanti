@@ -9,7 +9,8 @@ Repo collaborativo del gruppo **iclaudecanti**.
 Nuova modalità dell'app Orario DADA per il televisore o il proiettore all'ingresso:
 [.../app/?ingresso](https://alessandrotrino-creator.github.io/iclaudecanti/app/?ingresso) (o dal menu: "Uso di questo dispositivo").
 
-- l'orario di oggi cambia vista da solo: **Classi → Docenti → Aule**, ogni 20 secondi (`?ingresso=30` per 30 secondi, oppure dal menu);
+- l'orario di oggi cambia vista da solo: **Classi → Docenti → Aule**;
+- **ogni quanti secondi lo decide l'utente**: nel menu si scrive il numero (da 5 a 600) o lo si regola con − e +; anche dall'indirizzo, es. `?ingresso=30`;
 - se le colonne non stanno nello schermo, vengono divise in pagine che ruotano anch'esse: niente da scorrere;
 - un tocco mette in pausa la rotazione, che riparte da sola dopo 2 minuti senza tocchi;
 - istruzioni in [app/LEGGIMI.md](app/LEGGIMI.md#schermo-allingresso-proiezione-a-rotazione).
