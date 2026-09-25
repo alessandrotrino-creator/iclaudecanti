@@ -63,7 +63,8 @@ const Sostituzioni = (() => {
     a.textContent = testo;
     a.classList.add('visibile');
     clearTimeout(timerAvviso);
-    timerAvviso = setTimeout(() => a.classList.remove('visibile'), 5000);
+    // resta almeno 5 secondi, di più se il messaggio è lungo (circa 1 secondo ogni 15 lettere)
+    timerAvviso = setTimeout(() => a.classList.remove('visibile'), Math.max(5000, testo.length * 65));
   }
 
   // Salva nella memoria del browser e avvisa se non ci riesce
@@ -248,30 +249,39 @@ const Sostituzioni = (() => {
     }
   }
 
+  // Perché non si può scrivere nel foglio del conteggio per questo docente ('' = si può)
+  function motivoNonScrivibile(idDocente) {
+    if (!suDrive()) return 'in config.js non c\'è il foglio del conteggio su Drive';
+    if (!foglio) return 'il foglio del conteggio non è caricato: premi «☁️ Carica dal Drive»';
+    if (!foglio.driveId) return 'il foglio del conteggio è stato caricato dal computer, non da Drive: premi «☁️ Carica dal Drive»';
+    if (!rigaDi(idDocente)) return `${nomeDocente(idDocente)} non è abbinato a nessuna riga del foglio: sceglilo in «Abbinamenti tra orario e foglio»`;
+    return '';
+  }
+
   /*
     Aggiunge "quante" ore (anche negative) nella cella di un docente, nella colonna della settimana,
-    leggendo prima il valore attuale (cella vuota = 0). Restituisce true se ci è riuscito, false se il foglio
-    non è su Drive o il docente non è abbinato a una riga; se Google dà errore lo lancia a chi chiama.
+    leggendo prima il valore attuale (cella vuota = 0).
+    Restituisce { ok: true, nuovo, cella } se ci è riuscito, oppure { ok: false, motivo } se non si può scrivere;
+    se Google dà errore lo lancia a chi chiama.
   */
   async function segnaOre(idDocente, settimana, quante) {
+    const motivo = motivoNonScrivibile(idDocente);
+    if (motivo) return { ok: false, motivo };
     const r = rigaDi(idDocente);
-    if (!foglio || !foglio.driveId || !suDrive() || !r) return false;
     const nuovo = await FoglioDrive.aggiungi(foglio, r, settimana, quante, emailUtente());
     r.settimane[settimana] = nuovo;
     r.totale += quante;
     salva('foglio', foglio);
-    return true;
+    return { ok: true, nuovo, cella: FoglioDrive.indirizzo ? FoglioDrive.indirizzo(foglio, r, settimana) : '' };
   }
 
-  // Aggiunge (+1) o toglie (-1) l'ora di sostituzione nel foglio su Drive; restituisce true se ci è riuscito
+  // Aggiunge (+1) o toglie (-1) l'ora di sostituzione nel foglio su Drive; restituisce il risultato di segnaOre
   async function segnaNelFoglio(s, quante) {
     try {
       return await segnaOre(s.sostituto, s.settimana, quante);
     } catch (errore) {
       console.error(errore);
-      avvisa((quante > 0 ? 'Non ho potuto segnare l\'ora nel foglio del conteggio: ' : 'Non ho potuto togliere l\'ora dal foglio del conteggio: ') +
-        errore.message + (quante > 0 ? '. Resta tra le ore da riportare.' : '.'));
-      return false;
+      return { ok: false, motivo: errore.message };
     }
   }
 
@@ -409,16 +419,18 @@ const Sostituzioni = (() => {
     if (!differenza) return;
     const sett = settimanaDi(a.data);
     try {
-      if (await segnaOre(a.docente, sett, -differenza)) {
+      const esito = await segnaOre(a.docente, sett, -differenza);
+      if (esito.ok) {
         a.permessoSegnate = oreGiuste;
         salva('assenze', assenze);
+        const dove = `nel foglio del conteggio (settimana ${sett}${esito.cella ? ', cella ' + esito.cella : ''}: ora ${esito.nuovo})`;
         avvisa(differenza > 0
-          ? `Permesso: ${ore(differenza)} a debito per ${nomeDocente(a.docente)} nel foglio del conteggio (settimana ${sett}).`
-          : `Permesso: ${differenza === -1 ? 'restituita' : 'restituite'} ${ore(-differenza)} a ${nomeDocente(a.docente)} nel foglio del conteggio (settimana ${sett}).`);
+          ? `Permesso: ${ore(differenza)} a debito per ${nomeDocente(a.docente)} ${dove}.`
+          : `Permesso: ${differenza === -1 ? 'restituita' : 'restituite'} ${ore(-differenza)} a ${nomeDocente(a.docente)} ${dove}.`);
         disegnaTutto();
       } else {
-        avvisa(`Permesso registrato, ma non posso aggiornare il foglio del conteggio (non è su Drive o ${nomeDocente(a.docente)} ` +
-          `non è abbinato a una riga): ${differenza > 0 ? 'togli' : 'aggiungi'} a mano ${ore(Math.abs(differenza))} nella settimana ${sett}.`);
+        avvisa(`Permesso registrato, ma non posso aggiornare il foglio del conteggio (${esito.motivo}): ` +
+          `${differenza > 0 ? 'togli' : 'aggiungi'} a mano ${ore(Math.abs(differenza))} nella settimana ${sett}.`);
       }
     } catch (errore) {
       console.error(errore);
@@ -440,20 +452,21 @@ const Sostituzioni = (() => {
     disegnaTutto();
     // foglio del conteggio su Google Drive: +1 nella settimana del docente che sostituisce
     const fatto = [];
-    if (await segnaNelFoglio(s, 1)) {
+    const esito = await segnaNelFoglio(s, 1);
+    if (esito.ok) {
       s.riportata = true; s.nelFoglio = true;
-      fatto.push(`segnata nel foglio del conteggio (settimana ${s.settimana})`);
+      fatto.push(`segnata nel foglio del conteggio (settimana ${s.settimana}${esito.cella ? ', cella ' + esito.cella : ''}: ora ${esito.nuovo})`);
     }
     // Foglio Google delle sostituzioni: una riga nel foglio «Sostituzioni»
     if (await scriviNelRegistro(s)) {
       s.nelRegistro = true;
       fatto.push('scritta nel foglio «Sostituzioni»');
     }
-    if (fatto.length) {
-      salva('registro', registro);
-      avvisa(testo + ' ' + fatto.join(' e ').replace(/^./, c => c.toUpperCase()) + '.');
-      disegnaTutto();
-    }
+    if (fatto.length) salva('registro', registro);
+    // Se il +1 non è stato scritto lo diciamo sempre, con il motivo: l'ora resta tra quelle da riportare
+    const mancato = esito.ok ? '' : ` ⚠️ Non segnata nel foglio del conteggio: ${esito.motivo}. Resta tra le ore da riportare.`;
+    avvisa(testo + (fatto.length ? ' ' + fatto.join(' e ').replace(/^./, c => c.toUpperCase()) + '.' : '') + mancato);
+    disegnaTutto();
   }
 
   async function annulla(s) {
@@ -462,7 +475,7 @@ const Sostituzioni = (() => {
       !confirm('Non riesco a togliere la sostituzione dal foglio «Sostituzioni». Annullarla comunque? Poi correggi il foglio a mano.')) return;
     if (s.nelFoglio) {
       // segnata in automatico nel foglio su Drive: si toglie da lì
-      if (!(await segnaNelFoglio(s, -1)) &&
+      if (!(await segnaNelFoglio(s, -1)).ok &&
         !confirm('Non riesco a togliere l\'ora dal foglio del conteggio su Drive. Annullare comunque la sostituzione? Poi correggi il foglio a mano.')) return;
     } else if (s.riportata && !confirm('Questa sostituzione è già stata riportata nel foglio. Annullarla comunque? Ricordati di correggere anche il foglio.')) return;
     registro = registro.filter(x => x.id !== s.id);

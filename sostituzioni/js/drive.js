@@ -105,5 +105,12 @@ const FoglioDrive = (() => {
     return nuovo;
   }
 
-  return { configurato, pronto, leggi, aggiungi, permessi };
+  // Indirizzo della cella di un docente in una settimana, es. "G14" (vuoto se la settimana non c'è nel foglio):
+  // serve per dire all'utente dove è stata scritta l'ora
+  function indirizzo(foglio, rigaDocente, settimana) {
+    const colonna = foglio && foglio.colonne && foglio.colonne[settimana];
+    return colonna === undefined ? '' : cella(rigaDocente.riga, colonna);
+  }
+
+  return { configurato, pronto, leggi, aggiungi, permessi, indirizzo };
 })();
