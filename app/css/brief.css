@@ -33,7 +33,7 @@
   background: linear-gradient(120deg, var(--mattina-a), var(--mattina-b)); color: var(--testo-testata);
 }
 .pulsante-breve svg { width: 16px; height: 16px; flex: none; }
-/* Il colore cambia con il momento della giornata, come la testata della vista
+/* Il colore del tasto «In breve» cambia con il momento della giornata, come la testata della vista
    (app.js scrive data-momento sul <body>: mattina, pomeriggio o sera) */
 body[data-momento="pomeriggio"] .pulsante-breve { background: linear-gradient(120deg, var(--pomeriggio-a), var(--pomeriggio-b)); }
 body[data-momento="sera"] .pulsante-breve { background: linear-gradient(120deg, var(--sera-a), var(--sera-b)); color: var(--testo-testata-sera); }

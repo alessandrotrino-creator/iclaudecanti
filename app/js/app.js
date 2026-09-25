@@ -27,6 +27,7 @@
   let ultimoMinuto = -1;
   let timerInattivita = null;
   let breveAperta = false;  // true quando si vede la vista "In breve" al posto della tabella
+  let breveMio = false;     // true se la vista è stata aperta con «Il mio orario» (giornata del docente)
   // pagina: solo per lo schermo all'ingresso, quali colonne mostrare (null = tutte)
   // modificate: caselle cambiate all'ultimo minuto, da evidenziare (vedi modifiche.js)
   const stato = { colonne: 'classe', giorno: '', filtri: { classe: '', docente: '', aula: '' }, pagina: null, modificate: null };
@@ -208,7 +209,7 @@
   function aggiorna() {
     const a = adesso();
     ultimoMinuto = a.minuto;
-    // Momento della giornata (mattina, pomeriggio, sera): colora i tasti «In breve» e «Il mio orario»
+    // Momento della giornata (mattina, pomeriggio, sera): colora il tasto «In breve»
     document.body.dataset.momento = Breve.momento(a.minuto);
     // Stato dei pulsanti
     $$('[data-colonne]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.colonne === stato.colonne)));
@@ -417,6 +418,8 @@
   // Di chi mostrare la giornata: la scelta salvata, altrimenti il docente che ha fatto
   // l'accesso, altrimenti il filtro attivo nella tabella (null = va scelto)
   function soggettoBreve() {
+    // Aperta con «Il mio orario»: sempre la giornata del docente che ha fatto l'accesso
+    if (breveMio && mioDocente) return { tipo: 'docente', id: mioDocente.id };
     const valido = s => s && D.mappa[s.tipo] && D.mappa[s.tipo].has(s.id) ? s : null;
     const salvato = leggi(CHIAVE_BREVE), i = salvato.indexOf('|');
     return valido(i > 0 ? { tipo: salvato.slice(0, i), id: salvato.slice(i + 1) } : null) ||
@@ -432,23 +435,23 @@
     });
   }
 
-  // Apre (true) o chiude (false) la vista "In breve"; sui monitor di classe non si apre
-  function apriBreve(apri) {
+  // Apre (true) o chiude (false) la vista "In breve"; sui monitor di classe non si apre.
+  // mio = true: aperta con «Il mio orario», cioè con la giornata del docente che ha fatto l'accesso
+  function apriBreve(apri, mio) {
     breveAperta = apri && !aulaMonitor;
+    breveMio = breveAperta && !!mio && !!mioDocente;
     document.body.classList.toggle('breve-aperta', breveAperta);
     $('#vistaBreve').hidden = !breveAperta;
-    $('#btnBreve').setAttribute('aria-pressed', String(breveAperta));
+    $('#btnBreve').setAttribute('aria-pressed', String(breveAperta && !breveMio));
     aggiornaMioOrario();
     if (breveAperta) { disegnaBreve(); window.scrollTo(0, 0); $('#vistaBreve').focus({ preventScroll: true }); }
   }
 
-  // Tasti della barra accesi (blu con l'anello, vedi css/barra.css):
-  // - "Il mio orario" quando la tabella mostra proprio l'orario del docente
+  // Tasti della barra accesi (vedi css/barra.css):
+  // - "Il mio orario" quando è aperta la vista "In breve" con la giornata del docente
   // - "Oggi" quando la tabella mostra il giorno di oggi (o il prossimo giorno di scuola)
   function aggiornaMioOrario() {
-    const acceso = !!mioDocente && !breveAperta && stato.colonne === 'docente' &&
-      stato.filtri.docente === mioDocente.id && !stato.filtri.classe && !stato.filtri.aula;
-    $('#btnMioOrario').setAttribute('aria-pressed', String(acceso));
+    $('#btnMioOrario').setAttribute('aria-pressed', String(breveAperta && breveMio));
     const oggi = !breveAperta && stato.colonne !== 'giorno' && !!D && stato.giorno === giornoIniziale().giorno;
     $('#btnOggi').setAttribute('aria-pressed', String(oggi));
   }
@@ -502,25 +505,27 @@
       if (b) { stato.giorno = b.dataset.giorno; aggiorna(); }
     });
     // "In breve": il tasto apre e chiude; dentro la vista, "Tabella" chiude e la tendina sceglie di chi è la giornata
-    $('#btnBreve').addEventListener('click', () => apriBreve(!breveAperta));
+    // (se la vista è aperta con «Il mio orario», «In breve» passa alla giornata scelta nella tendina)
+    $('#btnBreve').addEventListener('click', () => apriBreve(!breveAperta || breveMio));
     $('#vistaBreve').addEventListener('click', e => {
       if (e.target.closest('#btnChiudiBreve')) { apriBreve(false); $('#btnBreve').focus(); }
     });
     $('#vistaBreve').addEventListener('change', e => {
       if (e.target.id !== 'sceltaBreve') return;
       scrivi(CHIAVE_BREVE, e.target.value);
+      breveMio = false;   // scelta un'altra giornata: non è più «Il mio orario»
+      $('#btnBreve').setAttribute('aria-pressed', 'true');
+      aggiornaMioOrario();
       disegnaBreve();
       $('#sceltaBreve').focus();
     });
     $('#btnOggi').addEventListener('click', () => { apriBreve(false); const gi = giornoIniziale(); stato.giorno = gi.giorno; if (stato.colonne === 'giorno') stato.colonne = 'classe'; aggiorna(); mostraOraCorrente(); });
-    $('#btnMioOrario').addEventListener('click', () => {
-      apriBreve(false);
-      stato.colonne = 'docente'; stato.filtri = { classe: '', docente: mioDocente.id, aula: '' };
-      stato.giorno = giornoIniziale().giorno; aggiorna(); mostraOraCorrente();
-    });
+    // «Il mio orario»: apre la vista a schede di "In breve" con la giornata del docente (di nuovo: chiude)
+    $('#btnMioOrario').addEventListener('click', () => apriBreve(!(breveAperta && breveMio), true));
     $('#btnHome').addEventListener('click', schermataIniziale);
 
-    $('#btnUtente').addEventListener('click', () => $('#menu').hidden ? apriMenu() : chiudiMenu());    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#menu').hidden) { chiudiMenu(); $('#btnUtente').focus(); } });
+    $('#btnUtente').addEventListener('click', () => $('#menu').hidden ? apriMenu() : chiudiMenu());
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#menu').hidden) { chiudiMenu(); $('#btnUtente').focus(); } });
     document.addEventListener('click', e => { if (!$('#menu').hidden && !e.target.closest('#menu, #btnUtente')) chiudiMenu(); });
     $('#sceltaMonitor').addEventListener('change', e => { impostaMonitor(e.target.value); chiudiMenu(); });
     // Secondi della rotazione: si scrivono nel campo (conferma con Invio o uscendo dal campo)

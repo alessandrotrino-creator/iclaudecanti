@@ -6,11 +6,12 @@
 */
 
 /* ---------- Tasti attivi: solo un anello blu intorno, senza riempimento (su tutti gli schermi) ----------
-   aria-pressed="true"  = la funzione è accesa (In breve, Il mio orario, Oggi, Nomi)
+   aria-pressed="true"  = la funzione è accesa (Oggi, Nomi)
    aria-expanded="true" = il suo pannello è aperto (menu del profilo)
    L'anello è fatto con due ombre: una sottile del colore di fondo e una blu fuori.
-   La campanella NO: quando è attiva è riempita di giallo con l'alone (css/campanella.css), senza anello. */
-.azioni-barra [aria-pressed="true"],
+   Niente anello per la campanella (quando è attiva è riempita di giallo con l'alone, css/campanella.css),
+   per «In breve» (ha già la sfumatura) e per «Il mio orario». */
+.azioni-barra [aria-pressed="true"]:not(.pulsante-breve):not(#btnMioOrario),
 .azioni-barra [aria-expanded="true"]:not(.pulsante-campanella) {
   box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--primario);
 }

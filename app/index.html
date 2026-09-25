@@ -110,9 +110,9 @@
           <span class="testo-tasto">In breve</span>
         </button>
         <!-- Sui telefoni questi tasti mostrano solo l'icona: la scritta resta per i lettori di schermo (css/barra.css) -->
-        <!-- "Il mio orario" ha lo stesso stile di "In breve" (classe pulsante-breve, css/brief.css) -->
-        <button type="button" id="btnMioOrario" class="pulsante pulsante-breve tasto-icona" title="Il mio orario" aria-pressed="false" hidden>
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5z"/></svg>
+        <!-- "Il mio orario": tasto come "Oggi"; apre la vista "In breve" con la giornata del docente che ha fatto l'accesso -->
+        <button type="button" id="btnMioOrario" class="pulsante tasto-icona" title="Il mio orario" aria-pressed="false" aria-controls="vistaBreve" hidden>
+          <svg class="icona-telefono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5z"/></svg>
           <span class="testo-tasto">Il mio orario</span>
         </button>
         <!-- Nomi veri dei docenti, dal file riservato su Google Drive (js/nomi.js): solo per chi ha accesso al file -->
