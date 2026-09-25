@@ -29,7 +29,8 @@ Le parti del progetto:
   iniziali, PDF o fogli con i nomi dei docenti.
   Per vedere i nomi: `app/js/nomi.js` (`NomiDocenti.carica(email)`) legge da Drive il file indicato in
   `CONFIG.fileNomiDocenti` con il permesso dell'utente e restituisce una Map codice → {cognome, nome}; i nomi stanno
-  solo in memoria (in Orario Facile: pulsante «👁 Nomi», `NOMI`, `nomeDoc()`), mai in localStorage, backup o CSV.
+  solo in memoria (in Orario Facile: pulsante «👁 Nomi», `NOMI`, `nomeDoc()`; nell'app: voce di menu «Mostra i nomi dei docenti»,
+  `applicaNomi()` in app.js, che cambia solo `D.docente[].nome` e tiene il codice in `.codice`), mai in localStorage, backup o CSV.
 - **Ruoli**: *modificatori* (possono usare Orario Facile) e *fruitori* (solo l'app). `app/js/ruoli.js` +
   `CONFIG.editori` in `app/js/config.js` (codici SHA-256 di 16 caratteri, **mai email in chiaro**: repo pubblico;
   lista vuota = tutti modificatori). Orario Facile è protetto da `orario-facile/porta.js`/`porta.css`, che riusano

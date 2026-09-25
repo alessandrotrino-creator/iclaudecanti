@@ -20,6 +20,7 @@
   let D = null;             // dati dell'orario
   let utente = null;        // chi ha fatto l'accesso
   let mioDocente = null;    // il docente corrispondente all'utente (se c'è)
+  let nomi = null;          // nomi veri dei docenti (Map codice → {cognome, nome}), solo in memoria
   let aulaMonitor = '';     // id dell'aula se questo dispositivo è un monitor di classe
   let secondiIngresso = 0;  // > 0 se questo dispositivo è lo schermo all'ingresso (viste a rotazione)
   let avvisoGiorno = null;  // { giorno, testo } es. "le lezioni di oggi sono finite"
@@ -142,6 +143,20 @@
     const riga = $('#tabella .ora-corrente') || $('#tabella .cella-corrente');
     const box = $('#contenitoreTabella');
     if (riga && box) box.scrollTop = Math.max(0, riga.offsetTop - box.clientHeight / 3);
+  }
+
+  // Nomi veri dei docenti: si cambiano solo in memoria, nella tabella dei docenti (D.docente). Le lezioni
+  // indicano il docente con il suo id, quindi tutte le viste mostrano i nomi senza altre modifiche.
+  // Il codice originale (DOC01…) resta in e.codice; nulla di tutto questo viene salvato sul dispositivo.
+  function applicaNomi() {
+    if (!D) return;
+    D.docente.forEach(e => {
+      if (e.codice === undefined) e.codice = e.nome;
+      const v = nomi && nomi.get(String(e.codice).trim().toUpperCase());
+      e.nome = v ? (v.cognome + ' ' + v.nome).trim() : e.codice;
+    });
+    D.docente.sort((a, b) => a.nome.localeCompare(b.nome, 'it', { numeric: true }));
+    $('#btnNomi').textContent = nomi ? '🙈 Mostra solo i codici dei docenti' : '👁 Mostra i nomi dei docenti';
   }
 
   /* ---------- costruzione dei controlli ---------- */
@@ -440,6 +455,19 @@
       chiudiMenu();
     });
     $('#btnRicarica').addEventListener('click', async () => { chiudiMenu(); await ricaricaDati(true); });
+    // "Mostra i nomi": li legge dal file riservato su Drive (serve il permesso sul file), "Mostra solo i codici" li toglie
+    $('#btnNomi').addEventListener('click', async () => {
+      chiudiMenu();
+      if (nomi) nomi = null;
+      else {
+        try { nomi = await NomiDocenti.carica(utente.email); }
+        catch (e) { $('#avviso').hidden = false; $('#avviso').textContent = 'Non riesco a mostrare i nomi: ' + e.message + '.'; return; }
+      }
+      applicaNomi();
+      mioDocente = Dati.docentePerEmail(utente.email);
+      preparaControlli();
+      aggiorna();
+    });
     $('#sceltaTema').addEventListener('change', e => Tema.imposta(e.target.value));
     $('#sceltaFonte').addEventListener('change', e => { Dati.impostaFonte(e.target.value); chiudiMenu(); ricaricaDati(true); });
     // Quando Orario Facile (aperto in un'altra scheda) salva, l'app si aggiorna subito
@@ -473,6 +501,7 @@
     try {
       const fontePrima = D.fonte, filtri = Object.assign({}, stato.filtri);
       D = await Dati.carica();
+      applicaNomi();
       mioDocente = Dati.docentePerEmail(utente.email);
       preparaControlli();
       if (aulaMonitor && !D.mappa.aula.has(aulaMonitor)) aulaMonitor = '';
@@ -510,6 +539,7 @@
       mostraErroreAvvio('Impossibile caricare l\'orario. Controlla la connessione.');
       return;
     }
+    applicaNomi();
     mioDocente = Dati.docentePerEmail(utente.email);
 
     // Monitor: si attiva con ?monitor=NomeAula nell'indirizzo, oppure dal menu
