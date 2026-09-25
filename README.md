@@ -4,6 +4,15 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**25/09/2026 – Modifiche dell'ultimo minuto e campanella degli intervalli** (Chiara)
+
+- **Modifiche dell'ultimo minuto**: se l'orario pubblicato cambia, l'app lo mostra in un riquadro giallo in alto
+  ("⚠️ Modifiche all'orario di oggi": com'era prima e com'è adesso) e segna le lezioni cambiate nella tabella;
+  il docente coinvolto vede "ti riguarda", il monitor di un'aula solo le modifiche di quell'aula. L'app ricontrolla
+  l'orario ogni 5 minuti e, se si vuole, manda anche una notifica. Dettagli in [app/LEGGIMI.md](app/LEGGIMI.md#modifiche-dellultimo-minuto);
+- **Campanella** (`dati/campanella.json`): ora suona all'inizio degli intervalli (9:55, 11:50) e alla loro fine
+  (10:05, 12:05), che è anche l'inizio della 3ª e della 5ª ora (prima suonava alle 10:00 e alle 12:00).
+
 **25/09/2026 – LIM: dove andare dopo l'intervallo** (Chiara)
 
 - sulle LIM (monitor dell'aula), durante gli intervalli (**9:55–10:05 e 11:50–12:05**) l'app mostra a tutto schermo dove va ogni classe

@@ -131,6 +131,25 @@ Ci sono due tipi di utenti, tutti con l'account della scuola:
 
 Su **iPhone/iPad** l'app si installa da Safari: *Condividi → Aggiungi alla schermata Home*.
 
+## Modifiche dell'ultimo minuto
+
+Quando l'orario pubblicato cambia (per esempio un'aula spostata o una sostituzione), l'app lo segnala in modo ben visibile:
+
+- l'app ricontrolla l'orario **ogni 5 minuti** (`minutiAggiornamentoDati` in `js/config.js`) e lo confronta con l'ultima
+  versione vista su quel dispositivo;
+- se sono cambiate lezioni **della giornata** (oggi, o il prossimo giorno di scuola se le lezioni di oggi sono finite)
+  compare in alto un **riquadro giallo** "⚠️ Modifiche all'orario di oggi", con com'era **prima** (barrato) e com'è **adesso**,
+  e le lezioni aggiunte o tolte;
+- nella tabella le lezioni cambiate hanno il bordo evidenziato e l'etichetta **CAMBIATA** per tutta la giornata;
+- al **docente** le modifiche che lo riguardano compaiono per prime, con "ti riguarda"; sul **monitor di un'aula** si vedono
+  solo quelle di quell'aula; sullo schermo all'ingresso tutte;
+- **Ho visto** nasconde il riquadro finché non arrivano altre modifiche;
+- con **🔔 Avvisami anche con una notifica** (solo sui dispositivi personali) arriva anche la notifica del telefono o del PC.
+
+Limiti: le notifiche arrivano solo mentre l'app è aperta (anche in secondo piano); per avvisare ad app chiusa servirebbe un
+server, che su GitHub Pages non c'è. Chi apre l'app per la prima volta su un dispositivo non vede modifiche "vecchie":
+il confronto parte da quel momento. Le prove nella bozza di Orario Facile non fanno scattare avvisi, solo l'orario pubblicato.
+
 ## LIM: dove andare dopo l'intervallo
 
 Nelle scuole DADA dopo l'intervallo i ragazzi cambiano aula. Sulle LIM in modalità **monitor dell'aula**, agli orari
@@ -255,6 +274,7 @@ app/
   css/campanella.css    stile del tasto e del pannello della campanella
   js/ingresso.js        schermo all'ingresso: viste a rotazione
   js/intervallo.js      LIM: schermata dell'intervallo (dove vanno le classi nell'ora dopo)
+  js/modifiche.js       avvisi delle modifiche dell'ultimo minuto all'orario della giornata
   lim/                  script per aprire l'app sulle LIM Windows agli intervalli
   js/app.js             schermata iniziale, pulsanti, monitor, aggiornamenti
   sw.js                 funzionamento senza connessione
