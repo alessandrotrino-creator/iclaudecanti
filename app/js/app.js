@@ -186,7 +186,8 @@
       nomi = await NomiDocenti.carica(utente.email);
     } catch (e) {
       const msg = String(e && e.message || '');
-      if (/permesso|non trovato/i.test(msg)) scrivi(CHIAVE_NOMI, 'negato:' + utente.email.toLowerCase());   // niente accesso al file
+      // Solo se Google dice che QUESTO ACCOUNT non può aprire il file (messaggi di nomi.js) smettiamo di riprovare
+      if (/il tuo account non ha il permesso|file non trovato/i.test(msg)) scrivi(CHIAVE_NOMI, 'negato:' + utente.email.toLowerCase());
       else if (/bloccato la finestra|popup/i.test(msg) && !attesaTocco) {
         // Il browser apre la finestra di Google solo dopo un tocco: riproviamo al primo tocco sullo schermo
         attesaTocco = true;
