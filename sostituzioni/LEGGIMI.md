@@ -17,6 +17,10 @@ Il foglio del conteggio ore contiene i nomi completi dei docenti, quindi **non v
   (settimana 1 = quella del 9 settembre 2026); annullandola toglie 1. Le celle con una formula non vengono toccate:
   quelle ore restano "da riportare" a mano. Serve un vero Foglio Google (non un Excel caricato), la Google Sheets API
   attiva nel progetto Google Cloud e il permesso di modifica sul foglio per chi assegna. Codice: `js/drive.js`.
+  **Prima di ogni scrittura** la scheda rilegge nel foglio COGNOME e NOME di quella riga: se le righe sono state
+  riordinate, aggiunte o tolte ritrova quella giusta, altrimenti non scrive. Se il file dei nomi dice che il codice
+  corrisponde a un'altra persona, non scrive e chiede di correggere l'abbinamento. L'avviso dice sempre in quale
+  cella ha scritto (es. "settimana 3, cella G16: ora 1") oppure perché non ha potuto.
 - Si carica dalla scheda con **"Carica il foglio"**: viene letto **solo nel browser** di quel computer,
   senza essere inviato a nessuno.
 - Assenze, sostituzioni e foglio restano salvati **solo su quel dispositivo** (memoria del browser).

@@ -275,6 +275,9 @@ const Foglio = (() => {
       inizio: cercaInizio(fogli),
       // numero della settimana -> colonna nel foglio (0 = colonna A), per scrivere le ore su Google Drive
       colonne: Object.fromEntries(colonneSettimane.map(({ c, n }) => [n, c])),
+      // colonne di COGNOME e NOME: prima di scrivere su Drive si controlla che la riga sia ancora quella del docente
+      colonnaCognome: cCognome,
+      colonnaNome: cNome,
       docenti
     };
   }

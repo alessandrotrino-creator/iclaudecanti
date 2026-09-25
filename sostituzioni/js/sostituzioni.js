@@ -254,7 +254,16 @@ const Sostituzioni = (() => {
     if (!suDrive()) return 'in config.js non c\'è il foglio del conteggio su Drive';
     if (!foglio) return 'il foglio del conteggio non è caricato: premi «☁️ Carica dal Drive»';
     if (!foglio.driveId) return 'il foglio del conteggio è stato caricato dal computer, non da Drive: premi «☁️ Carica dal Drive»';
-    if (!rigaDi(idDocente)) return `${nomeDocente(idDocente)} non è abbinato a nessuna riga del foglio: sceglilo in «Abbinamenti tra orario e foglio»`;
+    const r = rigaDi(idDocente);
+    if (!r) return `${nomeDocente(idDocente)} non è abbinato a nessuna riga del foglio: sceglilo in «Abbinamenti tra orario e foglio»`;
+    // Controllo dell'abbinamento con il nome vero (file dei nomi): un abbinamento vecchio, fatto a mano
+    // prima di ricaricare l'orario, potrebbe collegare il codice alla riga di un'altra persona
+    const t = D && D.mappa.docente.get(idDocente);
+    const vero = t && nomiVeri && nomiVeri.get(String(t.codice || t.nome || '').toUpperCase());
+    if (vero && Foglio.semplifica(vero.cognome) !== Foglio.semplifica(r.cognome)) {
+      return `abbinamento da controllare: ${t.codice || t.nome} è ${vero.cognome} ${vero.nome}, ma è abbinato alla riga ` +
+        `${nomeRiga(r)} del foglio (correggilo in «Abbinamenti tra orario e foglio»)`;
+    }
     return '';
   }
 

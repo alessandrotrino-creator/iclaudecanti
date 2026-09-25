@@ -82,6 +82,34 @@ const FoglioDrive = (() => {
   }
 
   /*
+    Prima di scrivere controlliamo che la riga del docente sia ancora quella giusta, rileggendo
+    COGNOME e NOME nel foglio: se nel frattempo qualcuno ha aggiunto, tolto o riordinato delle righe,
+    la cerchiamo di nuovo. Così l'ora non finisce mai sulla riga di un'altra persona.
+    Restituisce il numero di riga (0 = prima riga) oppure lancia un errore.
+  */
+  async function rigaAttuale(foglio, rigaDocente, email) {
+    if (foglio.colonnaCognome === undefined || foglio.colonnaNome === undefined) {
+      throw new Error('prima ricarica il foglio del conteggio con «☁️ Carica dal Drive» (serve per ritrovare le righe dei docenti)');
+    }
+    const lettera = c => cella(0, c).replace(/\d+$/, '');
+    const nomeFoglio = `'${foglio.foglio.replace(/'/g, "''")}'`;
+    const q = [foglio.colonnaCognome, foglio.colonnaNome]
+      .map(c => 'ranges=' + encodeURIComponent(`${nomeFoglio}!${lettera(c)}:${lettera(c)}`)).join('&');
+    const v = await chiama(API + encodeURIComponent(foglio.driveId) + '/values:batchGet?' + q, { email });
+    const colonna = k => ((v.valueRanges[k] || {}).values || []).map(x => Foglio.semplifica(String((x || [])[0] || '')));
+    const cognomi = colonna(0), nomi = colonna(1);
+    const cognome = Foglio.semplifica(rigaDocente.cognome), nome = Foglio.semplifica(rigaDocente.nome);
+    const giusta = i => cognomi[i] === cognome && (nomi[i] || '') === nome;
+    if (giusta(rigaDocente.riga)) return rigaDocente.riga;
+    const trovate = cognomi.map((x, i) => i).filter(giusta);
+    if (trovate.length !== 1) {
+      throw new Error(`nel foglio del conteggio non trovo più una sola riga per ${rigaDocente.cognome} ${rigaDocente.nome}: ricarica il foglio con «☁️ Carica dal Drive»`);
+    }
+    rigaDocente.riga = trovate[0];   // la riga si era spostata: da ora usiamo quella nuova
+    return trovate[0];
+  }
+
+  /*
     Aggiunge "quante" (+1 o -1) alla cella di un docente in una settimana.
     Restituisce il nuovo valore; lancia un errore (con .formula = true se la cella contiene una formula)
   */
@@ -89,6 +117,7 @@ const FoglioDrive = (() => {
     if (foglio.soloLettura) throw new Error('il foglio su Drive è un file Excel: aprilo in Fogli e usa File > Salva come Fogli Google');
     const colonna = foglio.colonne && foglio.colonne[settimana];
     if (colonna === undefined) throw new Error(`nel foglio non c'è la colonna della settimana ${settimana}`);
+    await rigaAttuale(foglio, rigaDocente, email);   // la riga è ancora quella del docente?
     const intervallo = `'${foglio.foglio.replace(/'/g, "''")}'!${cella(rigaDocente.riga, colonna)}`;
     const base = API + encodeURIComponent(foglio.driveId) + '/values/' + encodeURIComponent(intervallo);
     // prima si legge la cella com'è scritta: se è una formula non la tocchiamo
