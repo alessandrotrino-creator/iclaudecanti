@@ -9,6 +9,12 @@ window.CONFIG = {
   // Solo gli account di questo dominio possono entrare
   dominio: 'comprensivoalmese.it',
 
+  // Chi può MODIFICARE l'orario (Orario Facile, sostituzioni): gli altri possono solo consultarlo.
+  // Un codice per persona, ricavato dalla sua email (vedi js/ruoli.js): chi non è abilitato
+  // lo vede nella schermata di Orario Facile. Esempio: editori: ['3f9a0c1d2e4b5a6f', '0b1c2d3e4f5a6b7c'],
+  // Lista vuota = per ora chiunque della scuola può modificare.
+  editori: [],
+
   // ID client OAuth di Google (lo crea l'amministratore Google Workspace della scuola,
   // vedi app/LEGGIMI.md). Non è un dato segreto: può stare nel repository pubblico.
   // Se si svuota ('') l'app torna in "modalità dimostrativa": chiede solo l'email, SENZA verificarla.

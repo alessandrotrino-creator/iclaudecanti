@@ -171,6 +171,9 @@
     $('#btnUtente').textContent = utente.nome.split(/\s+/).map(p => p[0]).slice(0, 2).join('').toUpperCase();
     $('#btnUtente').setAttribute('aria-label', 'Menu di ' + utente.nome);
     $('#btnMioOrario').hidden = !mioDocente;
+    // "Modifica in Orario Facile" solo per chi può modificare l'orario (vedi ruoli.js)
+    $('#linkOrarioFacile').hidden = true;
+    Ruoli.puoModificare(utente.email).then(puo => { $('#linkOrarioFacile').hidden = !puo; });
     $('#btnSchermoIntero').hidden = !document.fullscreenEnabled;
     // Tema: la voce "secondo l'ora" mostra gli orari impostati in config.js
     $('#sceltaTema').value = Tema.scelta();

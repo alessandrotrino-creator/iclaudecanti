@@ -1,0 +1,39 @@
+/*
+  porta.css – stile della "porta d'ingresso" di Orario Facile (vedi porta.js).
+  Usa i colori di Orario Facile, quindi funziona anche con il tema scuro.
+*/
+
+/* Finché la porta è chiusa si vede solo lei: il resto di Orario Facile è nascosto */
+html.porta-chiusa body > *:not(#porta) { display: none !important; }
+html:not(.porta-chiusa) #porta { display: none; }
+
+.porta {
+  min-height: 100vh; min-height: 100dvh;
+  display: grid; place-items: center;
+  padding: 24px 16px;
+}
+.porta-scheda {
+  width: min(480px, 100%);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: var(--shadow); padding: 24px;
+}
+.porta-scheda h1 { font-family: var(--font-c); font-size: 24px; margin-bottom: 8px; }
+.porta-scheda p { color: var(--text-2); }
+.porta-nota { font-size: 13px; color: var(--text-3) !important; margin-top: 12px; }
+.porta-errore { color: var(--bad) !important; font-weight: 500; }
+.porta-errore:empty { display: none; }
+.porta-ricordami { display: flex; align-items: center; gap: 8px; margin: 14px 0; }
+.porta-google { min-height: 44px; }
+.porta-demo { display: grid; gap: 8px; }
+.porta-demo label { font-size: 12px; color: var(--text-2); font-weight: 500; }
+.porta-demo input {
+  background: var(--surface-3); border: 1px solid var(--line); border-radius: var(--r-sm);
+  padding: 9px 10px; color: var(--text); font: inherit;
+}
+.porta-azioni { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 4px; }
+.porta-azioni .btn { text-decoration: none; min-height: 40px; }
+.porta-codice { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.porta-codice code {
+  font-size: 18px; letter-spacing: .08em; padding: 6px 10px; border-radius: var(--r-sm);
+  background: var(--surface-2); color: var(--text); user-select: all;
+}
