@@ -230,6 +230,35 @@
       D.fonte === 'bozza' ? 'Stai vedendo l’orario di <a href="../orario-facile/" target="orariofacile">Orario Facile</a> salvato su questo dispositivo: si aggiorna da solo mentre lo modifichi.' : ''
     ].filter(Boolean).join(' · ');
     if (breveAperta) disegnaBreve();
+    aggiornaIntervallo();
+  }
+
+  /* ---------- LIM: schermata dell'intervallo (vedi intervallo.js) ---------- */
+  let intervalloChiuso = '';          // l'intervallo di oggi che qualcuno ha chiuso con il tasto "Chiudi"
+  let apertaPerIntervallo = false;    // true se l'app è stata aperta dallo script della LIM (?intervallo)
+
+  // Chiude la finestra se l'aveva aperta lo script della LIM (se il browser non lo permette, resta aperta)
+  function chiudiFinestraIntervallo() {
+    if (apertaPerIntervallo) window.close();
+  }
+
+  // Sulle LIM (monitor d'aula), durante l'intervallo mostra dove vanno le classi nell'ora dopo
+  function aggiornaIntervallo() {
+    const box = $('#schermataIntervallo');
+    const a = adesso();
+    const inizio = aulaMonitor && a.giorno
+      ? Intervallo.inCorso(new Date(), CONFIG.intervalliLim, CONFIG.minutiSchermataIntervallo || 10)
+      : null;
+    const mostra = inizio && intervalloChiuso !== a.giorno + inizio &&
+      Intervallo.disegna(box, D, a.giorno, aulaMonitor, inizio, Dati.nome);
+    if (mostra) {
+      box.hidden = false;
+      document.body.classList.add('intervallo-aperto');
+    } else if (!box.hidden) {
+      box.hidden = true;
+      document.body.classList.remove('intervallo-aperto');
+      if (!inizio) chiudiFinestraIntervallo();   // intervallo finito
+    }
   }
 
   /* ---------- vista "In breve" ---------- */
@@ -345,6 +374,15 @@
     // Quando Orario Facile (aperto in un'altra scheda) salva, l'app si aggiorna subito
     window.addEventListener('storage', e => { if (e.key === Dati.CHIAVE_BOZZA) ricaricaDati(false); });
     $('#btnEsci').addEventListener('click', () => Accesso.esci());
+    // "Chiudi" nella schermata dell'intervallo: non ricompare fino al prossimo intervallo
+    $('#schermataIntervallo').addEventListener('click', e => {
+      if (!e.target.closest('#chiudiIntervallo')) return;
+      const box = $('#schermataIntervallo');
+      intervalloChiuso = adesso().giorno + box.dataset.intervallo;
+      box.hidden = true;
+      document.body.classList.remove('intervallo-aperto');
+      chiudiFinestraIntervallo();
+    });
 
     ['pointerdown', 'keydown'].forEach(t => document.addEventListener(t, tocco, { passive: true }));
   }
@@ -411,6 +449,8 @@
     }
     aulaMonitor = scelta && D.mappa.aula.has(scelta) ? scelta : '';
     secondiIngresso = !aulaMonitor && leggi(CHIAVE_INGRESSO) ? secondiValidi(leggi(CHIAVE_INGRESSO)) : 0;
+    // LIM: lo script di Windows apre l'app all'intervallo con ?intervallo (vedi app/lim/)
+    apertaPerIntervallo = parametri.has('intervallo');
 
     preparaControlli();
     $('#sceltaMonitor').value = valoreUso();

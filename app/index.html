@@ -198,6 +198,9 @@
   </div>
 
   <!-- Istruzioni per installare l'app quando il browser non lo fa da solo (es. iPhone) -->
+  <!-- LIM: all'intervallo mostra a tutto schermo dove vanno le classi nell'ora dopo (la disegna js/intervallo.js) -->
+  <div id="schermataIntervallo" class="schermata-intervallo" role="dialog" aria-modal="true" aria-labelledby="titoloIntervallo" hidden></div>
+
   <dialog id="finestraInstalla" class="finestra" aria-labelledby="titoloInstalla">
     <h2 id="titoloInstalla">Installa l'app</h2>
     <div id="istruzioniInstalla"></div>
@@ -224,6 +227,7 @@
   <script src="js/viste.js"></script>
   <script src="js/brief.js"></script>
   <script src="js/ingresso.js"></script>
+  <script src="js/intervallo.js"></script>
   <script src="js/campanella.js"></script>
   <script src="js/installa.js"></script>
   <script src="js/condividi.js"></script>

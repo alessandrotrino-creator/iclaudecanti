@@ -32,6 +32,12 @@ window.CONFIG = {
   // Monitor di classe: dopo quanti minuti senza tocchi si torna alla schermata iniziale
   minutiRitornoMonitor: 2,
 
+  // LIM delle aule (monitor): agli orari degli intervalli compare a tutto schermo dove vanno
+  // le classi nell'ora successiva, per minutiSchermataIntervallo minuti (vedi js/intervallo.js).
+  // Se si cambiano, aggiornare anche gli orari dello script app/lim/ che apre l'app sulle LIM Windows.
+  intervalliLim: ['09:55', '11:50'],
+  minutiSchermataIntervallo: 10,
+
   // Schermo all'ingresso: ogni quanti secondi cambia vista (classi, docenti, aule).
   // Si può cambiare anche dal menu o con l'indirizzo .../app/?ingresso=30
   secondiRotazioneIngresso: 20,
