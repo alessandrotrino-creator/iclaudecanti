@@ -69,7 +69,10 @@ body.breve-aperta .controlli, body.breve-aperta #contenuto { display: none; }
 .testata-breve h2 { margin: 8px 0 0; font-size: 1.6rem; line-height: 1.15; text-wrap: balance; }
 .data-breve { margin: 0; font-size: .95rem; opacity: .9; }
 .avviso-breve { margin: 4px 0 0; font-size: .85rem; font-weight: 600; }
-.scelta-breve { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: .85rem; font-weight: 600; }
+/* Le due tendine "Giornata di" e "Giorno": una sotto l'altra sul telefono, affiancate sugli schermi larghi */
+.scelte-breve { display: grid; gap: 8px; margin-top: 10px; }
+.scelta-breve { display: flex; align-items: center; gap: 8px; font-size: .85rem; font-weight: 600; }
+.scelta-breve > span { flex: none; min-width: 5.2em; }
 .scelta-breve select { flex: 1; min-width: 0; color: var(--testo); }
 
 /* Schede grandi: salgono un po' sopra la testata */
@@ -120,7 +123,8 @@ body.breve-aperta .controlli, body.breve-aperta #contenuto { display: none; }
   .vista-breve { max-width: 960px; margin: 16px auto 0; border-radius: 24px; overflow: hidden; }
   .testata-breve { padding: 20px 24px 32px; }
   .testata-breve h2 { font-size: 2rem; }
-  .scelta-breve { max-width: 420px; }
+  .scelte-breve { grid-template-columns: 1fr 1fr; max-width: 720px; }
+  .scelta-breve > span { min-width: 0; }
   .schede-breve { grid-template-columns: 1fr 1fr; align-items: start; padding: 0 24px; }
   .schede-breve > :only-child { grid-column: 1 / -1; }   /* una sola scheda: occupa tutta la riga */
   .scheda-breve { padding: 18px 20px; }

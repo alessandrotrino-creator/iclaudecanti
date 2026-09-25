@@ -28,6 +28,7 @@
   let timerInattivita = null;
   let breveAperta = false;  // true quando si vede la vista "In breve" al posto della tabella
   let breveMio = false;     // true se la vista è stata aperta con «Il mio orario» (giornata del docente)
+  let dataBreve = '';       // data scelta nella tendina "Giorno" di "In breve" ('' = oggi o il prossimo giorno di scuola)
   // pagina: solo per lo schermo all'ingresso, quali colonne mostrare (null = tutte)
   // modificate: caselle cambiate all'ultimo minuto, da evidenziare (vedi modifiche.js)
   const stato = { colonne: 'classe', giorno: '', filtri: { classe: '', docente: '', aula: '' }, pagina: null, modificate: null };
@@ -431,13 +432,14 @@
     const gi = giornoIniziale(), s = soggettoBreve();
     Breve.disegna($('#vistaBreve'), {
       D, adesso: adesso(), giorno: gi.giorno, avviso: gi.testo, soggetto: s, nomeUtente: utente.nome,
-      eIo: !!(s && mioDocente && s.tipo === 'docente' && s.id === mioDocente.id)
+      eIo: !!(s && mioDocente && s.tipo === 'docente' && s.id === mioDocente.id), data: dataBreve
     });
   }
 
   // Apre (true) o chiude (false) la vista "In breve"; sui monitor di classe non si apre.
   // mio = true: aperta con «Il mio orario», cioè con la giornata del docente che ha fatto l'accesso
   function apriBreve(apri, mio) {
+    if (!breveAperta) dataBreve = '';   // ogni volta che si apre la vista si riparte da oggi
     breveAperta = apri && !aulaMonitor;
     breveMio = breveAperta && !!mio && !!mioDocente;
     document.body.classList.toggle('breve-aperta', breveAperta);
@@ -511,6 +513,13 @@
       if (e.target.closest('#btnChiudiBreve')) { apriBreve(false); $('#btnBreve').focus(); }
     });
     $('#vistaBreve').addEventListener('change', e => {
+      // Tendina "Giorno": la giornata di un'altra data
+      if (e.target.id === 'sceltaDataBreve') {
+        dataBreve = e.target.value;
+        disegnaBreve();
+        $('#sceltaDataBreve').focus();
+        return;
+      }
       if (e.target.id !== 'sceltaBreve') return;
       scrivi(CHIAVE_BREVE, e.target.value);
       breveMio = false;   // scelta un'altra giornata: non è più «Il mio orario»

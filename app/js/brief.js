@@ -20,17 +20,31 @@ const Breve = (() => {
   const momento = m => m < 13 * 60 ? 'mattina' : m < 18 * 60 ? 'pomeriggio' : 'sera';
   const SALUTI = { mattina: 'Buongiorno', pomeriggio: 'Buon pomeriggio', sera: 'Buonasera' };
 
-  // Data del giorno mostrato, es. "oggi, giovedì 24 settembre" o "domani, venerdì 25 settembre"
-  function data(giorno) {
-    const d = new Date();
-    for (let i = 0; i < 7; i++) {
-      if (NOMI_GIORNI[d.getDay()] === giorno) {
+  // Data nel formato "2026-09-28" (ora locale, non UTC)
+  const isoLocale = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  /*
+    I prossimi giorni di scuola (da oggi, per circa due settimane), per la tendina delle date:
+    [{ iso: "2026-09-28", giorno: "Lunedì", testo: "Domani, lunedì 28 settembre" }]
+  */
+  function giorniDiScuola(D) {
+    const elenco = [], d = new Date();
+    for (let i = 0; i < 21 && elenco.length < 12; i++) {
+      const giorno = NOMI_GIORNI[d.getDay()];
+      if (D.giorni.includes(giorno)) {
         const testo = d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
-        return (i === 0 ? 'Oggi, ' : i === 1 ? 'Domani, ' : '') + testo;
+        elenco.push({ iso: isoLocale(d), giorno, testo: (i === 0 ? 'Oggi, ' : i === 1 ? 'Domani, ' : '') + testo });
       }
       d.setDate(d.getDate() + 1);
     }
-    return giorno;
+    return elenco;
+  }
+
+  // Menu a tendina per scegliere la data
+  function sceltaData(elenco, iso) {
+    return `<label class="scelta-breve" for="sceltaDataBreve"><span>Giorno</span>
+      <select id="sceltaDataBreve">${elenco.map(g =>
+        `<option value="${g.iso}"${g.iso === iso ? ' selected' : ''}>${esc(g.testo.charAt(0).toUpperCase() + g.testo.slice(1))}</option>`).join('')}</select></label>`;
   }
 
   // Menu a tendina per scegliere di chi vedere la giornata (classi, docenti, aule)
@@ -63,12 +77,20 @@ const Breve = (() => {
 
   /*
     Disegna la vista nell'elemento indicato.
-    c = { D, adesso: { giorno, ora, minuto }, giorno, avviso, soggetto: { tipo, id } | null, nomeUtente, eIo }
+    c = { D, adesso: { giorno, ora, minuto }, giorno, avviso, soggetto: { tipo, id } | null, nomeUtente, eIo, data }
+    - giorno: il giorno proposto dall'app (oggi, o il prossimo giorno di scuola)
+    - data: la data scelta nella tendina "Giorno" ("2026-09-28"), oppure '' per usare il giorno proposto
   */
   function disegna(el, c) {
-    const { D, adesso, giorno, soggetto } = c;
+    const { D, adesso, soggetto } = c;
     const mom = momento(adesso.minuto);
-    const oggi = adesso.giorno === giorno;
+    // Giorno mostrato: la data scelta nella tendina, altrimenti il primo giorno di scuola uguale a quello proposto
+    const elenco = giorniDiScuola(D);
+    const scelto = (c.data && elenco.find(g => g.iso === c.data)) || elenco.find(g => g.giorno === c.giorno) || elenco[0] ||
+      { iso: '', giorno: c.giorno, testo: c.giorno };
+    const giorno = scelto.giorno;
+    const oggi = scelto.iso === isoLocale(new Date());
+    const avviso = c.data ? '' : c.avviso;   // l'avviso "lezioni finite…" serve solo per il giorno proposto
     const nomeOra = o => `${o.n}ª ora · ${o.inizio}–${o.fine}`;
     const oraDi = n => D.ore.find(o => o.n === n);
 
@@ -78,9 +100,9 @@ const Breve = (() => {
       <div class="riga-testata"><span class="marchio-breve">In breve</span>
         <button type="button" id="btnChiudiBreve" class="pulsante pulsante-tabella">Tabella</button></div>
       <h2 id="titoloBreve">${SALUTI[mom]}${esc(nome)}</h2>
-      <p class="data-breve">${esc(data(giorno))}</p>
-      ${c.avviso ? `<p class="avviso-breve">${esc(c.avviso)}</p>` : ''}
-      ${scelta(D, soggetto)}
+      <p class="data-breve">${esc(scelto.testo)}</p>
+      ${avviso ? `<p class="avviso-breve">${esc(avviso)}</p>` : ''}
+      <div class="scelte-breve">${scelta(D, soggetto)}${elenco.length ? sceltaData(elenco, scelto.iso) : ''}</div>
     </div><div class="schede-breve">`;
 
     if (!soggetto) {

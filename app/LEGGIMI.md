@@ -27,6 +27,8 @@ Il tasto **In breve** nella barra in alto apre la giornata a schede, comoda sul 
 - **Adesso**: la lezione in corso con l'**aula in grande** e quanto manca alla fine dell'ora.
 - **Dopo**: la lezione successiva; se l'aula cambia compare *"si cambia aula: Aula 1 → Aula 4"*.
 - **Il resto della giornata**: una scheda grande per ogni ora, una sotto l'altra (due per riga sul tablet); l'ora in corso è gialla, le ore già fatte più chiare, le ore libere tratteggiate.
+- **Giorno**: una seconda tendina accanto a "Giornata di" con le date dei prossimi giorni di scuola (circa due settimane); ogni volta che si apre la vista si riparte da oggi.
+- **Il mio orario** (tasto nella barra, solo per i docenti) apre la stessa vista con la giornata del docente che ha fatto l'accesso.
 - **Giornata di**: si sceglie la classe, il docente o l'aula. Il docente che ha fatto l'accesso vede subito la sua giornata; la scelta resta memorizzata sul dispositivo.
 - I colori della testata cambiano con il momento della giornata (mattina, pomeriggio, sera) e seguono il tema chiaro/scuro.
 - Sui monitor di classe il tasto non c'è: lì resta la tabella a caratteri grandi.
