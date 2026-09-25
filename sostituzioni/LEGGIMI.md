@@ -11,6 +11,12 @@ Indirizzo diretto: **https://alessandrotrino-creator.github.io/iclaudecanti/orar
 Il foglio del conteggio ore contiene i nomi completi dei docenti, quindi **non va mai caricato su GitHub**
 (il repository è pubblico).
 
+- **Foglio su Google Drive** (consigliato): il Foglio Google «ORE 26-27 conteggio ore» (ID in `app/js/config.js`,
+  campo `fileConteggioOre`) si legge da solo dopo «👁 Nomi», oppure con **"☁️ Carica dal Drive"**. Quando si assegna
+  una sostituzione, la scheda scrive **+1** nella cella del docente che sostituisce, nella colonna della settimana
+  (settimana 1 = quella del 9 settembre 2026); annullandola toglie 1. Le celle con una formula non vengono toccate:
+  quelle ore restano "da riportare" a mano. Serve un vero Foglio Google (non un Excel caricato), la Google Sheets API
+  attiva nel progetto Google Cloud e il permesso di modifica sul foglio per chi assegna. Codice: `js/drive.js`.
 - Si carica dalla scheda con **"Carica il foglio"**: viene letto **solo nel browser** di quel computer,
   senza essere inviato a nessuno.
 - Assenze, sostituzioni e foglio restano salvati **solo su quel dispositivo** (memoria del browser).

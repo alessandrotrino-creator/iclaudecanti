@@ -29,15 +29,34 @@ const NomiDocenti = (() => {
     return libreria;
   }
 
-  // Chiede a Google un "gettone" per leggere Drive (la prima volta compare la richiesta di consenso)
-  function gettone(email) {
+  // Il "gettone" di Google resta in memoria (mai salvato) fino alla scadenza, così non si richiede a ogni uso.
+  // Altri file (es. le Sostituzioni, per il foglio del conteggio ore) possono chiedere permessi in più.
+  let ricordato = null;   // { gettone, scadenza, permessi: Set }
+
+  // Gettone già ottenuto che comprende tutti i permessi richiesti, oppure null (non apre finestre)
+  function gettoneDisponibile(permessi) {
+    const r = ricordato;
+    return r && r.scadenza > Date.now() + 60000 && permessi.every(p => r.permessi.has(p)) ? r.gettone : null;
+  }
+
+  // Chiede a Google un gettone con questi permessi (la prima volta compare la richiesta di consenso)
+  async function gettone(permessi, email) {
+    const pronto = gettoneDisponibile(permessi);
+    if (pronto) return pronto;
+    await caricaLibreria();
     return new Promise((ok, ko) => {
       const client = google.accounts.oauth2.initTokenClient({
         client_id: CONFIG.googleClientId,
-        scope: PERMESSO,
+        scope: permessi.join(' '),
         hd: CONFIG.dominio,
         login_hint: email || '',
-        callback: r => r.error ? ko(new Error(r.error_description || r.error)) : ok(r.access_token),
+        callback: r => {
+          if (r.error) { ko(new Error(r.error_description || r.error)); return; }
+          const concessi = new Set(String(r.scope || '').split(' '));
+          if (!permessi.every(p => concessi.has(p))) { ko(new Error('Google non ha dato tutti i permessi richiesti')); return; }
+          ricordato = { gettone: r.access_token, scadenza: Date.now() + (Number(r.expires_in) || 3600) * 1000, permessi: concessi };
+          ok(r.access_token);
+        },
         error_callback: e => ko(new Error(e && e.type === 'popup_closed' ? 'la finestra di Google è stata chiusa'
           : e && e.type === 'popup_failed_to_open' ? 'il browser ha bloccato la finestra di Google: consenti i popup'
           : 'Google non ha dato il permesso'))
@@ -99,13 +118,13 @@ const NomiDocenti = (() => {
     return mappa;
   }
 
-  // Restituisce la mappa dei nomi, oppure lancia un errore con una spiegazione in italiano
-  async function carica(email) {
+  // Restituisce la mappa dei nomi, oppure lancia un errore con una spiegazione in italiano.
+  // permessiInPiù: chiesti insieme a quello per Drive, per non aprire due volte la finestra di Google
+  async function carica(email, permessiInPiu) {
     if (typeof CONFIG === 'undefined' || !CONFIG.fileNomiDocenti) throw new Error('in config.js manca l\'ID del file dei nomi');
     if (!CONFIG.googleClientId) throw new Error('in config.js manca l\'ID client di Google');
-    await caricaLibreria();
-    return interpreta(await scarica(await gettone(email)));
+    return interpreta(await scarica(await gettone([PERMESSO].concat(permessiInPiu || []), email)));
   }
 
-  return { carica, interpreta, bello };
+  return { carica, interpreta, bello, gettone, gettoneDisponibile, PERMESSO_DRIVE: PERMESSO };
 })();

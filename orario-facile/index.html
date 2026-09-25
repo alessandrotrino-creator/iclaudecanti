@@ -496,6 +496,7 @@ td input[type=number]{width:64px}
 <!-- Scheda Sostituzioni: lettura dell'orario (dall'app Orario DADA) e file della cartella sostituzioni/ -->
 <script src="../app/js/dati.js"></script>
 <script src="../sostituzioni/js/foglio.js"></script>
+<script src="../sostituzioni/js/drive.js"></script>
 <script src="../sostituzioni/js/archivio.js"></script>
 <script src="../sostituzioni/js/abbinamenti.js"></script>
 <script src="../sostituzioni/js/sostituzioni.js"></script>
@@ -3030,7 +3031,9 @@ $('#btnNomi').addEventListener('click', async () => {
   b.disabled = true; b.textContent = 'Carico i nomi…';
   try{
     const s = typeof Accesso !== 'undefined' && Accesso.sessione ? Accesso.sessione() : null;
-    const m = await NomiDocenti.carica(s && s.email);
+    // se c'è il foglio del conteggio su Drive, si chiede insieme anche il permesso di aggiornarlo (Sostituzioni)
+    const fogli = typeof FoglioDrive !== 'undefined' && FoglioDrive.configurato() ? FoglioDrive.permessi().slice(1) : [];
+    const m = await NomiDocenti.carica(s && s.email, fogli);
     // nella griglia basta il cognome, con l'iniziale del nome se due docenti hanno lo stesso cognome
     const conta = {};
     m.forEach(v => conta[norma(v.cognome)] = (conta[norma(v.cognome)]||0) + 1);

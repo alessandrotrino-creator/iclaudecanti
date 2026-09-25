@@ -26,6 +26,11 @@ window.CONFIG = {
   // il file non si apre.
   fileNomiDocenti: '1NcknVOHvTXHB2ue94FjFs-iY-vT54tq3tHc7CArTEmI',
 
+  // Foglio Google del conteggio ore ("ORE 26-27 conteggio ore"): la scheda Sostituzioni lo legge da solo e,
+  // quando si assegna una sostituzione, scrive +1 nella settimana del docente che sostituisce.
+  // Deve essere un vero Foglio Google (non un Excel caricato) e chi assegna deve poterlo modificare.
+  fileConteggioOre: '111UrbyrZHhI7EphNQUiFlhUe0_kjS8ctu2fNTXBHeuw',
+
   // Dove si trova il file con l'orario (formato dell'app oppure backup di Orario Facile)
   urlDati: '../dati/orario.json',
 

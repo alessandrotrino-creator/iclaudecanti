@@ -231,11 +231,18 @@ const Foglio = (() => {
     // Le colonne delle settimane hanno come titolo un numero (1, 2, 3…)
     const colonneSettimane = [];
     let colonnaTotale = -1;
-    intestazione.forEach((x, c) => {
-      const n = numero(x);
-      if (c > dopoNomi && n !== null && Number.isInteger(n) && n >= 1 && n <= 60) colonneSettimane.push({ c, n });
-      if (semplifica(x) === 'totale') colonnaTotale = c;
-    });
+    const numeriSettimana = riga => {
+      const trovate = [];
+      (riga || []).forEach((x, c) => {
+        const n = numero(x);
+        if (c > dopoNomi && n !== null && Number.isInteger(n) && n >= 1 && n <= 60) trovate.push({ c, n });
+      });
+      return trovate;
+    };
+    colonneSettimane.push(...numeriSettimana(intestazione));
+    intestazione.forEach((x, c) => { if (semplifica(x) === 'totale') colonnaTotale = c; });
+    // Se i numeri delle settimane non sono sulla riga di COGNOME / NOME, li cerchiamo nelle righe sopra (es. la riga 1)
+    for (let s = i - 1; s >= 0 && !colonneSettimane.length; s--) colonneSettimane.push(...numeriSettimana(f.righe[s]));
 
     const docenti = [];
     const chiaviUsate = new Set();
@@ -256,7 +263,8 @@ const Foglio = (() => {
       let chiave = semplifica(cognome) + '|' + semplifica(nome);
       while (chiaviUsate.has(chiave)) chiave += '+';
       chiaviUsate.add(chiave);
-      docenti.push({ chiave, cognome, nome, settimane, totale: totale !== null ? totale : somma });
+      // riga: posizione nel foglio (0 = prima riga), serve per scrivere le ore nel foglio su Google Drive
+      docenti.push({ chiave, cognome, nome, settimane, totale: totale !== null ? totale : somma, riga: r });
     }
     if (!docenti.length) throw new Error('Ho trovato l\'intestazione ma nessun docente sotto.');
 
@@ -265,6 +273,8 @@ const Foglio = (() => {
       foglio: f.nome,
       caricato: new Date().toISOString(),
       inizio: cercaInizio(fogli),
+      // numero della settimana -> colonna nel foglio (0 = colonna A), per scrivere le ore su Google Drive
+      colonne: Object.fromEntries(colonneSettimane.map(({ c, n }) => [n, c])),
       docenti
     };
   }
@@ -291,5 +301,5 @@ const Foglio = (() => {
     return interpreta(fogli, file.name);
   }
 
-  return { leggiFile, semplifica };
+  return { leggiFile, interpreta, semplifica };
 })();

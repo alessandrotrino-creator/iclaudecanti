@@ -45,6 +45,8 @@ Le parti del progetto:
   `sostituzioni.`; nel repo solo facsimili con nomi inventati in `sostituzioni/esempio/`. `sostituzioni/index.html`
   rimanda a `orario-facile/#sostituzioni`. Dettagli in `sostituzioni/LEGGIMI.md`.
   Copie di file riservati vanno in `privato/` (esclusa da git).
+  Il foglio del conteggio può stare su Google Drive (`CONFIG.fileConteggioOre`): `sostituzioni/js/drive.js` lo legge e
+  scrive +1/-1 nella settimana del sostituto quando si assegna o si annulla una sostituzione (`segnaNelFoglio()`).
 
 ## Il gruppo
 - Gruppo **iclaudecanti**, studenti **principianti** in programmazione e git.

@@ -226,19 +226,73 @@ const Sostituzioni = (() => {
     'nessuna lezione in questo giorno'
   ];
 
-  function assegna(iso, l, idSostituto) {
-    registro.push({
+  // ---------- Foglio del conteggio su Google Drive (js/drive.js) ----------
+  const suDrive = () => typeof FoglioDrive !== 'undefined' && FoglioDrive.configurato();
+  const emailUtente = () => {
+    try { const s = typeof Accesso !== 'undefined' && Accesso.sessione(); return s ? s.email : ''; } catch (e) { return ''; }
+  };
+  let driveLetto = false;   // in questa apertura della pagina il foglio è già stato riletto da Drive
+
+  async function caricaDaDrive(manuale) {
+    driveLetto = true;
+    try {
+      foglio = await FoglioDrive.leggi(emailUtente());
+      salva('foglio', foglio);
+      aggiornaAbbinamenti();
+      disegnaTutto();
+      if (manuale || foglio.soloLettura) avvisa(`Foglio del conteggio letto da Google Drive: ${foglio.docenti.length} docenti.` +
+        (foglio.soloLettura ? ' È un file Excel: per aggiornarlo in automatico aprilo in Fogli e usa File > Salva come Fogli Google.' : ''));
+    } catch (errore) {
+      console.error(errore);
+      avvisa('Non riesco a leggere il foglio del conteggio da Drive: ' + errore.message + '.');
+    }
+  }
+
+  // Aggiunge (+1) o toglie (-1) l'ora di sostituzione nel foglio su Drive; restituisce true se ci è riuscito
+  async function segnaNelFoglio(s, quante) {
+    if (!foglio || !foglio.driveId || !suDrive()) return false;
+    const r = rigaDi(s.sostituto);
+    if (!r) return false;
+    try {
+      const nuovo = await FoglioDrive.aggiungi(foglio, r, s.settimana, quante, emailUtente());
+      r.settimane[s.settimana] = nuovo;
+      r.totale += quante;
+      salva('foglio', foglio);
+      return true;
+    } catch (errore) {
+      console.error(errore);
+      avvisa((quante > 0 ? 'Non ho potuto segnare l\'ora nel foglio del conteggio: ' : 'Non ho potuto togliere l\'ora dal foglio del conteggio: ') +
+        errore.message + (quante > 0 ? '. Resta tra le ore da riportare.' : '.'));
+      return false;
+    }
+  }
+
+  async function assegna(iso, l, idSostituto) {
+    const s = {
       id: nuovoId(), data: iso, settimana: settimanaDi(iso), ora: l.ora,
       classe: l.classe, aula: l.aula, materia: l.materia,
       assente: l.assente, sostituto: idSostituto, riportata: false
-    });
+    };
+    registro.push(s);
     salva('registro', registro);
-    avvisa(`${testoOra(l.ora)} in ${nome('classe', l.classe)}: sostituisce ${nomeDocente(idSostituto)}.`);
+    const testo = `${testoOra(l.ora)} in ${nome('classe', l.classe)}: sostituisce ${nomeDocente(idSostituto)}.`;
+    avvisa(testo);
     disegnaTutto();
+    // foglio del conteggio su Google Drive: +1 nella settimana del docente che sostituisce
+    if (await segnaNelFoglio(s, 1)) {
+      s.riportata = true; s.nelFoglio = true;
+      salva('registro', registro);
+      avvisa(testo + ` Segnata nel foglio del conteggio (settimana ${s.settimana}).`);
+      disegnaTutto();
+    }
   }
 
-  function annulla(s) {
-    if (s.riportata && !confirm('Questa sostituzione è già stata riportata nel foglio. Annullarla comunque? Ricordati di correggere anche il foglio.')) return;
+  async function annulla(s) {
+    if (s.nelFoglio) {
+      // segnata in automatico nel foglio su Drive: si toglie da lì
+      if (!(await segnaNelFoglio(s, -1)) &&
+        !confirm('Non riesco a togliere l\'ora dal foglio del conteggio su Drive. Annullare comunque la sostituzione? Poi correggi il foglio a mano.')) return;
+    } else if (s.riportata && !confirm('Questa sostituzione è già stata riportata nel foglio. Annullarla comunque? Ricordati di correggere anche il foglio.')) return;
     registro = registro.filter(x => x.id !== s.id);
     salva('registro', registro);
     avvisa('Sostituzione annullata.');
@@ -255,12 +309,18 @@ const Sostituzioni = (() => {
     if (foglio) {
       const inizio = foglio.inizio || INIZIO_PREDEFINITO;
       stato.append(
+        foglio.driveId ? '☁️ Su Google Drive: ' : '',
         el('strong', {}, foglio.file), ` (foglio "${foglio.foglio}"): ${foglio.docenti.length} righe, ` +
-        `caricato il ${new Date(foglio.caricato).toLocaleString('it-IT')}. ` +
-        `La settimana 1 inizia lunedì ${dataBreve(inizio)}` + (foglio.inizio ? '.' : ' (valore predefinito).'));
+        `${foglio.driveId ? 'letto' : 'caricato'} il ${new Date(foglio.caricato).toLocaleString('it-IT')}. ` +
+        `La settimana 1 inizia lunedì ${dataBreve(inizio)}` + (foglio.inizio ? '.' : ' (valore predefinito).'),
+        foglio.driveId && !foglio.soloLettura ? ' Le sostituzioni assegnate vengono segnate nel foglio in automatico (+1 nella settimana).' : '',
+        foglio.soloLettura ? el('span', { class: 'sost-attenzione' }, ' È un file Excel: si può solo leggere. Per aggiornarlo in automatico aprilo in Fogli e usa File > Salva come Fogli Google.') : '');
     } else {
       stato.textContent = 'Nessun foglio caricato: i docenti liberi vengono proposti lo stesso, ma senza sapere chi è a debito.';
     }
+    // pulsante per leggere (o rileggere) il foglio dal Drive: serve se il permesso di Google non c'è ancora
+    $('caricaDrive').hidden = !suDrive();
+    $('caricaDrive').textContent = foglio && foglio.driveId ? '🔄 Rileggi dal Drive' : '☁️ Carica dal Drive';
     disegnaAbbinamenti();
   }
 
@@ -653,6 +713,7 @@ const Sostituzioni = (() => {
       <h3>Foglio del conteggio ore</h3>
       <p id="sost-statoFoglio"></p>
       <div class="row">
+        <button type="button" id="sost-caricaDrive" class="btn" hidden>☁️ Carica dal Drive</button>
         <label class="btn sost-scegli-file">Carica il foglio (.ods, .xlsx o .csv)
           <input type="file" id="sost-fileFoglio" accept=".ods,.xlsx,.csv" class="sost-solo-lettori">
         </label>
@@ -722,6 +783,7 @@ const Sostituzioni = (() => {
 
   function collegaPulsanti() {
     $('fileFoglio').addEventListener('change', caricaFoglio);
+    $('caricaDrive').addEventListener('click', () => caricaDaDrive(true));
     $('data').addEventListener('change', e => { if (e.target.value) { dataScelta = e.target.value; aperte.clear(); disegnaTutto(); } });
     $('giornoPrima').addEventListener('click', () => { dataScelta = spostaGiorni(dataScelta, -1); aperte.clear(); disegnaTutto(); });
     $('giornoDopo').addEventListener('click', () => { dataScelta = spostaGiorni(dataScelta, 1); aperte.clear(); disegnaTutto(); });
@@ -757,6 +819,9 @@ const Sostituzioni = (() => {
     }
     aggiornaAbbinamenti();
     disegnaTutto();
+    // Foglio del conteggio su Drive: lo rileggiamo da solo, una volta, se il permesso di Google c'è già
+    // (per esempio dopo «👁 Nomi»); altrimenti c'è il pulsante «Carica dal Drive»
+    if (suDrive() && !driveLetto && FoglioDrive.pronto() && (!foglio || foglio.driveId)) caricaDaDrive(false);
   }
 
   /*
