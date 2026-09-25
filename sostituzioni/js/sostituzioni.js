@@ -15,6 +15,9 @@ const Sostituzioni = (() => {
   const INIZIO_PREDEFINITO = '2026-09-07';
   // Quanti docenti proporre per ogni ora prima di "Mostra tutti"
   const PROPOSTE_VISIBILI = 4;
+  // Versione della scheda, mostrata in cima: serve a capire se la pagina aperta è quella aggiornata
+  // (va cambiata a ogni modifica importante del modo in cui la scheda scrive nei fogli)
+  const VERSIONE = '25/09/2026 · 3 (un solo −1 per annullamento)';
   const NOMI_GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
   // Dove si trovano i facsimili del foglio, rispetto alla pagina di Orario Facile
   const CARTELLA_ESEMPI = '../sostituzioni/esempio/';
@@ -527,7 +530,7 @@ const Sostituzioni = (() => {
   // ---------- Disegno della sezione 1: dati ----------
   function disegnaDati() {
     $('statoOrario').textContent = `Orario usato: quello di Orario Facile (${D.docente.length} docenti, ${D.lezioni.length} lezioni). ` +
-      'Se modifichi l\'orario, le proposte si aggiornano da sole.';
+      'Se modifichi l\'orario, le proposte si aggiornano da sole. Versione della scheda: ' + VERSIONE + '.';
 
     const stato = $('statoFoglio');
     stato.replaceChildren();
