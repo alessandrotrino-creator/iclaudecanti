@@ -17,7 +17,7 @@ const Sostituzioni = (() => {
   const PROPOSTE_VISIBILI = 4;
   // Versione della scheda, mostrata in cima: serve a capire se la pagina aperta è quella aggiornata
   // (va cambiata a ogni modifica importante del modo in cui la scheda scrive nei fogli)
-  const VERSIONE = '25/09/2026 · 3 (un solo −1 per annullamento)';
+  const VERSIONE = '26/09/2026 · 4 (motore condiviso con «Sostituzioni smart»)';
   const NOMI_GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
   // Dove si trovano i facsimili del foglio, rispetto alla pagina di Orario Facile
   const CARTELLA_ESEMPI = '../sostituzioni/esempio/';
@@ -27,6 +27,9 @@ const Sostituzioni = (() => {
 
   // ---------- Stato della scheda ----------
   let contenitore = null;                         // dove è disegnata la scheda
+  // Un'altra pagina che usa questo motore con un suo disegno (es. «Sostituzioni smart» nell'app Orario DADA):
+  // { avvisa(testo), ridisegna() }. Vedi collega() in fondo al file.
+  let ui = null;
   let leggiOrario = null;                         // funzione che restituisce l'orario aggiornato
   let D = null;                                   // l'orario (formato di Dati.normalizza)
   let foglio = Archivio.leggi('foglio', null);     // il foglio del conteggio ore
@@ -62,7 +65,9 @@ const Sostituzioni = (() => {
   // Mostra un messaggio breve in basso per qualche secondo
   let timerAvviso = null;
   function avvisa(testo) {
+    if (ui) { ui.avvisa(testo); return; }   // un'altra pagina mostra i messaggi a modo suo
     const a = $('avviso');
+    if (!a) return;
     a.textContent = testo;
     a.classList.add('visibile');
     clearTimeout(timerAvviso);
@@ -254,18 +259,20 @@ const Sostituzioni = (() => {
 
   // Perché non si può scrivere nel foglio del conteggio per questo docente ('' = si può)
   function motivoNonScrivibile(idDocente) {
+    // nella versione smart dell'app i pulsanti e gli abbinamenti non ci sono: si rimanda alla scheda completa
+    const dove = contenitore ? '' : ' nella scheda Sostituzioni di Orario Facile';
     if (!suDrive()) return 'in config.js non c\'è il foglio del conteggio su Drive';
-    if (!foglio) return 'il foglio del conteggio non è caricato: premi «☁️ Carica dal Drive»';
-    if (!foglio.driveId) return 'il foglio del conteggio è stato caricato dal computer, non da Drive: premi «☁️ Carica dal Drive»';
+    if (!foglio) return `il foglio del conteggio non è caricato: premi «☁️ Carica dal Drive»${dove}`;
+    if (!foglio.driveId) return `il foglio del conteggio è stato caricato dal computer, non da Drive: premi «☁️ Carica dal Drive»${dove}`;
     const r = rigaDi(idDocente);
-    if (!r) return `${nomeDocente(idDocente)} non è abbinato a nessuna riga del foglio: sceglilo in «Abbinamenti tra orario e foglio»`;
+    if (!r) return `${nomeDocente(idDocente)} non è abbinato a nessuna riga del foglio: sceglilo in «Abbinamenti tra orario e foglio»${dove}`;
     // Controllo dell'abbinamento con il nome vero (file dei nomi): un abbinamento vecchio, fatto a mano
     // prima di ricaricare l'orario, potrebbe collegare il codice alla riga di un'altra persona
     const t = D && D.mappa.docente.get(idDocente);
     const vero = t && nomiVeri && nomiVeri.get(String(t.codice || t.nome || '').toUpperCase());
     if (vero && Foglio.semplifica(vero.cognome) !== Foglio.semplifica(r.cognome)) {
       return `abbinamento da controllare: ${t.codice || t.nome} è ${vero.cognome} ${vero.nome}, ma è abbinato alla riga ` +
-        `${nomeRiga(r)} del foglio (correggilo in «Abbinamenti tra orario e foglio»)`;
+        `${nomeRiga(r)} del foglio (correggilo in «Abbinamenti tra orario e foglio»${dove})`;
     }
     return '';
   }
@@ -336,6 +343,7 @@ const Sostituzioni = (() => {
     !D.docente.some(t => /^DOC\d+$/i.test(t.codice || t.nome));
 
   function disegnaAbilitazione() {
+    if (!contenitore) { if (ui) ui.ridisegna(); return; }   // la scheda non c'è: disegna l'altra pagina
     const box = $('boxAbilitazione');
     box.hidden = !conRegistro();
     if (box.hidden) return;
@@ -364,7 +372,8 @@ const Sostituzioni = (() => {
     avvisa(abilitazione.stato === 'no'
       ? 'Il tuo account non è autorizzato alle sostituzioni (foglio «Autorizzazioni»).'
       : 'Prima verifica la tua abilitazione: pulsante in cima alla scheda.');
-    $('boxAbilitazione').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const box = contenitore && $('boxAbilitazione');
+    if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return false;
   }
 
@@ -662,6 +671,31 @@ const Sostituzioni = (() => {
         ` ${testoOra(l.ora)} · ${nome('classe', l.classe)} ${l.materia}` + (l.aula ? ` · ${nome('aula', l.aula)}` : '')))));
   }
 
+  /*
+    Registra (o aggiorna) l'assenza di un docente in un giorno: la usano il modulo della scheda
+    e la pagina «Sostituzioni smart». Restituisce true se l'ha registrata.
+  */
+  function registraAssenzaDi(iso, id, oreScelte, permesso) {
+    if (!controllaPermesso()) return false;
+    // Se il docente era già assente quel giorno, aggiorniamo le sue ore
+    let assenza = assenzeDel(iso).find(a => a.docente === id);
+    if (assenza) assenza.ore = oreScelte.slice().sort((a, b) => a - b);
+    else { assenza = { id: nuovoId(), data: iso, docente: id, ore: oreScelte.slice().sort((a, b) => a - b) }; assenze.push(assenza); }
+    assenza.permesso = permesso;
+    // Le sostituzioni già assegnate per ore tolte non servono più (anche nel foglio «Sostituzioni»)
+    const superate = registro.filter(x => x.data === iso && x.assente === id && !oreScelte.includes(x.ora) && !x.riportata);
+    togliDalRegistro(superate);
+    registro = registro.filter(x => !superate.includes(x));
+    salva('assenze', assenze);
+    salva('registro', registro);
+    avvisa(`Assenza registrata: ${nomeDocente(id)}, ${ore(oreScelte.length)}${permesso ? ' (permesso)' : ''}.`);
+    disegnaTutto();
+    // Permesso: -1 per ogni ora nel foglio del conteggio (o si restituiscono le ore se il permesso è stato tolto)
+    aggiornaPermesso(assenza, permesso ? oreScelte.length : 0);
+    return true;
+  }
+
+  // Il modulo "Assenze del giorno" della scheda
   function registraAssenza(evento) {
     evento.preventDefault();
     if (!controllaPermesso()) return;
@@ -669,25 +703,11 @@ const Sostituzioni = (() => {
     if (!id) { avvisa('Scegli il docente assente.'); $('docenteAssente').focus(); return; }
     const oreScelte = [...document.querySelectorAll('#sost-oreAssenza input[name="ora"]:checked')].map(c => Number(c.value));
     if (!oreScelte.length) { avvisa('Spunta almeno un\'ora di assenza.'); return; }
-    const permesso = $('permesso').checked;
-    // Se il docente era già assente quel giorno, aggiorniamo le sue ore
-    let assenza = assenzeDel(dataScelta).find(a => a.docente === id);
-    if (assenza) assenza.ore = oreScelte.sort((a, b) => a - b);
-    else { assenza = { id: nuovoId(), data: dataScelta, docente: id, ore: oreScelte.sort((a, b) => a - b) }; assenze.push(assenza); }
-    assenza.permesso = permesso;
-    // Le sostituzioni già assegnate per ore tolte non servono più (anche nel foglio «Sostituzioni»)
-    const superate = registro.filter(x => x.data === dataScelta && x.assente === id && !oreScelte.includes(x.ora) && !x.riportata);
-    togliDalRegistro(superate);
-    registro = registro.filter(x => !superate.includes(x));
-    salva('assenze', assenze);
-    salva('registro', registro);
-    avvisa(`Assenza registrata: ${nomeDocente(id)}, ${ore(oreScelte.length)}${permesso ? ' (permesso)' : ''}.`);
+    if (!registraAssenzaDi(dataScelta, id, oreScelte, $('permesso').checked)) return;
     $('docenteAssente').value = '';
     $('permesso').checked = true;   // per la prossima assenza il permesso torna spuntato
     disegnaTutto();
     $('titoloCoprire').scrollIntoView({ behavior: 'smooth' });
-    // Permesso: -1 per ogni ora nel foglio del conteggio (o si restituiscono le ore se il permesso è stato tolto)
-    aggiornaPermesso(assenza, permesso ? oreScelte.length : 0);
   }
 
   async function togliAssenza(a) {
@@ -869,6 +889,8 @@ const Sostituzioni = (() => {
 
   function disegnaTutto() {
     if (!D) return;
+    if (ui) ui.ridisegna();       // l'altra pagina (es. «Sostituzioni smart») si ridisegna da sola
+    if (!contenitore) return;     // la scheda di Orario Facile non c'è
     disegnaDati();
     disegnaGiorno();
     disegnaCoprire();
@@ -1073,13 +1095,14 @@ const Sostituzioni = (() => {
 
   // Rilegge l'orario e ridisegna tutto
   function aggiorna() {
-    if (!contenitore || !contenitore.isConnected) return;
+    if (contenitore ? !contenitore.isConnected : !ui) return;
     try {
       D = leggiOrario();
       applicaNomiVeri(D);   // nomi veri al posto dei codici, se sono stati caricati (solo in memoria)
     } catch (errore) {
       console.error(errore);
-      $('statoOrario').textContent = 'Non riesco a leggere l\'orario: ' + errore.message;
+      if (contenitore) $('statoOrario').textContent = 'Non riesco a leggere l\'orario: ' + errore.message;
+      else avvisa('Non riesco a leggere l\'orario: ' + errore.message);
       return;
     }
     aggiornaAbbinamenti();
@@ -1115,5 +1138,50 @@ const Sostituzioni = (() => {
     aggiorna();
   }
 
-  return { monta };
+  /*
+    Punto d'ingresso per un'altra pagina che vuole usare lo stesso motore con un suo disegno
+    (es. «Sostituzioni smart» nell'app Orario DADA, app/js/smart.js):
+    - funzioneOrario: una funzione che restituisce l'orario (formato di Dati.normalizza)
+    - interfaccia: { avvisa(testo), ridisegna() }
+    Stesse regole e stessi dati della scheda (memoria del browser con chiavi "sostituzioni."),
+    quindi quello che si fa da una parte si vede anche dall'altra. Restituisce le funzioni del motore.
+  */
+  let collegata = false;
+  function collega(funzioneOrario, interfaccia) {
+    leggiOrario = funzioneOrario;
+    ui = interfaccia;
+    if (!collegata) {
+      collegata = true;
+      // Se i dati cambiano in un'altra scheda del browser (per esempio Orario Facile), ci aggiorniamo
+      window.addEventListener('storage', e => {
+        if (contenitore || !Archivio.eNostra(e.key)) return;   // con la scheda ci pensa già collegaPulsanti
+        foglio = Archivio.leggi('foglio', null);
+        assenze = Archivio.leggi('assenze', []);
+        registro = Archivio.leggi('registro', []);
+        manuali = Archivio.leggi('abbinamenti', {});
+        aggiorna();
+      });
+    }
+    aggiorna();
+    return API;
+  }
+
+  // Le funzioni del motore che servono all'altra pagina
+  const API = {
+    aggiorna,
+    // stato generale: autorizzazione, foglio del conteggio, orario con le iniziali
+    stato: () => ({
+      abilitazione: Object.assign({}, abilitazione), puoFare: puoFare(), conRegistro: conRegistro(),
+      suDrive: suDrive(), foglio: !!foglio, foglioDaDrive: !!(foglio && foglio.driveId), conIniziali: conIniziali()
+    }),
+    verifica: verificaAbilitazione,
+    caricaDaDrive: () => caricaDaDrive(true),
+    orario: () => D,
+    nomeDocente, nome, testoOra, giornoOrario, lezioniDi, assenzeDel, giornoPredefinito,
+    oreDaCoprire, sostituzioneDi, candidati, saldoDi, TESTI_POSIZIONE,
+    inCorso: id => inCorso.has(id),
+    registraAssenza: registraAssenzaDi, togliAssenza, assegna, annulla
+  };
+
+  return { monta, collega };
 })();

@@ -185,5 +185,5 @@ const Breve = (() => {
     el.innerHTML = html;
   }
 
-  return { disegna, momento };
+  return { disegna, momento, giorniDiScuola };
 })();

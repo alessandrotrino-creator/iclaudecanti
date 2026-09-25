@@ -51,6 +51,10 @@ Le parti del progetto:
   foglio «Autorizzazioni» (nomi ed email degli autorizzati) e foglio «Sostituzioni» (una riga per sostituzione assegnata,
   con i **nomi veri** dei docenti presi da `fileNomiDocenti` e tenuti solo in memoria). Su GitHub e in `localStorage`
   restano **solo i codici DOC01…**: i nomi veri stanno solo nei file su Drive.
+  **Sostituzioni smart** (`app/js/smart.js`, menu dell'app): versione semplice della scheda che usa lo stesso motore con
+  `Sostituzioni.collega(funzioneOrario, { avvisa, ridisegna })` (restituisce le funzioni del motore). Se cambi il motore,
+  controlla sia la scheda (`monta`) sia la pagina smart (`collega`); la costante `VERSIONE` in cima a sostituzioni.js
+  si vede nella scheda e serve a capire se una pagina aperta è aggiornata.
 
 ## Il gruppo
 - Gruppo **iclaudecanti**, studenti **principianti** in programmazione e git.

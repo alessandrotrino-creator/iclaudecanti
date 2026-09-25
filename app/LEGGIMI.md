@@ -33,6 +33,23 @@ Il tasto **In breve** nella barra in alto apre la giornata a schede, comoda sul 
 - I colori della testata cambiano con il momento della giornata (mattina, pomeriggio, sera) e seguono il tema chiaro/scuro.
 - Sui monitor di classe il tasto non c'è: lì resta la tabella a caratteri grandi.
 
+## Sostituzioni smart ⚡
+
+Nel menu (tondo con le iniziali), sotto **"📋 Sostituzioni docenti"**, c'è **"⚡ Sostituzioni smart"**: la scheda Sostituzioni
+di Orario Facile in versione **semplice e rapida**, dentro l'app, con lo stile a schede di «In breve». Contiene solo:
+
+- **Assenze del giorno**: tendina *Giorno*, scelta del docente assente, ore da toccare (tutte spuntate), casella **Permesso** (spuntata) e *Registra l'assenza*; sotto, gli assenti già registrati con *Togli*.
+- **Ore da coprire**: una scheda per ogni ora con i primi 3 docenti proposti (prima chi ha più ore a debito); si tocca il nome per assegnare, *Mostra tutti* per gli altri, *Annulla la sostituzione* per toglierla.
+- **🖨️ Stampa le sostituzioni del giorno**.
+
+Tutto il resto lo fa da solo lo **stesso motore** della scheda completa (`sostituzioni/js/sostituzioni.js`, `Sostituzioni.collega`):
+autorizzazione dal foglio «Autorizzazioni», lettura del foglio del conteggio da Drive, abbinamenti, +1 / −1, permesso e registro «Sostituzioni».
+I dati sono gli stessi (memoria del browser, chiavi `sostituzioni.`): quello che si fa qui si vede anche in Orario Facile.
+
+- La voce compare solo a chi può modificare (vedi *Chi può modificare l'orario*); toccandola Google chiede il permesso, se serve, e l'app controlla il foglio «Autorizzazioni». Chi non è autorizzato vede solo un messaggio e, su quel dispositivo, la voce sparisce.
+- Abbinamenti, saldi ed esportazioni restano nella scheda completa di Orario Facile: se un docente non è abbinato, il messaggio lo dice.
+- I file del motore si caricano solo quando si apre la pagina (`js/smart.js`, stile in `css/smart.css`).
+
 ## Campanella 🔔
 
 Il tasto con la **campanella** nella barra in alto fa suonare il dispositivo agli orari della campanella. Quando è attiva il tasto è **acceso** (giallo, con un alone) e mentre suona oscilla.

@@ -1,0 +1,81 @@
+/*
+  smart.css – stile della pagina «Sostituzioni smart» (js/smart.js).
+  Riusa le schede e la testata di «In breve» (css/brief.css) e aggiunge solo i pezzi nuovi:
+  modulo delle assenze, docenti proposti, stampa.
+*/
+:root {
+  --credito-smart: #1f7a4d;   /* ore a credito */
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="chiaro"]) { --credito-smart: #6fd3a0; }
+}
+:root[data-tema="scuro"] { --credito-smart: #6fd3a0; }
+
+/* Quando la pagina è aperta, controlli e tabella si nascondono (come con «In breve») */
+body.smart-aperta .controlli, body.smart-aperta #contenuto { display: none; }
+
+/* Testo solo per i lettori di schermo */
+.sr-smart { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Assenze del giorno ---------- */
+.scheda-assenze { grid-column: 1 / -1; }   /* su tablet occupa tutta la riga */
+.campo-smart { width: 100%; min-height: 44px; font-size: 1rem; color: var(--testo); }
+.ore-smart { border: 0; padding: 0; margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ore-smart legend { font-size: .85rem; color: var(--testo-tenue); margin-bottom: 6px; padding: 0; }
+/* Ogni ora è un "chip" da toccare: acceso quando è spuntato */
+.ora-smart {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 6px 12px;
+  border: 1px solid var(--bordo); border-radius: 999px; background: var(--superficie); cursor: pointer;
+}
+.ora-smart:has(input:checked) { border-color: var(--primario); background: var(--avviso); }
+.ora-smart input { width: 18px; height: 18px; margin: 0; }
+.permesso-smart { display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; font-size: .95rem; }
+.permesso-smart input { width: 20px; height: 20px; flex: none; }
+.scheda-assenze .pulsante.primario { justify-self: start; border-radius: 999px; font-weight: 700; }
+.assenti-smart { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 6px; border-top: 1px solid var(--bordo); padding-top: 8px; }
+.assenti-smart li { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.assenti-smart .pulsante { border-radius: 999px; min-height: 36px; padding: 4px 12px; }
+.tag-smart { font-size: .75rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--evidenza); }
+
+/* ---------- Ore da coprire ---------- */
+.pill-coperta { background: color-mix(in srgb, var(--credito-smart) 18%, transparent) !important; color: var(--credito-smart) !important; }
+.coperta-smart { border: 2px solid color-mix(in srgb, var(--credito-smart) 45%, transparent); }
+.sostituto-smart { margin: 4px 0 0; font-size: 1rem; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.scheda-ora .pulsante { justify-self: start; border-radius: 999px; }
+.proposte-smart { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 8px; }
+/* Ogni docente proposto è un pulsante grande: si tocca per assegnare */
+.proposta-smart {
+  width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; text-align: left;
+  padding: 10px 14px; min-height: 52px; border: 1px solid var(--bordo); border-radius: 16px;
+  background: var(--superficie); color: var(--testo); font: inherit; cursor: pointer;
+}
+.proposta-smart:hover { border-color: var(--primario); }
+.proposta-smart:disabled { opacity: .5; cursor: default; }
+.proposta-smart b { font-size: 1.05rem; }
+.motivo-smart { grid-column: 1 / -1; font-size: .8rem; color: var(--testo-tenue); }
+.saldo-smart { font-size: .78rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--avviso); color: var(--testo-tenue); white-space: nowrap; }
+.saldo-smart.debito { color: var(--errore); }
+.saldo-smart.credito { color: var(--credito-smart); }
+
+/* ---------- Stampa ---------- */
+.stampa-smart-pulsante { padding: 4px 16px 0; }
+.stampa-smart-pulsante .pulsante { border-radius: 999px; }
+.solo-stampa-smart { display: none; }
+
+/* ---------- Messaggio in basso ---------- */
+.messaggio-smart {
+  position: sticky; bottom: 12px; margin: 12px 16px 0; padding: 12px 16px; border-radius: 14px; z-index: 5;
+  background: var(--testo); color: var(--sfondo); box-shadow: 0 6px 20px rgba(0, 0, 0, .2); font-size: .95rem;
+}
+
+@media print {
+  /* Si stampa solo la tabella delle sostituzioni del giorno */
+  /* (css/brief.css in stampa nasconde le viste a schede: questa pagina invece deve restare, per la sua tabella) */
+  body.stampa-smart .vista-smart { display: block !important; }
+  body.stampa-smart * { visibility: hidden; }
+  body.stampa-smart .solo-stampa-smart, body.stampa-smart .solo-stampa-smart * { visibility: visible; }
+  body.stampa-smart .solo-stampa-smart { display: block; position: absolute; left: 0; top: 0; width: 100%; color: #000; }
+  .solo-stampa-smart table { width: 100%; border-collapse: collapse; font-size: 11pt; }
+  .solo-stampa-smart th, .solo-stampa-smart td { border: 1px solid #999; padding: 4px 6px; text-align: left; }
+  .solo-stampa-smart h2 { font-size: 14pt; margin: 0 0 8px; }
+}

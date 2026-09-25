@@ -28,6 +28,7 @@
   let timerInattivita = null;
   let breveAperta = false;  // true quando si vede la vista "In breve" al posto della tabella
   let breveMio = false;     // true se la vista è stata aperta con «Il mio orario» (giornata del docente)
+  let smartAperta = false;  // true quando si vede la pagina «Sostituzioni smart» al posto della tabella
   let dataBreve = '';       // data scelta nella tendina "Giorno" di "In breve" ('' = oggi o il prossimo giorno di scuola)
   // pagina: solo per lo schermo all'ingresso, quali colonne mostrare (null = tutte)
   // modificate: caselle cambiate all'ultimo minuto, da evidenziare (vedi modifiche.js)
@@ -66,6 +67,7 @@
 
   function schermataIniziale() {
     apriBreve(false);
+    apriSmart(false);
     const gi = giornoIniziale();
     stato.giorno = gi.giorno;
     avvisoGiorno = gi.testo ? gi : null;
@@ -196,7 +198,12 @@
     // "Modifica in Orario Facile" e "Sostituzioni docenti" solo per chi può modificare l'orario (vedi ruoli.js)
     $('#linkOrarioFacile').hidden = true;
     $('#linkSostituzioni').hidden = true;
-    Ruoli.puoModificare(utente.email).then(puo => { $('#linkOrarioFacile').hidden = !puo; $('#linkSostituzioni').hidden = !puo; });
+    $('#btnSostSmart').hidden = true;
+    Ruoli.puoModificare(utente.email).then(puo => {
+      $('#linkOrarioFacile').hidden = !puo; $('#linkSostituzioni').hidden = !puo;
+      // «Sostituzioni smart»: sparisce anche per chi il foglio «Autorizzazioni» ha già rifiutato su questo dispositivo
+      $('#btnSostSmart').hidden = !puo || Smart.negato(utente.email);
+    });
     $('#btnSchermoIntero').hidden = !document.fullscreenEnabled;
     // Tema: la voce "secondo l'ora" mostra gli orari impostati in config.js
     $('#sceltaTema').value = Tema.scelta();
@@ -255,6 +262,7 @@
       D.fonte === 'bozza' ? 'Stai vedendo l’orario di <a href="../orario-facile/" target="orariofacile">Orario Facile</a> salvato su questo dispositivo: si aggiorna da solo mentre lo modifichi.' : ''
     ].filter(Boolean).join(' · ');
     if (breveAperta) disegnaBreve();
+    if (smartAperta) Smart.aggiorna();
     aggiornaMioOrario();
     aggiornaIntervallo();
     disegnaModifiche();
@@ -438,7 +446,22 @@
 
   // Apre (true) o chiude (false) la vista "In breve"; sui monitor di classe non si apre.
   // mio = true: aperta con «Il mio orario», cioè con la giornata del docente che ha fatto l'accesso
+  /* ---------- pagina "Sostituzioni smart" (js/smart.js) ---------- */
+  // Apre (true) o chiude (false) la pagina; sui monitor e sullo schermo all'ingresso non si apre
+  function apriSmart(apri) {
+    if (apri) apriBreve(false);
+    smartAperta = !!apri && !aulaMonitor && !secondiIngresso;
+    document.body.classList.toggle('smart-aperta', smartAperta);
+    $('#vistaSmart').hidden = !smartAperta;
+    aggiornaMioOrario();   // con la pagina aperta «Oggi» non è cerchiato
+    if (!smartAperta) return;
+    window.scrollTo(0, 0);
+    $('#vistaSmart').focus({ preventScroll: true });
+    Smart.apri($('#vistaSmart'), { orario: () => D, chiudi: () => { apriSmart(false); $('#btnUtente').focus(); }, email: utente.email });
+  }
+
   function apriBreve(apri, mio) {
+    if (apri && smartAperta) apriSmart(false);   // le due viste non stanno aperte insieme
     if (!breveAperta) dataBreve = '';   // ogni volta che si apre la vista si riparte da oggi
     breveAperta = apri && !aulaMonitor;
     breveMio = breveAperta && !!mio && !!mioDocente;
@@ -454,7 +477,7 @@
   // - "Oggi" quando la tabella mostra il giorno di oggi (o il prossimo giorno di scuola)
   function aggiornaMioOrario() {
     $('#btnMioOrario').setAttribute('aria-pressed', String(breveAperta && breveMio));
-    const oggi = !breveAperta && stato.colonne !== 'giorno' && !!D && stato.giorno === giornoIniziale().giorno;
+    const oggi = !breveAperta && !smartAperta && stato.colonne !== 'giorno' && !!D && stato.giorno === giornoIniziale().giorno;
     $('#btnOggi').setAttribute('aria-pressed', String(oggi));
   }
 
@@ -528,7 +551,9 @@
       disegnaBreve();
       $('#sceltaBreve').focus();
     });
-    $('#btnOggi').addEventListener('click', () => { apriBreve(false); const gi = giornoIniziale(); stato.giorno = gi.giorno; if (stato.colonne === 'giorno') stato.colonne = 'classe'; aggiorna(); mostraOraCorrente(); });
+    // «Sostituzioni smart» nel menu: la pagina si apre subito (così Google può chiedere il permesso, se serve)
+    $('#btnSostSmart').addEventListener('click', () => { chiudiMenu(); apriSmart(true); });
+    $('#btnOggi').addEventListener('click', () => { apriBreve(false); apriSmart(false); const gi = giornoIniziale(); stato.giorno = gi.giorno; if (stato.colonne === 'giorno') stato.colonne = 'classe'; aggiorna(); mostraOraCorrente(); });
     // «Il mio orario»: apre la vista a schede di "In breve" con la giornata del docente (di nuovo: chiude)
     $('#btnMioOrario').addEventListener('click', () => apriBreve(!(breveAperta && breveMio), true));
     $('#btnHome').addEventListener('click', schermataIniziale);
