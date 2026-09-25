@@ -29,7 +29,7 @@
 /* ---------- Tasto "In breve" nella barra ---------- */
 .pulsante-breve {
   display: inline-flex; align-items: center; gap: 6px; font-weight: 700;
-  border-radius: 999px; border-color: var(--primario);
+  border-radius: 999px;   /* bordo normale: il cerchio blu compare solo quando è selezionato (css/barra.css) */
   background: linear-gradient(120deg, var(--mattina-a), var(--mattina-b)); color: var(--testo-testata);
 }
 .pulsante-breve svg { width: 16px; height: 16px; flex: none; }
@@ -37,7 +37,6 @@
    (app.js scrive data-momento sul <body>: mattina, pomeriggio o sera) */
 body[data-momento="pomeriggio"] .pulsante-breve { background: linear-gradient(120deg, var(--pomeriggio-a), var(--pomeriggio-b)); }
 body[data-momento="sera"] .pulsante-breve { background: linear-gradient(120deg, var(--sera-a), var(--sera-b)); color: var(--testo-testata-sera); }
-/* Quando è attivo non si riempie: prende solo l'anello blu dei tasti attivi (css/barra.css) */
 body.modalita-monitor .pulsante-breve { display: none; }
 
 /* Telefoni: la barra resta su una riga; il nome della scuola si accorcia con "…" per fare spazio ai pulsanti */

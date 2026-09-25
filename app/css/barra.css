@@ -5,14 +5,18 @@
   Su tablet e computer non cambia niente (le icone di "Oggi" e "Il mio orario" lì non si vedono).
 */
 
-/* ---------- Tasti attivi: solo un anello blu intorno, senza riempimento (su tutti gli schermi) ----------
-   aria-pressed="true"  = la funzione è accesa (Oggi, Nomi)
+/* ---------- Tasto selezionato: un solo cerchio blu, senza riempimento (su tutti gli schermi) ----------
+   aria-pressed="true"  = la funzione è accesa (In breve, Il mio orario, Oggi, Nomi)
    aria-expanded="true" = il suo pannello è aperto (menu del profilo)
-   L'anello è fatto con due ombre: una sottile del colore di fondo e una blu fuori.
-   Niente anello per la campanella (quando è attiva è riempita di giallo con l'alone, css/campanella.css),
-   per «In breve» (ha già la sfumatura) e per «Il mio orario». */
-.azioni-barra [aria-pressed="true"]:not(.pulsante-breve):not(#btnMioOrario),
+   Il cerchio è il bordo del tasto che diventa blu, ingrossato da un'ombra blu attaccata (così è uno solo).
+   La campanella no: quando è attiva è riempita di giallo con l'alone (css/campanella.css). */
+.azioni-barra [aria-pressed="true"],
 .azioni-barra [aria-expanded="true"]:not(.pulsante-campanella) {
+  border-color: var(--primario);
+  box-shadow: 0 0 0 2px var(--primario);
+}
+/* Il tondo del profilo è già blu: il cerchio si vede solo se c'è un filo del colore di fondo in mezzo */
+.azioni-barra .pulsante-utente[aria-expanded="true"] {
   box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--primario);
 }
 
