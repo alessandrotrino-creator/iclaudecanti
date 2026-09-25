@@ -32,7 +32,7 @@ window.CONFIG = {
   fileConteggioOre: '111UrbyrZHhI7EphNQUiFlhUe0_kjS8ctu2fNTXBHeuw',
 
   // Foglio Google delle sostituzioni (vedi sostituzioni/js/registro-drive.js):
-  // - foglio "Abilitazioni": nomi ed email di chi può fare le sostituzioni
+  // - foglio "Autorizzazioni": nomi ed email di chi può fare le sostituzioni
   // - foglio "Sostituzioni": qui l'app scrive le sostituzioni assegnate (con i nomi veri dei docenti)
   // Se si svuota (''), la scheda Sostituzioni funziona come prima (nessun controllo, niente scrittura nel foglio).
   fileSostituzioni: '1bd_d8oNdxSo8hIC26ONxN_RYUpV8dMzD2Ax78z76BJA',

@@ -29,11 +29,12 @@ Il foglio del conteggio ore contiene i nomi completi dei docenti, quindi **non v
 
 Il Foglio Google **delle sostituzioni** (ID in `app/js/config.js`, campo `fileSostituzioni`) ha due fogli:
 
-- **«Abilitazioni»**: nomi ed **email** di chi può fare le sostituzioni. In cima alla scheda il riquadro
+- **«Autorizzazioni»**: nomi ed **email** di chi può fare le sostituzioni. In cima alla scheda il riquadro
   **"Abilitazione alle sostituzioni"** controlla l'email di chi è entrato (pulsante *🔐 Verifica la mia abilitazione*;
   si controlla da solo se il permesso di Google c'è già, per esempio dopo «👁 Nomi»).
   Chi non è nell'elenco, o non può aprire il file, può **consultare** ma non registrare assenze né assegnare sostituzioni.
-  Per abilitare qualcuno basta aggiungere una riga nel foglio (la colonna con "Email" nell'intestazione).
+  Per autorizzare qualcuno basta aggiungere una riga con la sua email (in qualsiasi colonna; nome e cognome
+  si prendono dalle colonne "Nome" e "Cognome"). Va bene anche se il foglio si chiama «Abilitazioni».
 - **«Sostituzioni»**: ogni sostituzione assegnata diventa una **riga** (Data, Giorno, Ora, Classe, Aula, Materia,
   Docente assente, Docente sostituto, Inserita da, Inserita il, ID); annullandola la riga viene cancellata.
   Se il foglio è vuoto l'app scrive prima l'intestazione; se ci sono già delle colonne, riempie quelle con lo stesso nome.
@@ -103,7 +104,7 @@ sostituzioni/
   js/archivio.js          salvataggio nella memoria del browser (chiavi "sostituzioni.")
   js/abbinamenti.js       collegamento tra docenti dell'orario e righe del foglio
   js/drive.js             foglio del conteggio ore su Google Drive (+1 / -1 al sostituto)
-  js/registro-drive.js    Foglio Google delle sostituzioni: foglio «Abilitazioni» e registro «Sostituzioni»
+  js/registro-drive.js    Foglio Google delle sostituzioni: foglio «Autorizzazioni» e registro «Sostituzioni»
   js/sostituzioni.js      la scheda: assenze, proposte, saldi, esportazioni (Sostituzioni.monta)
   esempio/                facsimili del foglio con nomi inventati
 ```

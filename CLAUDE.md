@@ -48,7 +48,7 @@ Le parti del progetto:
   Il foglio del conteggio può stare su Google Drive (`CONFIG.fileConteggioOre`): `sostituzioni/js/drive.js` lo legge e
   scrive +1/-1 nella settimana del sostituto quando si assegna o si annulla una sostituzione (`segnaNelFoglio()`).
   **Chi può fare le sostituzioni** lo decide il Foglio Google `CONFIG.fileSostituzioni` (`sostituzioni/js/registro-drive.js`):
-  foglio «Abilitazioni» (nomi ed email degli abilitati) e foglio «Sostituzioni» (una riga per sostituzione assegnata,
+  foglio «Autorizzazioni» (nomi ed email degli autorizzati) e foglio «Sostituzioni» (una riga per sostituzione assegnata,
   con i **nomi veri** dei docenti presi da `fileNomiDocenti` e tenuti solo in memoria). Su GitHub e in `localStorage`
   restano **solo i codici DOC01…**: i nomi veri stanno solo nei file su Drive.
 

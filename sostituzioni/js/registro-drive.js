@@ -2,8 +2,8 @@
   registro-drive.js – il Foglio Google delle sostituzioni (ID in app/js/config.js, campo "fileSostituzioni").
 
   Il foglio ha due fogli (schede in basso):
-  - "Abilitazioni": nomi ed email di chi può fare le sostituzioni. Qui si legge la colonna
-    con "email" nell'intestazione (se non c'è, si cerca qualsiasi cella con una @).
+  - "Autorizzazioni" (va bene anche "Abilitazioni"): nomi ed email di chi può fare le sostituzioni.
+    L'email si cerca in qualsiasi cella; nome e cognome si prendono dalle colonne con quei titoli.
   - "Sostituzioni": qui l'app scrive una riga per ogni sostituzione assegnata
     (e la cancella se la sostituzione viene annullata). Se il foglio è vuoto, l'app scrive
     prima la riga di intestazione; se c'è già, riempie le colonne con lo stesso nome.
@@ -15,8 +15,9 @@
 const RegistroDrive = (() => {
   const API = 'https://sheets.googleapis.com/v4/spreadsheets/';
   const PERMESSO_FOGLI = 'https://www.googleapis.com/auth/spreadsheets';
-  const FOGLIO_ABILITAZIONI = 'abilitazioni';
-  const FOGLIO_SOSTITUZIONI = 'sostituzioni';
+  // Nomi accettati per i due fogli (senza badare a maiuscole, spazi e accenti)
+  const FOGLIO_AUTORIZZAZIONI = ['autorizzazioni', 'abilitazioni', 'autorizzati', 'abilitati'];
+  const FOGLIO_SOSTITUZIONI = ['sostituzioni', 'registro', 'registrosostituzioni'];
   // Colonne che l'app scrive nel foglio "Sostituzioni" (se il foglio è vuoto, questa è l'intestazione)
   const COLONNE = ['Data', 'Giorno', 'Ora', 'Classe', 'Aula', 'Materia', 'Docente assente', 'Docente sostituto', 'Inserita da', 'Inserita il', 'ID'];
 
@@ -60,14 +61,19 @@ const RegistroDrive = (() => {
     }
     return fogliRicordati;
   }
-  async function trova(nome, email) {
-    const f = (await fogli(email)).find(x => semplice(x.titolo) === nome);
-    if (!f) throw new Error(`nel file delle sostituzioni manca il foglio "${nome.charAt(0).toUpperCase() + nome.slice(1)}"`);
+  // Trova il foglio con uno dei nomi accettati; se non c'è, l'errore elenca i fogli che ci sono davvero
+  async function trova(nomi, email) {
+    const tutti = await fogli(email);
+    const f = tutti.find(x => nomi.includes(semplice(x.titolo)));
+    if (!f) {
+      const primo = nomi[0].charAt(0).toUpperCase() + nomi[0].slice(1);
+      throw new Error(`nel file delle sostituzioni manca il foglio "${primo}" (ci sono: ${tutti.map(x => '«' + x.titolo + '»').join(', ')})`);
+    }
     return f;
   }
 
   /*
-    Controlla se l'email è nel foglio "Abilitazioni".
+    Controlla se l'email è nel foglio "Autorizzazioni".
     Restituisce { abilitato: true/false, nome } oppure lancia un errore con la spiegazione.
     Se l'account non può aprire il file (403/404), vuol dire che non è abilitato.
   */
@@ -76,21 +82,23 @@ const RegistroDrive = (() => {
     if (!mia) return { abilitato: false, nome: '' };
     let righe;
     try {
-      const f = await trova(FOGLIO_ABILITAZIONI, email);
+      const f = await trova(FOGLIO_AUTORIZZAZIONI, email);
       righe = (await chiama('/values/' + encodeURIComponent(tra(f.titolo)), { email })).values || [];
     } catch (e) {
-      if (e.stato === 403 || e.stato === 404) return { abilitato: false, nome: '', motivo: 'il tuo account non può aprire il foglio delle abilitazioni' };
+      if (e.stato === 403 || e.stato === 404) return { abilitato: false, nome: '', motivo: 'il tuo account non può aprire il foglio delle autorizzazioni' };
       throw e;
     }
-    // Colonna "email" e colonna "nome" dall'intestazione (prima riga)
-    const intestazione = (righe[0] || []).map(semplice);
-    const cEmail = intestazione.findIndex(x => x.includes('mail'));
+    // L'email si cerca in QUALSIASI cella (così va bene anche se la colonna ha un altro titolo
+    // o se sopra l'intestazione c'è una riga con un titolo)
+    // (una cella può contenere anche altro testo, es. "Mario Rossi <mario.rossi@…>": si guardano le email dentro)
+    const emailDentro = c => (String(c || '').toLowerCase().match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/g) || []).map(semplice);
+    const riga = righe.find(r => r.some(c => emailDentro(c).includes(mia)));
+    if (!riga) return { abilitato: false, nome: '' };
+    // Per il nome: la riga di intestazione è la prima che contiene "mail", altrimenti la prima riga
+    const intestazione = (righe.find(r => r.some(c => semplice(c).includes('mail'))) || righe[0] || []).map(semplice);
     // (attenzione: "cognome" contiene la parola "nome", quindi lo escludiamo)
     const cNome = intestazione.findIndex(x => (x.includes('nome') && !x.includes('cognome')) || x.includes('docente'));
     const cCognome = intestazione.findIndex(x => x.includes('cognome'));
-    const riga = righe.slice(cEmail >= 0 ? 1 : 0).find(r =>
-      cEmail >= 0 ? semplice(r[cEmail]) === mia : r.some(c => semplice(c) === mia));
-    if (!riga) return { abilitato: false, nome: '' };
     const nome = [cNome >= 0 ? riga[cNome] : '', cCognome >= 0 ? riga[cCognome] : '']
       .filter(Boolean).join(' ').trim();
     return { abilitato: true, nome };

@@ -268,7 +268,7 @@ const Sostituzioni = (() => {
   }
 
   // ---------- Abilitazioni e registro nel Foglio Google delle sostituzioni (js/registro-drive.js) ----------
-  // Chi può fare le sostituzioni è scritto nel foglio «Abilitazioni»; le sostituzioni assegnate
+  // Chi può fare le sostituzioni è scritto nel foglio «Autorizzazioni»; le sostituzioni assegnate
   // vengono scritte nel foglio «Sostituzioni». Se in config.js manca "fileSostituzioni" tutto funziona come prima.
   const conRegistro = () => typeof RegistroDrive !== 'undefined' && RegistroDrive.configurato();
   // stato: 'da-verificare' | 'verifica' | 'si' | 'no' | 'errore'
@@ -296,10 +296,10 @@ const Sostituzioni = (() => {
     const email = emailUtente();
     const tuo = email ? ` (${email})` : '';
     const testi = {
-      'da-verificare': `Solo chi è nel foglio «Abilitazioni» può registrare assenze e assegnare sostituzioni. Premi il pulsante per controllare il tuo account${tuo}.`,
+      'da-verificare': `Solo chi è nel foglio «Autorizzazioni» può registrare assenze e assegnare sostituzioni. Premi il pulsante per controllare il tuo account${tuo}.`,
       verifica: 'Controllo in corso…',
       si: `✅ Sei abilitato${abilitazione.nome ? ': ' + abilitazione.nome : ''}. Le sostituzioni che assegni vengono scritte anche nel foglio «Sostituzioni».`,
-      no: `⛔ Il tuo account${tuo} non è nel foglio «Abilitazioni»${abilitazione.messaggio ? ' (' + abilitazione.messaggio + ')' : ''}. ` +
+      no: `⛔ Il tuo account${tuo} non è nel foglio «Autorizzazioni»${abilitazione.messaggio ? ' (' + abilitazione.messaggio + ')' : ''}. ` +
         'Puoi consultare, ma non registrare assenze né assegnare sostituzioni: chiedi a chi gestisce il foglio di aggiungerti.',
       errore: `⚠️ Non riesco a controllare l'abilitazione: ${abilitazione.messaggio}.`
     };
@@ -314,7 +314,7 @@ const Sostituzioni = (() => {
   function controllaPermesso() {
     if (puoFare()) return true;
     avvisa(abilitazione.stato === 'no'
-      ? 'Il tuo account non è abilitato alle sostituzioni (foglio «Abilitazioni»).'
+      ? 'Il tuo account non è autorizzato alle sostituzioni (foglio «Autorizzazioni»).'
       : 'Prima verifica la tua abilitazione: pulsante in cima alla scheda.');
     $('boxAbilitazione').scrollIntoView({ behavior: 'smooth', block: 'center' });
     return false;
