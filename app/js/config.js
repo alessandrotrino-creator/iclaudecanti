@@ -23,6 +23,9 @@ window.CONFIG = {
   // Dove si trova il file con l'orario (formato dell'app oppure backup di Orario Facile)
   urlDati: '../dati/orario.json',
 
+  // Orari della campanella (tasto con la campanella). Se il file manca, si usano gli orari delle ore
+  urlCampanella: '../dati/campanella.json',
+
   // Per quanti giorni l'accesso resta memorizzato se si spunta "Ricordami"
   giorniRicordami: 30,
 

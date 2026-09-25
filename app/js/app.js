@@ -327,8 +327,7 @@
     });
     $('#btnHome').addEventListener('click', schermataIniziale);
 
-    $('#btnUtente').addEventListener('click', () => $('#menu').hidden ? apriMenu() : chiudiMenu());
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#menu').hidden) { chiudiMenu(); $('#btnUtente').focus(); } });
+    $('#btnUtente').addEventListener('click', () => $('#menu').hidden ? apriMenu() : chiudiMenu());    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#menu').hidden) { chiudiMenu(); $('#btnUtente').focus(); } });
     document.addEventListener('click', e => { if (!$('#menu').hidden && !e.target.closest('#menu, #btnUtente')) chiudiMenu(); });
     $('#sceltaMonitor').addEventListener('change', e => { impostaMonitor(e.target.value); chiudiMenu(); });
     // Secondi della rotazione: si scrivono nel campo (conferma con Invio o uscendo dal campo)
@@ -416,6 +415,7 @@
     preparaControlli();
     $('#sceltaMonitor').value = valoreUso();
     collegaEventi();
+    Campanella.avvia(() => D);   // tasto campanella (vedi campanella.js)
     $('#caricamento').hidden = true;
     $('#app').hidden = false;
     schermataIniziale();

@@ -62,6 +62,7 @@ app/              Orario DADA, app di visualizzazione (css/, js/, icone/, sw.js,
 orario-facile/    l'app Orario Facile (un unico index.html autonomo + modelli CSV)
 sostituzioni/     codice della scheda Sostituzioni di Orario Facile (css/, js/, esempio/ con facsimili)
 dati/orario.json  l'orario letto da app/ (formato dell'app o backup di Orario Facile)
+dati/campanella.json  orari della campanella per il tasto 🔔 dell'app (vedi app/js/campanella.js)
 img/              immagini
 ```
 - Tieni i **dati dell'orario separati dal codice** (file JSON in `dati/`), così si possono aggiornare senza toccare JS/HTML.

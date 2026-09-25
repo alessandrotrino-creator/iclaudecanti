@@ -1,0 +1,54 @@
+/*
+  campanella.css – tasto con la campanella e pannello delle impostazioni (vedi js/campanella.js).
+  Usa i colori di app.css: quando la campanella è attiva il tasto si "accende" di giallo.
+*/
+
+/* ---------- Tasto nella barra ---------- */
+.pulsante-campanella {
+  width: 44px; height: 44px; flex: none; display: grid; place-items: center; cursor: pointer;
+  border-radius: 50%; border: 1px solid var(--bordo); background: var(--superficie); color: var(--testo-tenue);
+  transition: background .2s, box-shadow .2s, color .2s;
+}
+.pulsante-campanella svg { width: 22px; height: 22px; }
+/* Accesa: sfondo giallo e un alone luminoso intorno */
+.pulsante-campanella.accesa {
+  background: var(--evidenza-bordo); border-color: var(--evidenza-bordo); color: #1a1f2b;
+  box-shadow: 0 0 0 3px var(--evidenza), 0 0 16px 2px var(--evidenza-bordo);
+}
+/* Mentre suona la campanella oscilla */
+.pulsante-campanella.squilla svg { animation: dondola .5s ease-in-out 6; transform-origin: 50% 10%; }
+@keyframes dondola {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(18deg); }
+  75% { transform: rotate(-18deg); }
+}
+
+/* ---------- Pannello (usa lo stile di .menu di app.css) ---------- */
+.pannello-campanella:focus { outline: none; }
+/* Su schermi bassi il pannello si scorre invece di uscire dallo schermo */
+.pannello-campanella { max-height: calc(100vh - 90px); max-height: calc(100dvh - 90px); overflow-y: auto; }
+.riga-campanella { display: flex; justify-content: space-between; align-items: center; }
+.riga-campanella h2 { margin: 0; font-size: 1.15rem; }
+.riga-campanella .pulsante { min-height: 40px; padding: 4px 12px; }
+/* ".pannello-campanella" davanti: così vince sulla regola ".menu label" di app.css */
+.pannello-campanella .interruttore { display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; color: var(--testo); font-size: 1rem; }
+.interruttore input { width: 22px; height: 22px; flex: none; }
+.gruppo-campanella { border: 1px solid var(--bordo); border-radius: 10px; margin: 0; padding: 6px 12px 8px; display: grid; }
+.gruppo-campanella legend { padding: 0 4px; font-size: .9rem; color: var(--testo-tenue); }
+.pannello-campanella .gruppo-campanella label { display: flex; align-items: center; gap: 10px; min-height: 40px; cursor: pointer; color: var(--testo); font-size: 1rem; }
+.gruppo-campanella input { width: 20px; height: 20px; }
+.prove-campanella { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.avviso-campanella { margin: 0; padding: 8px 10px; border-radius: 8px; background: var(--evidenza); font-size: .9rem; }
+.nota-campanella { margin: 0; font-size: .85rem; color: var(--testo-tenue); }
+.nota-campanella:empty { display: none; }
+
+/* ---------- Telefoni: nella barra c'è un tasto in più ---------- */
+@media (max-width: 520px) {
+  .marchio { overflow: hidden; }
+  /* Se i tasti non stanno su una riga vanno a capo a destra, senza uscire dallo schermo */
+  .azioni-barra { flex: 0 1 auto; min-width: 0; flex-wrap: wrap; justify-content: flex-end; }
+}
+/* Telefoni stretti: accanto al logo non c'è la scritta "Orario" */
+@media (max-width: 420px) { .testo-marchio { display: none; } }
+
+@media print { .pulsante-campanella, .pannello-campanella { display: none !important; } }

@@ -1,0 +1,16 @@
+{
+  "nota": "Orari della campanella letti dall'app Orario DADA (tasto con la campanella). Ogni riga di 'suoni' è un suono: 'ora' nel formato HH:MM, 'nome' è il testo mostrato nell'app. Per aggiungere un intervallo basta aggiungere due righe, per esempio { \"ora\": \"10:50\", \"nome\": \"Inizio intervallo\" } e { \"ora\": \"11:00\", \"nome\": \"Fine intervallo\" }. Gli orari devono essere in ordine.",
+  "aggiornato": "2026-09-25",
+  "giorni": ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì"],
+  "suoni": [
+    { "ora": "08:00", "nome": "Inizio 1ª ora" },
+    { "ora": "09:00", "nome": "Inizio 2ª ora" },
+    { "ora": "10:00", "nome": "Inizio 3ª ora" },
+    { "ora": "11:00", "nome": "Inizio 4ª ora" },
+    { "ora": "12:00", "nome": "Inizio 5ª ora" },
+    { "ora": "13:00", "nome": "Inizio 6ª ora" },
+    { "ora": "14:00", "nome": "Inizio 7ª ora" },
+    { "ora": "15:00", "nome": "Inizio 8ª ora" },
+    { "ora": "16:00", "nome": "Fine delle lezioni" }
+  ]
+}

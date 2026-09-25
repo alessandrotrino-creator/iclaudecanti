@@ -31,6 +31,31 @@ Il tasto **In breve** nella barra in alto apre la giornata a schede, comoda sul 
 - I colori della testata cambiano con il momento della giornata (mattina, pomeriggio, sera) e seguono il tema chiaro/scuro.
 - Sui monitor di classe il tasto non c'è: lì resta la tabella a caratteri grandi.
 
+## Campanella 🔔
+
+Il tasto con la **campanella** nella barra in alto fa suonare il dispositivo agli orari della campanella. Quando è attiva il tasto è **acceso** (giallo, con un alone) e mentre suona oscilla.
+
+- Si sceglie **quando suonare**: *al cambio d'ora*, *qualche minuto prima* (1, 2, 3, 5 o 10 minuti) oppure *entrambi*.
+- Due suoni diversi: la **campanella** ("din-don") al cambio d'ora e tre **bip** leggeri per il preavviso. Sui telefoni Android vibra anche. I pulsanti *Prova* li fanno sentire subito.
+- Il pannello mostra quando arriva il **prossimo suono**. Le scelte restano memorizzate sul dispositivo.
+- **Limite dei siti web**: suona solo con l'app **aperta sullo schermo** e il volume alzato (su iPhone va tolto anche il silenzioso). Con il telefono bloccato o l'app chiusa il browser non permette di suonare. Per questo c'è l'opzione *Tieni acceso lo schermo* (consuma più batteria). Dopo aver riaperto l'app bisogna toccare lo schermo una volta per abilitare il suono.
+- Funziona anche sui monitor di classe e sullo schermo all'ingresso.
+
+Gli orari stanno in **`dati/campanella.json`** (nella radice del repo), separati dall'orario delle lezioni:
+
+```json
+{
+  "giorni": ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì"],
+  "suoni": [
+    { "ora": "08:00", "nome": "Inizio 1ª ora" },
+    { "ora": "10:50", "nome": "Inizio intervallo" },
+    { "ora": "11:00", "nome": "Fine intervallo" }
+  ]
+}
+```
+
+Per cambiare un orario o aggiungere un intervallo basta modificare il file (orari in formato HH:MM, in ordine). Se il file manca, l'app usa gli orari di inizio delle ore dell'orario.
+
 ## Cambiare visualizzazione
 
 - **In colonna**: Classi, Docenti, Aule oppure **Settimana** (i giorni in colonna).
@@ -183,6 +208,8 @@ app/
   js/ruoli.js           chi può modificare l'orario (modificatori) e chi può solo consultarlo
   js/viste.js           disegno della tabella
   js/brief.js           vista "In breve" (la giornata a schede)
+  js/campanella.js      tasto campanella: suoni agli orari di dati/campanella.json
+  css/campanella.css    stile del tasto e del pannello della campanella
   js/ingresso.js        schermo all'ingresso: viste a rotazione
   js/app.js             schermata iniziale, pulsanti, monitor, aggiornamenti
   sw.js                 funzionamento senza connessione
