@@ -1,8 +1,11 @@
 {
- "scuola": "IC Almese – esempio",
- "anno": "2026/2027",
- "aggiornato": "2026-09-24",
- "nota": "Dati di esempio inventati. Sostituire con l'orario reale (anche il backup JSON di Orario Facile va bene).",
+ "meta": {
+  "nome": "Istituto Comprensivo",
+  "anno": "2026/2027",
+  "durata": 60,
+  "inizio": "08:00",
+  "versioneDati": "2026-09-25"
+ },
  "giorni": [
   "Lunedì",
   "Martedì",
@@ -10,2519 +13,5914 @@
   "Giovedì",
   "Venerdì"
  ],
- "ore": [
+ "oreM": 6,
+ "oreP": 2,
+ "classi": [
   {
-   "n": 1,
-   "inizio": "08:00",
-   "fine": "09:00"
+   "id": "cghovs",
+   "nome": "1A",
+   "anno": 1,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
   },
   {
-   "n": 2,
-   "inizio": "09:00",
-   "fine": "10:00"
+   "id": "ch8apf",
+   "nome": "1B",
+   "anno": 1,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
   },
   {
-   "n": 3,
-   "inizio": "10:00",
-   "fine": "11:00"
+   "id": "cim5i5",
+   "nome": "1C",
+   "anno": 1,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 2
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 2
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 2
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
   },
   {
-   "n": 4,
-   "inizio": "11:00",
-   "fine": "12:00"
+   "id": "cjd9cw",
+   "nome": "1D",
+   "anno": 1,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
   },
   {
-   "n": 5,
-   "inizio": "12:00",
-   "fine": "13:00"
+   "id": "ckezq6",
+   "nome": "1E",
+   "anno": 1,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
   },
   {
-   "n": 6,
-   "inizio": "13:00",
-   "fine": "14:00"
+   "id": "clmkp7",
+   "nome": "2A",
+   "anno": 2,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
   },
   {
-   "n": 7,
-   "inizio": "14:00",
-   "fine": "15:00"
+   "id": "cmm8wj",
+   "nome": "2B",
+   "anno": 2,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
   },
   {
-   "n": 8,
-   "inizio": "15:00",
-   "fine": "16:00"
+   "id": "cnpj6b",
+   "nome": "2C",
+   "anno": 2,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 2
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 2
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 2
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
+  },
+  {
+   "id": "co7zw7",
+   "nome": "2D",
+   "anno": 2,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
+  },
+  {
+   "id": "cp8vw0",
+   "nome": "2E",
+   "anno": 2,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
+  },
+  {
+   "id": "cqbsvv",
+   "nome": "3A",
+   "anno": 3,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
+  },
+  {
+   "id": "crupfk",
+   "nome": "3B",
+   "anno": 3,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
+  },
+  {
+   "id": "csgejm",
+   "nome": "3C",
+   "anno": 3,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 2
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 2
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 2
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
+  },
+  {
+   "id": "ctp68t",
+   "nome": "3D",
+   "anno": 3,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
+  },
+  {
+   "id": "cuqifq",
+   "nome": "3E",
+   "anno": 3,
+   "g": {
+    "Lunedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Martedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Mercoledì": {
+     "m": 6,
+     "p": 0
+    },
+    "Giovedì": {
+     "m": 6,
+     "p": 0
+    },
+    "Venerdì": {
+     "m": 6,
+     "p": 0
+    },
+    "Sabato": {
+     "m": 5,
+     "p": 0
+    }
+   }
   }
  ],
- "classi": [
-  "1A",
-  "1B",
-  "1C",
-  "2A",
-  "2B",
-  "2C",
-  "3A",
-  "3B",
-  "3C"
- ],
- "docenti": [
+ "discipline": [
   {
-   "id": "marco-bianchi",
-   "nome": "Marco Bianchi",
-   "email": "marco.bianchi@comprensivoalmese.it"
+   "id": "d1q4we",
+   "nome": "Italiano",
+   "sigla": "ITA",
+   "hue": 214,
+   "principale": false,
+   "blocchi2": true,
+   "ultimaOra": false,
+   "oreStd": 6,
+   "modoBlocchi": "obbl"
   },
   {
-   "id": "laura-bruno",
-   "nome": "Laura Bruno",
-   "email": "laura.bruno@comprensivoalmese.it"
+   "id": "d257bj",
+   "nome": "Storia",
+   "sigla": "STO",
+   "hue": 268,
+   "principale": false,
+   "blocchi2": false,
+   "ultimaOra": false,
+   "oreStd": 2
   },
   {
-   "id": "chiara-colombo",
-   "nome": "Chiara Colombo",
-   "email": "chiara.colombo@comprensivoalmese.it"
+   "id": "d3zien",
+   "nome": "Geografia",
+   "sigla": "GEO",
+   "hue": 168,
+   "principale": false,
+   "blocchi2": false,
+   "ultimaOra": false,
+   "oreStd": 2
   },
   {
-   "id": "andrea-conti",
-   "nome": "Andrea Conti",
-   "email": "andrea.conti@comprensivoalmese.it"
+   "id": "d4dpow",
+   "nome": "Approfondimento",
+   "sigla": "APP",
+   "hue": 232,
+   "principale": false,
+   "blocchi2": false,
+   "ultimaOra": false,
+   "oreStd": 0
   },
   {
-   "id": "davide-costa",
-   "nome": "Davide Costa",
-   "email": "davide.costa@comprensivoalmese.it"
+   "id": "d5jm6e",
+   "nome": "Matematica",
+   "sigla": "MAT",
+   "hue": 6,
+   "principale": false,
+   "blocchi2": true,
+   "ultimaOra": false,
+   "oreStd": 4,
+   "modoBlocchi": "obbl"
   },
   {
-   "id": "giulia-esposito",
-   "nome": "Giulia Esposito",
-   "email": "giulia.esposito@comprensivoalmese.it"
+   "id": "d6kt80",
+   "nome": "Scienze",
+   "sigla": "SCI",
+   "hue": 128,
+   "principale": false,
+   "blocchi2": true,
+   "ultimaOra": false,
+   "oreStd": 2,
+   "modoBlocchi": "obbl"
   },
   {
-   "id": "sara-ferraro",
-   "nome": "Sara Ferraro",
-   "email": "sara.ferraro@comprensivoalmese.it"
+   "id": "d7z35w",
+   "nome": "Inglese",
+   "sigla": "ING",
+   "hue": 32,
+   "principale": false,
+   "blocchi2": true,
+   "ultimaOra": false,
+   "oreStd": 3,
+   "modoBlocchi": "obbl"
   },
   {
-   "id": "silvia-fontana",
-   "nome": "Silvia Fontana",
-   "email": "silvia.fontana@comprensivoalmese.it"
+   "id": "d8xytj",
+   "nome": "Francese",
+   "sigla": "FRA",
+   "hue": 322,
+   "principale": false,
+   "blocchi2": false,
+   "ultimaOra": false,
+   "oreStd": 2
   },
   {
-   "id": "martina-gallo",
-   "nome": "Martina Gallo",
-   "email": "martina.gallo@comprensivoalmese.it"
+   "id": "d963b0",
+   "nome": "Tecnologia",
+   "sigla": "TEC",
+   "hue": 196,
+   "principale": false,
+   "blocchi2": false,
+   "ultimaOra": false,
+   "oreStd": 2,
+   "modoBlocchi": "obbl"
   },
   {
-   "id": "stefano-greco",
-   "nome": "Stefano Greco",
-   "email": "stefano.greco@comprensivoalmese.it"
+   "id": "dab27m",
+   "nome": "Arte e immagine",
+   "sigla": "ART",
+   "hue": 288,
+   "principale": false,
+   "blocchi2": false,
+   "ultimaOra": false,
+   "oreStd": 2,
+   "modoBlocchi": "obbl"
   },
   {
-   "id": "francesca-leone",
-   "nome": "Francesca Leone",
-   "email": "francesca.leone@comprensivoalmese.it"
+   "id": "dbi611",
+   "nome": "Musica",
+   "sigla": "MUS",
+   "hue": 248,
+   "principale": false,
+   "blocchi2": false,
+   "ultimaOra": false,
+   "oreStd": 2,
+   "modoBlocchi": "obbl"
   },
   {
-   "id": "teresa-lombardi",
-   "nome": "Teresa Lombardi",
-   "email": "teresa.lombardi@comprensivoalmese.it"
+   "id": "dcwgvj",
+   "nome": "Educazione fisica",
+   "sigla": "MOT",
+   "hue": 96,
+   "principale": false,
+   "blocchi2": true,
+   "ultimaOra": false,
+   "oreStd": 2,
+   "modoBlocchi": "obbl"
   },
   {
-   "id": "fabio-longo",
-   "nome": "Fabio Longo",
-   "email": "fabio.longo@comprensivoalmese.it"
+   "id": "ddy9iv",
+   "nome": "Religione / Alternativa",
+   "sigla": "IRC",
+   "hue": 52,
+   "principale": false,
+   "blocchi2": false,
+   "ultimaOra": false,
+   "oreStd": 1
   },
   {
-   "id": "giorgio-mancini",
-   "nome": "Giorgio Mancini",
-   "email": "giorgio.mancini@comprensivoalmese.it"
+   "id": "de8afd",
+   "nome": "Mensa",
+   "sigla": "MEN",
+   "hue": 70,
+   "principale": false,
+   "blocchi2": false,
+   "ultimaOra": false,
+   "oreStd": 3
   },
   {
-   "id": "elena-marino",
-   "nome": "Elena Marino",
-   "email": "elena.marino@comprensivoalmese.it"
-  },
-  {
-   "id": "claire-moreau",
-   "nome": "Claire Moreau",
-   "email": "claire.moreau@comprensivoalmese.it"
-  },
-  {
-   "id": "paolo-ricci",
-   "nome": "Paolo Ricci",
-   "email": "paolo.ricci@comprensivoalmese.it"
-  },
-  {
-   "id": "luca-romano",
-   "nome": "Luca Romano",
-   "email": "luca.romano@comprensivoalmese.it"
-  },
-  {
-   "id": "anna-rossi",
-   "nome": "Anna Rossi",
-   "email": "anna.rossi@comprensivoalmese.it"
-  },
-  {
-   "id": "roberto-villa",
-   "nome": "Roberto Villa",
-   "email": "roberto.villa@comprensivoalmese.it"
+   "id": "dfa0qt",
+   "nome": "Laboratorio",
+   "sigla": "LAB",
+   "hue": 227,
+   "principale": false,
+   "blocchi2": false,
+   "ultimaOra": false,
+   "oreStd": 3
   }
  ],
  "aule": [
   {
-   "id": "aula-1",
-   "nome": "Aula 1",
-   "tipo": "Lettere"
+   "id": "a14k4d",
+   "nome": "MENSA",
+   "tipo": "Altro",
+   "contemporanea": true
   },
   {
-   "id": "aula-2",
-   "nome": "Aula 2",
-   "tipo": "Lettere"
+   "id": "a2xjvq",
+   "nome": "C1PAL",
+   "tipo": "Palestra",
+   "contemporanea": true
   },
   {
-   "id": "aula-3",
-   "nome": "Aula 3",
-   "tipo": "Lettere"
+   "id": "a3szfq",
+   "nome": "S19MUS1",
+   "tipo": "Laboratorio",
+   "contemporanea": false
   },
   {
-   "id": "aula-4",
-   "nome": "Aula 4",
-   "tipo": "Lettere"
+   "id": "a4mka1",
+   "nome": "S20MUS2",
+   "tipo": "Laboratorio",
+   "contemporanea": false
   },
   {
-   "id": "aula-5",
-   "nome": "Aula 5",
-   "tipo": "Lettere"
+   "id": "a57y9w",
+   "nome": "103REL",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "aula-6",
-   "nome": "Aula 6",
-   "tipo": "Lettere"
+   "id": "a63x6f",
+   "nome": "S03ART1",
+   "tipo": "Laboratorio",
+   "contemporanea": false
   },
   {
-   "id": "aula-7",
-   "nome": "Aula 7",
-   "tipo": "Lettere"
+   "id": "a7yh69",
+   "nome": "S04ART2",
+   "tipo": "Laboratorio",
+   "contemporanea": false
   },
   {
-   "id": "aula-8",
-   "nome": "Aula 8",
-   "tipo": "Lettere"
+   "id": "a8oy0u",
+   "nome": "110ITA4",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "aula-9",
-   "nome": "Aula 9",
-   "tipo": "Lettere"
+   "id": "a9ch4s",
+   "nome": "111MAT4",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "lab--scienze-1",
-   "nome": "Lab. scienze 1",
-   "tipo": "Matematica e scienze"
+   "id": "aa7k2r",
+   "nome": "112ITA5",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "lab--scienze-2",
-   "nome": "Lab. scienze 2",
-   "tipo": "Matematica e scienze"
+   "id": "abioos",
+   "nome": "202ITA2",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "lab--scienze-3",
-   "nome": "Lab. scienze 3",
-   "tipo": "Matematica e scienze"
+   "id": "aci2l2",
+   "nome": "203ING2",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "aula-lingue-1",
-   "nome": "Aula lingue 1",
-   "tipo": "Lingue"
+   "id": "adpl4r",
+   "nome": "207ITA3",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "aula-lingue-2",
-   "nome": "Aula lingue 2",
-   "tipo": "Lingue"
+   "id": "ae8jox",
+   "nome": "208MAT2",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "aula-lingue-3",
-   "nome": "Aula lingue 3",
-   "tipo": "Lingue"
+   "id": "afb2rb",
+   "nome": "209MAT3",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "lab--tecnologia",
-   "nome": "Lab. tecnologia",
-   "tipo": "Laboratorio"
+   "id": "agipu1",
+   "nome": "301TEC1",
+   "tipo": "Laboratorio",
+   "contemporanea": false
   },
   {
-   "id": "aula-arte",
-   "nome": "Aula arte",
-   "tipo": "Laboratorio"
+   "id": "aht1e8",
+   "nome": "302FRA1",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "aula-musica",
-   "nome": "Aula musica",
-   "tipo": "Laboratorio"
+   "id": "ai910g",
+   "nome": "303JOL1",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "palestra",
-   "nome": "Palestra",
-   "tipo": "Palestra"
+   "id": "ajsmj1",
+   "nome": "306ITA1",
+   "tipo": "Aula",
+   "contemporanea": false
   },
   {
-   "id": "aula-10",
-   "nome": "Aula 10",
-   "tipo": "Aula"
+   "id": "ak3u00",
+   "nome": "307ING1",
+   "tipo": "Aula",
+   "contemporanea": false
+  },
+  {
+   "id": "al8pmm",
+   "nome": "308MAT1",
+   "tipo": "Aula",
+   "contemporanea": false
   }
  ],
- "lezioni": [
-  {
-   "giorno": "Lunedì",
-   "ora": 1,
-   "classe": "1A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 1,
-   "classe": "1B",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 1,
-   "classe": "1C",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 1,
-   "classe": "2A",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 1,
-   "classe": "2B",
-   "materia": "Storia",
-   "docente": "chiara-colombo",
-   "aula": "aula-5"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 1,
-   "classe": "2C",
-   "materia": "Religione",
-   "docente": "teresa-lombardi",
-   "aula": "aula-10"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 1,
-   "classe": "3A",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 1,
-   "classe": "3B",
-   "materia": "Scienze",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 1,
-   "classe": "3C",
-   "materia": "Scienze",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 2,
-   "classe": "1A",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 2,
-   "classe": "1B",
-   "materia": "Geografia",
-   "docente": "marco-bianchi",
-   "aula": "aula-2"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 2,
-   "classe": "1C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 2,
-   "classe": "2A",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 2,
-   "classe": "2B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 2,
-   "classe": "2C",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 2,
-   "classe": "3A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 2,
-   "classe": "3B",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 2,
-   "classe": "3C",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 3,
-   "classe": "1A",
-   "materia": "Italiano",
-   "docente": "anna-rossi",
-   "aula": "aula-1"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 3,
-   "classe": "1B",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 3,
-   "classe": "1C",
-   "materia": "Italiano",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 3,
-   "classe": "2A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 3,
-   "classe": "2B",
-   "materia": "Religione",
-   "docente": "teresa-lombardi",
-   "aula": "aula-10"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 3,
-   "classe": "2C",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 3,
-   "classe": "3A",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 3,
-   "classe": "3B",
-   "materia": "Geografia",
-   "docente": "stefano-greco",
-   "aula": "aula-8"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 3,
-   "classe": "3C",
-   "materia": "Approfondimento",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 4,
-   "classe": "1A",
-   "materia": "Religione",
-   "docente": "teresa-lombardi",
-   "aula": "aula-10"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 4,
-   "classe": "1B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 4,
-   "classe": "1C",
-   "materia": "Inglese",
-   "docente": "martina-gallo",
-   "aula": "aula-lingue-2"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 4,
-   "classe": "2A",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 4,
-   "classe": "2B",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 4,
-   "classe": "2C",
-   "materia": "Italiano",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 4,
-   "classe": "3A",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 4,
-   "classe": "3B",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 4,
-   "classe": "3C",
-   "materia": "Storia",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 5,
-   "classe": "1A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 5,
-   "classe": "1B",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 5,
-   "classe": "1C",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 5,
-   "classe": "2A",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 5,
-   "classe": "2B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 5,
-   "classe": "2C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 5,
-   "classe": "3A",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 5,
-   "classe": "3B",
-   "materia": "Italiano",
-   "docente": "stefano-greco",
-   "aula": "aula-8"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 5,
-   "classe": "3C",
-   "materia": "Italiano",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 6,
-   "classe": "1A",
-   "materia": "Scienze",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 6,
-   "classe": "1B",
-   "materia": "Italiano",
-   "docente": "marco-bianchi",
-   "aula": "aula-2"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 6,
-   "classe": "1C",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 6,
-   "classe": "2A",
-   "materia": "Geografia",
-   "docente": "luca-romano",
-   "aula": "aula-4"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 6,
-   "classe": "2B",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 6,
-   "classe": "2C",
-   "materia": "Italiano",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 6,
-   "classe": "3A",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 6,
-   "classe": "3B",
-   "materia": "Italiano",
-   "docente": "stefano-greco",
-   "aula": "aula-8"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 6,
-   "classe": "3C",
-   "materia": "Italiano",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 7,
-   "classe": "1C",
-   "materia": "Laboratorio di matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Lunedì",
-   "ora": 8,
-   "classe": "1C",
-   "materia": "Laboratorio di lettura",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 1,
-   "classe": "1A",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 1,
-   "classe": "1B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 1,
-   "classe": "1C",
-   "materia": "Scienze",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 1,
-   "classe": "2A",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 1,
-   "classe": "2B",
-   "materia": "Italiano",
-   "docente": "chiara-colombo",
-   "aula": "aula-5"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 1,
-   "classe": "2C",
-   "materia": "Approfondimento",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 1,
-   "classe": "3A",
-   "materia": "Italiano",
-   "docente": "elena-marino",
-   "aula": "aula-7"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 1,
-   "classe": "3B",
-   "materia": "Storia",
-   "docente": "stefano-greco",
-   "aula": "aula-8"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 1,
-   "classe": "3C",
-   "materia": "Inglese",
-   "docente": "martina-gallo",
-   "aula": "aula-lingue-2"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 2,
-   "classe": "1A",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 2,
-   "classe": "1B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 2,
-   "classe": "1C",
-   "materia": "Italiano",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 2,
-   "classe": "2A",
-   "materia": "Storia",
-   "docente": "luca-romano",
-   "aula": "aula-4"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 2,
-   "classe": "2B",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 2,
-   "classe": "2C",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 2,
-   "classe": "3A",
-   "materia": "Scienze",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 2,
-   "classe": "3B",
-   "materia": "Italiano",
-   "docente": "stefano-greco",
-   "aula": "aula-8"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 2,
-   "classe": "3C",
-   "materia": "Geografia",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 3,
-   "classe": "1A",
-   "materia": "Approfondimento",
-   "docente": "anna-rossi",
-   "aula": "aula-1"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 3,
-   "classe": "1B",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 3,
-   "classe": "1C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 3,
-   "classe": "2A",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 3,
-   "classe": "2B",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 3,
-   "classe": "2C",
-   "materia": "Geografia",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 3,
-   "classe": "3A",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 3,
-   "classe": "3B",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 3,
-   "classe": "3C",
-   "materia": "Italiano",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 4,
-   "classe": "1A",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 4,
-   "classe": "1B",
-   "materia": "Italiano",
-   "docente": "marco-bianchi",
-   "aula": "aula-2"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 4,
-   "classe": "1C",
-   "materia": "Storia",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 4,
-   "classe": "2A",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 4,
-   "classe": "2B",
-   "materia": "Italiano",
-   "docente": "chiara-colombo",
-   "aula": "aula-5"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 4,
-   "classe": "2C",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 4,
-   "classe": "3A",
-   "materia": "Geografia",
-   "docente": "elena-marino",
-   "aula": "aula-7"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 4,
-   "classe": "3B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 4,
-   "classe": "3C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 5,
-   "classe": "1A",
-   "materia": "Italiano",
-   "docente": "anna-rossi",
-   "aula": "aula-1"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 5,
-   "classe": "1B",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 5,
-   "classe": "1C",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 5,
-   "classe": "2A",
-   "materia": "Scienze",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 5,
-   "classe": "2B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 5,
-   "classe": "2C",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 5,
-   "classe": "3A",
-   "materia": "Storia",
-   "docente": "elena-marino",
-   "aula": "aula-7"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 5,
-   "classe": "3B",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 5,
-   "classe": "3C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 6,
-   "classe": "1A",
-   "materia": "Italiano",
-   "docente": "anna-rossi",
-   "aula": "aula-1"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 6,
-   "classe": "1B",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 6,
-   "classe": "1C",
-   "materia": "Storia",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 6,
-   "classe": "2A",
-   "materia": "Italiano",
-   "docente": "luca-romano",
-   "aula": "aula-4"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 6,
-   "classe": "2B",
-   "materia": "Scienze",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 6,
-   "classe": "2C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 6,
-   "classe": "3A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 6,
-   "classe": "3B",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 6,
-   "classe": "3C",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 7,
-   "classe": "1C",
-   "materia": "Laboratorio di matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 7,
-   "classe": "3C",
-   "materia": "Laboratorio di lettura",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 8,
-   "classe": "1C",
-   "materia": "Laboratorio di lettura",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Martedì",
-   "ora": 8,
-   "classe": "3C",
-   "materia": "Laboratorio di matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 1,
-   "classe": "1A",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 1,
-   "classe": "1B",
-   "materia": "Italiano",
-   "docente": "marco-bianchi",
-   "aula": "aula-2"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 1,
-   "classe": "1C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 1,
-   "classe": "2A",
-   "materia": "Approfondimento",
-   "docente": "luca-romano",
-   "aula": "aula-4"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 1,
-   "classe": "2B",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 1,
-   "classe": "2C",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 1,
-   "classe": "3A",
-   "materia": "Religione",
-   "docente": "teresa-lombardi",
-   "aula": "aula-10"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 1,
-   "classe": "3B",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 1,
-   "classe": "3C",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 2,
-   "classe": "1A",
-   "materia": "Geografia",
-   "docente": "anna-rossi",
-   "aula": "aula-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 2,
-   "classe": "1B",
-   "materia": "Religione",
-   "docente": "teresa-lombardi",
-   "aula": "aula-10"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 2,
-   "classe": "1C",
-   "materia": "Scienze",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 2,
-   "classe": "2A",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 2,
-   "classe": "2B",
-   "materia": "Geografia",
-   "docente": "chiara-colombo",
-   "aula": "aula-5"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 2,
-   "classe": "2C",
-   "materia": "Italiano",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 2,
-   "classe": "3A",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 2,
-   "classe": "3B",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 2,
-   "classe": "3C",
-   "materia": "Inglese",
-   "docente": "martina-gallo",
-   "aula": "aula-lingue-2"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 3,
-   "classe": "1A",
-   "materia": "Geografia",
-   "docente": "anna-rossi",
-   "aula": "aula-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 3,
-   "classe": "1B",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 3,
-   "classe": "1C",
-   "materia": "Geografia",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 3,
-   "classe": "2A",
-   "materia": "Italiano",
-   "docente": "luca-romano",
-   "aula": "aula-4"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 3,
-   "classe": "2B",
-   "materia": "Italiano",
-   "docente": "chiara-colombo",
-   "aula": "aula-5"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 3,
-   "classe": "2C",
-   "materia": "Inglese",
-   "docente": "martina-gallo",
-   "aula": "aula-lingue-2"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 3,
-   "classe": "3A",
-   "materia": "Scienze",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 3,
-   "classe": "3B",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 3,
-   "classe": "3C",
-   "materia": "Scienze",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 4,
-   "classe": "1A",
-   "materia": "Italiano",
-   "docente": "anna-rossi",
-   "aula": "aula-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 4,
-   "classe": "1B",
-   "materia": "Approfondimento",
-   "docente": "marco-bianchi",
-   "aula": "aula-2"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 4,
-   "classe": "1C",
-   "materia": "Approfondimento",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 4,
-   "classe": "2A",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 4,
-   "classe": "2B",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 4,
-   "classe": "2C",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 4,
-   "classe": "3A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 4,
-   "classe": "3B",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 4,
-   "classe": "3C",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 5,
-   "classe": "1A",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 5,
-   "classe": "1B",
-   "materia": "Scienze",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 5,
-   "classe": "1C",
-   "materia": "Italiano",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 5,
-   "classe": "2A",
-   "materia": "Italiano",
-   "docente": "luca-romano",
-   "aula": "aula-4"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 5,
-   "classe": "2B",
-   "materia": "Italiano",
-   "docente": "chiara-colombo",
-   "aula": "aula-5"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 5,
-   "classe": "2C",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 5,
-   "classe": "3A",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 5,
-   "classe": "3B",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 5,
-   "classe": "3C",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 6,
-   "classe": "1A",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 6,
-   "classe": "1B",
-   "materia": "Scienze",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 6,
-   "classe": "1C",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 6,
-   "classe": "2A",
-   "materia": "Scienze",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 6,
-   "classe": "2B",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 6,
-   "classe": "2C",
-   "materia": "Storia",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 6,
-   "classe": "3A",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 6,
-   "classe": "3B",
-   "materia": "Approfondimento",
-   "docente": "stefano-greco",
-   "aula": "aula-8"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 6,
-   "classe": "3C",
-   "materia": "Religione",
-   "docente": "teresa-lombardi",
-   "aula": "aula-10"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 7,
-   "classe": "2C",
-   "materia": "Laboratorio di lettura",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Mercoledì",
-   "ora": 8,
-   "classe": "2C",
-   "materia": "Laboratorio di lettura",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 1,
-   "classe": "1A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 1,
-   "classe": "1B",
-   "materia": "Italiano",
-   "docente": "marco-bianchi",
-   "aula": "aula-2"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 1,
-   "classe": "1C",
-   "materia": "Inglese",
-   "docente": "martina-gallo",
-   "aula": "aula-lingue-2"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 1,
-   "classe": "2A",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 1,
-   "classe": "2B",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 1,
-   "classe": "2C",
-   "materia": "Scienze",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 1,
-   "classe": "3A",
-   "materia": "Geografia",
-   "docente": "elena-marino",
-   "aula": "aula-7"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 1,
-   "classe": "3B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 1,
-   "classe": "3C",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 2,
-   "classe": "1A",
-   "materia": "Storia",
-   "docente": "anna-rossi",
-   "aula": "aula-1"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 2,
-   "classe": "1B",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 2,
-   "classe": "1C",
-   "materia": "Geografia",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 2,
-   "classe": "2A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 2,
-   "classe": "2B",
-   "materia": "Storia",
-   "docente": "chiara-colombo",
-   "aula": "aula-5"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 2,
-   "classe": "2C",
-   "materia": "Scienze",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 2,
-   "classe": "3A",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 2,
-   "classe": "3B",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 2,
-   "classe": "3C",
-   "materia": "Storia",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 3,
-   "classe": "1A",
-   "materia": "Scienze",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 3,
-   "classe": "1B",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 3,
-   "classe": "1C",
-   "materia": "Italiano",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 3,
-   "classe": "2A",
-   "materia": "Storia",
-   "docente": "luca-romano",
-   "aula": "aula-4"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 3,
-   "classe": "2B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 3,
-   "classe": "2C",
-   "materia": "Geografia",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 3,
-   "classe": "3A",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 3,
-   "classe": "3B",
-   "materia": "Italiano",
-   "docente": "stefano-greco",
-   "aula": "aula-8"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 3,
-   "classe": "3C",
-   "materia": "Geografia",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 4,
-   "classe": "1A",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 4,
-   "classe": "1B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 4,
-   "classe": "1C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 4,
-   "classe": "2A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 4,
-   "classe": "2B",
-   "materia": "Geografia",
-   "docente": "chiara-colombo",
-   "aula": "aula-5"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 4,
-   "classe": "2C",
-   "materia": "Storia",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 4,
-   "classe": "3A",
-   "materia": "Storia",
-   "docente": "elena-marino",
-   "aula": "aula-7"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 4,
-   "classe": "3B",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 4,
-   "classe": "3C",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 5,
-   "classe": "1A",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 5,
-   "classe": "1B",
-   "materia": "Storia",
-   "docente": "marco-bianchi",
-   "aula": "aula-2"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 5,
-   "classe": "1C",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 5,
-   "classe": "2A",
-   "materia": "Italiano",
-   "docente": "luca-romano",
-   "aula": "aula-4"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 5,
-   "classe": "2B",
-   "materia": "Approfondimento",
-   "docente": "chiara-colombo",
-   "aula": "aula-5"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 5,
-   "classe": "2C",
-   "materia": "Inglese",
-   "docente": "martina-gallo",
-   "aula": "aula-lingue-2"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 5,
-   "classe": "3A",
-   "materia": "Italiano",
-   "docente": "elena-marino",
-   "aula": "aula-7"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 5,
-   "classe": "3B",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 5,
-   "classe": "3C",
-   "materia": "Italiano",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 6,
-   "classe": "1A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 6,
-   "classe": "1B",
-   "materia": "Geografia",
-   "docente": "marco-bianchi",
-   "aula": "aula-2"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 6,
-   "classe": "1C",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 6,
-   "classe": "2A",
-   "materia": "Geografia",
-   "docente": "luca-romano",
-   "aula": "aula-4"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 6,
-   "classe": "2B",
-   "materia": "Scienze",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 6,
-   "classe": "2C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 6,
-   "classe": "3A",
-   "materia": "Italiano",
-   "docente": "elena-marino",
-   "aula": "aula-7"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 6,
-   "classe": "3B",
-   "materia": "Geografia",
-   "docente": "stefano-greco",
-   "aula": "aula-8"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 6,
-   "classe": "3C",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 7,
-   "classe": "2C",
-   "materia": "Laboratorio di matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Giovedì",
-   "ora": 8,
-   "classe": "2C",
-   "materia": "Laboratorio di matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 1,
-   "classe": "1A",
-   "materia": "Storia",
-   "docente": "anna-rossi",
-   "aula": "aula-1"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 1,
-   "classe": "1B",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 1,
-   "classe": "1C",
-   "materia": "Inglese",
-   "docente": "martina-gallo",
-   "aula": "aula-lingue-2"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 1,
-   "classe": "2A",
-   "materia": "Italiano",
-   "docente": "luca-romano",
-   "aula": "aula-4"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 1,
-   "classe": "2B",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 1,
-   "classe": "2C",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 1,
-   "classe": "3A",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 1,
-   "classe": "3B",
-   "materia": "Italiano",
-   "docente": "stefano-greco",
-   "aula": "aula-8"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 1,
-   "classe": "3C",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 2,
-   "classe": "1A",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 2,
-   "classe": "1B",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 2,
-   "classe": "1C",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 2,
-   "classe": "2A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 2,
-   "classe": "2B",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 2,
-   "classe": "2C",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 2,
-   "classe": "3A",
-   "materia": "Italiano",
-   "docente": "elena-marino",
-   "aula": "aula-7"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 2,
-   "classe": "3B",
-   "materia": "Storia",
-   "docente": "stefano-greco",
-   "aula": "aula-8"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 2,
-   "classe": "3C",
-   "materia": "Inglese",
-   "docente": "martina-gallo",
-   "aula": "aula-lingue-2"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 3,
-   "classe": "1A",
-   "materia": "Italiano",
-   "docente": "anna-rossi",
-   "aula": "aula-1"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 3,
-   "classe": "1B",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 3,
-   "classe": "1C",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 3,
-   "classe": "2A",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 3,
-   "classe": "2B",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 3,
-   "classe": "2C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 3,
-   "classe": "3A",
-   "materia": "Approfondimento",
-   "docente": "elena-marino",
-   "aula": "aula-7"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 3,
-   "classe": "3B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 3,
-   "classe": "3C",
-   "materia": "Italiano",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 4,
-   "classe": "1A",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 4,
-   "classe": "1B",
-   "materia": "Storia",
-   "docente": "marco-bianchi",
-   "aula": "aula-2"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 4,
-   "classe": "1C",
-   "materia": "Italiano",
-   "docente": "giulia-esposito",
-   "aula": "aula-3"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 4,
-   "classe": "2A",
-   "materia": "Religione",
-   "docente": "teresa-lombardi",
-   "aula": "aula-10"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 4,
-   "classe": "2B",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 4,
-   "classe": "2C",
-   "materia": "Italiano",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 4,
-   "classe": "3A",
-   "materia": "Matematica",
-   "docente": "davide-costa",
-   "aula": "lab--scienze-1"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 4,
-   "classe": "3B",
-   "materia": "Matematica",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 4,
-   "classe": "3C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 5,
-   "classe": "1A",
-   "materia": "Francese",
-   "docente": "claire-moreau",
-   "aula": "aula-lingue-3"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 5,
-   "classe": "1B",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 5,
-   "classe": "1C",
-   "materia": "Religione",
-   "docente": "teresa-lombardi",
-   "aula": "aula-10"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 5,
-   "classe": "2A",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 5,
-   "classe": "2B",
-   "materia": "Italiano",
-   "docente": "chiara-colombo",
-   "aula": "aula-5"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 5,
-   "classe": "2C",
-   "materia": "Inglese",
-   "docente": "martina-gallo",
-   "aula": "aula-lingue-2"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 5,
-   "classe": "3A",
-   "materia": "Italiano",
-   "docente": "elena-marino",
-   "aula": "aula-7"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 5,
-   "classe": "3B",
-   "materia": "Scienze",
-   "docente": "silvia-fontana",
-   "aula": "lab--scienze-2"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 5,
-   "classe": "3C",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 6,
-   "classe": "1A",
-   "materia": "Arte e immagine",
-   "docente": "francesca-leone",
-   "aula": "aula-arte"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 6,
-   "classe": "1B",
-   "materia": "Italiano",
-   "docente": "marco-bianchi",
-   "aula": "aula-2"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 6,
-   "classe": "1C",
-   "materia": "Tecnologia",
-   "docente": "roberto-villa",
-   "aula": "lab--tecnologia"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 6,
-   "classe": "2A",
-   "materia": "Inglese",
-   "docente": "sara-ferraro",
-   "aula": "aula-lingue-1"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 6,
-   "classe": "2B",
-   "materia": "Educazione fisica",
-   "docente": "fabio-longo",
-   "aula": "palestra"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 6,
-   "classe": "2C",
-   "materia": "Italiano",
-   "docente": "paolo-ricci",
-   "aula": "aula-6"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 6,
-   "classe": "3A",
-   "materia": "Musica",
-   "docente": "giorgio-mancini",
-   "aula": "aula-musica"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 6,
-   "classe": "3B",
-   "materia": "Religione",
-   "docente": "teresa-lombardi",
-   "aula": "aula-10"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 6,
-   "classe": "3C",
-   "materia": "Matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 7,
-   "classe": "3C",
-   "materia": "Laboratorio di lettura",
-   "docente": "laura-bruno",
-   "aula": "aula-9"
-  },
-  {
-   "giorno": "Venerdì",
-   "ora": 8,
-   "classe": "3C",
-   "materia": "Laboratorio di matematica",
-   "docente": "andrea-conti",
-   "aula": "lab--scienze-3"
+ "docenti": [
+  {
+   "id": "t1vrul1",
+   "nome": "DOC01",
+   "cattedre": [
+    {
+     "cl": "cim5i5",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "ckezq6",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "cuqifq",
+     "di": "d963b0",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "agipu1",
+    "ai910g"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1tg0ft",
+   "nome": "DOC02",
+   "cattedre": [
+    {
+     "cl": "ckezq6",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "cuqifq",
+     "di": "d7z35w",
+     "ore": 3
+    }
+   ],
+   "aule": [
+    "aci2l2",
+    "ak3u00"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t21kj2v",
+   "nome": "DOC03",
+   "cattedre": [
+    {
+     "cl": "cjd9cw",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "ckezq6",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "cjd9cw",
+     "di": "d257bj",
+     "ore": 2
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "d257bj",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "aa7k2r"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1n68kj",
+   "nome": "DOC04",
+   "cattedre": [
+    {
+     "cl": "ch8apf",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "cjd9cw",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "co7zw7",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "crupfk",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "ctp68t",
+     "di": "d7z35w",
+     "ore": 3
+    }
+   ],
+   "aule": [
+    "aci2l2"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1q37rn",
+   "nome": "DOC05",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t13rlph",
+   "nome": "DOC06",
+   "cattedre": [
+    {
+     "cl": "cqbsvv",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "ch8apf",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "clmkp7",
+     "di": "d1q4we",
+     "ore": 6
+    }
+   ],
+   "aule": [
+    "adpl4r"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1fg8gl",
+   "nome": "DOC07",
+   "cattedre": [
+    {
+     "cl": "cghovs",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "cjd9cw",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "ckezq6",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "clmkp7",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "co7zw7",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "ctp68t",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "cuqifq",
+     "di": "dbi611",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "a3szfq",
+    "a4mka1"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "twx8d9",
+   "nome": "DOC08",
+   "cattedre": [
+    {
+     "cl": "cmm8wj",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "cim5i5",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "d257bj",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "d257bj",
+     "ore": 2
+    },
+    {
+     "cl": "cim5i5",
+     "di": "de8afd",
+     "ore": 2
+    },
+    {
+     "cl": "cim5i5",
+     "di": "dfa0qt",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "de8afd",
+     "ore": 1
+    }
+   ],
+   "aule": [
+    "ajsmj1",
+    "a14k4d"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t181s8f",
+   "nome": "DOC09",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1o49gh",
+   "nome": "DOC10",
+   "cattedre": [
+    {
+     "cl": "ch8apf",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "cim5i5",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "crupfk",
+     "di": "dbi611",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "dbi611",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "a3szfq",
+    "a4mka1"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1z7z9s",
+   "nome": "DOC11",
+   "cattedre": [
+    {
+     "cl": "co7zw7",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "ctp68t",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "crupfk",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "crupfk",
+     "di": "d257bj",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "aa7k2r"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1kqsbg",
+   "nome": "DOC12",
+   "cattedre": [
+    {
+     "cl": "cim5i5",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "csgejm",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "ctp68t",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "cim5i5",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "ctp68t",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "cim5i5",
+     "di": "de8afd",
+     "ore": 1
+    },
+    {
+     "cl": "cim5i5",
+     "di": "dfa0qt",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "dfa0qt",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "ae8jox",
+    "al8pmm",
+    "a14k4d"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1btpng",
+   "nome": "DOC13",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1uqgka",
+   "nome": "DOC14",
+   "cattedre": [
+    {
+     "cl": "ch8apf",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "ckezq6",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "crupfk",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "cuqifq",
+     "di": "dcwgvj",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "a2xjvq"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1ywat5",
+   "nome": "DOC15",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1p5egn",
+   "nome": "DOC16",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1l8u7k",
+   "nome": "DOC17",
+   "cattedre": [
+    {
+     "cl": "ckezq6",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "co7zw7",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "cuqifq",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "cjd9cw",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "co7zw7",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "cuqifq",
+     "di": "d6kt80",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "ae8jox"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t19gmvt",
+   "nome": "DOC18",
+   "cattedre": [
+    {
+     "cl": "cim5i5",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "ckezq6",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "cuqifq",
+     "di": "d8xytj",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "aht1e8",
+    "ai910g"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1juhko",
+   "nome": "DOC19",
+   "cattedre": [
+    {
+     "cl": "cim5i5",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "cuqifq",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "cim5i5",
+     "di": "d257bj",
+     "ore": 2
+    },
+    {
+     "cl": "cuqifq",
+     "di": "d257bj",
+     "ore": 2
+    },
+    {
+     "cl": "cim5i5",
+     "di": "dfa0qt",
+     "ore": 1
+    },
+    {
+     "cl": "csgejm",
+     "di": "de8afd",
+     "ore": 1
+    }
+   ],
+   "aule": [
+    "ajsmj1",
+    "a14k4d"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t10c0j6",
+   "nome": "DOC20",
+   "cattedre": [
+    {
+     "cl": "cghovs",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "cim5i5",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "clmkp7",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "d7z35w",
+     "ore": 3
+    },
+    {
+     "cl": "csgejm",
+     "di": "d7z35w",
+     "ore": 3
+    }
+   ],
+   "aule": [
+    "ak3u00"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t159ogf",
+   "nome": "DOC21",
+   "cattedre": [
+    {
+     "cl": "cghovs",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "crupfk",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "cghovs",
+     "di": "d257bj",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "a8oy0u"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1gdpp4",
+   "nome": "DOC22",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1if7r0",
+   "nome": "DOC23",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1hzz67",
+   "nome": "DOC24",
+   "cattedre": [
+    {
+     "cl": "cghovs",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "ch8apf",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "cim5i5",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "cjd9cw",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "ckezq6",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "clmkp7",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "co7zw7",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "crupfk",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "csgejm",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "ctp68t",
+     "di": "ddy9iv",
+     "ore": 1
+    },
+    {
+     "cl": "cuqifq",
+     "di": "ddy9iv",
+     "ore": 1
+    }
+   ],
+   "aule": [
+    "a57y9w"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1d7dkm",
+   "nome": "DOC25",
+   "cattedre": [
+    {
+     "cl": "cghovs",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "ch8apf",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "ckezq6",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "clmkp7",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "crupfk",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "cuqifq",
+     "di": "dab27m",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "a63x6f",
+    "a7yh69"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t11z6xn",
+   "nome": "DOC26",
+   "cattedre": [
+    {
+     "cl": "cghovs",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "crupfk",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "cghovs",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "crupfk",
+     "di": "d6kt80",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "afb2rb"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1w9mv3",
+   "nome": "DOC27",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t14srjp",
+   "nome": "DOC28",
+   "cattedre": [
+    {
+     "cl": "cnpj6b",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "ctp68t",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "ctp68t",
+     "di": "d257bj",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "de8afd",
+     "ore": 1
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "dfa0qt",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "adpl4r",
+    "a14k4d"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "tvv24p",
+   "nome": "DOC29",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1rv2xr",
+   "nome": "DOC30",
+   "cattedre": [
+    {
+     "cl": "ch8apf",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "ch8apf",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "de8afd",
+     "ore": 1
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "dfa0qt",
+     "ore": 1
+    },
+    {
+     "cl": "csgejm",
+     "di": "de8afd",
+     "ore": 1
+    },
+    {
+     "cl": "csgejm",
+     "di": "dfa0qt",
+     "ore": 1
+    }
+   ],
+   "aule": [
+    "afb2rb",
+    "al8pmm",
+    "a14k4d"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "tzr01h",
+   "nome": "DOC31",
+   "cattedre": [
+    {
+     "cl": "cghovs",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "cim5i5",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "cjd9cw",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "clmkp7",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "co7zw7",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "dcwgvj",
+     "ore": 2
+    },
+    {
+     "cl": "ctp68t",
+     "di": "dcwgvj",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "a2xjvq"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t12mp7v",
+   "nome": "DOC32",
+   "cattedre": [
+    {
+     "cl": "ch8apf",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "cghovs",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "ch8apf",
+     "di": "d257bj",
+     "ore": 2
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "d257bj",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "a8oy0u"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "tyymbm",
+   "nome": "DOC33",
+   "cattedre": [
+    {
+     "cl": "cjd9cw",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "ckezq6",
+     "di": "d6kt80",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "a9ch4s",
+    "al8pmm"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1a31ev",
+   "nome": "DOC34",
+   "cattedre": [
+    {
+     "cl": "ckezq6",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "cjd9cw",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "co7zw7",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "ckezq6",
+     "di": "d257bj",
+     "ore": 2
+    },
+    {
+     "cl": "co7zw7",
+     "di": "d257bj",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "abioos"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t16j5av",
+   "nome": "DOC35",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t20cxtv",
+   "nome": "DOC36",
+   "cattedre": [
+    {
+     "cl": "clmkp7",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "d3zien",
+     "ore": 2
+    },
+    {
+     "cl": "cuqifq",
+     "di": "d1q4we",
+     "ore": 6
+    },
+    {
+     "cl": "clmkp7",
+     "di": "d257bj",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "d257bj",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "de8afd",
+     "ore": 1
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "dfa0qt",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "abioos",
+    "a14k4d"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1xh0vg",
+   "nome": "DOC37",
+   "cattedre": [
+    {
+     "cl": "clmkp7",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "d5jm6e",
+     "ore": 4
+    },
+    {
+     "cl": "clmkp7",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "cp8vw0",
+     "di": "d6kt80",
+     "ore": 2
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "d6kt80",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "a9ch4s"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1evl69",
+   "nome": "DOC38",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "txjf81",
+   "nome": "DOC39",
+   "cattedre": [
+    {
+     "cl": "cghovs",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "ch8apf",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "cjd9cw",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "clmkp7",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "co7zw7",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "crupfk",
+     "di": "d8xytj",
+     "ore": 2
+    },
+    {
+     "cl": "ctp68t",
+     "di": "d8xytj",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "aht1e8",
+    "ai910g"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1c9ajg",
+   "nome": "DOC40",
+   "cattedre": [
+    {
+     "cl": "cghovs",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "ch8apf",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "cjd9cw",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "clmkp7",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "cmm8wj",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "co7zw7",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "cqbsvv",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "crupfk",
+     "di": "d963b0",
+     "ore": 2
+    },
+    {
+     "cl": "ctp68t",
+     "di": "d963b0",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "agipu1",
+    "ai910g"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1se076",
+   "nome": "DOC41",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t17v4p2",
+   "nome": "DOC42",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1mrfa5",
+   "nome": "DOC43",
+   "cattedre": [],
+   "aule": [],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
+  },
+  {
+   "id": "t1b66i",
+   "nome": "DOC44",
+   "cattedre": [
+    {
+     "cl": "cim5i5",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "cnpj6b",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "csgejm",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "cjd9cw",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "co7zw7",
+     "di": "dab27m",
+     "ore": 2
+    },
+    {
+     "cl": "ctp68t",
+     "di": "dab27m",
+     "ore": 2
+    }
+   ],
+   "aule": [
+    "a63x6f",
+    "a7yh69"
+   ],
+   "indisp": {},
+   "giornoLibero": "",
+   "maxGiorno": 0,
+   "maxConsec": 0
   }
- ]
+ ],
+ "quadro": {
+  "cghovs": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "ch8apf": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "cim5i5": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0,
+   "de8afd": 3,
+   "dfa0qt": 3
+  },
+  "cjd9cw": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "ckezq6": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "clmkp7": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "cmm8wj": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "cnpj6b": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0,
+   "de8afd": 3,
+   "dfa0qt": 3
+  },
+  "co7zw7": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "cp8vw0": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "cqbsvv": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "crupfk": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "csgejm": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0,
+   "de8afd": 3,
+   "dfa0qt": 3
+  },
+  "ctp68t": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  },
+  "cuqifq": {
+   "d1q4we": 6,
+   "d257bj": 2,
+   "d3zien": 2,
+   "d5jm6e": 4,
+   "d6kt80": 2,
+   "d7z35w": 3,
+   "d8xytj": 2,
+   "d963b0": 2,
+   "dab27m": 2,
+   "dbi611": 2,
+   "dcwgvj": 2,
+   "ddy9iv": 1,
+   "d4dpow": 0
+  }
+ },
+ "orario": {
+  "cghovs": {
+   "Lunedì": [
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t11z6xn",
+     "dis": "d6kt80",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d6kt80",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t159ogf",
+     "dis": "d3zien",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t159ogf",
+     "dis": "d257bj",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t159ogf",
+     "dis": "d3zien",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t159ogf",
+     "dis": "d257bj",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "ch8apf": {
+   "Lunedì": [
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t1rv2xr",
+     "dis": "d5jm6e",
+     "aula": "al8pmm",
+     "lock": false
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d5jm6e",
+     "aula": "al8pmm",
+     "lock": false
+    },
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t1rv2xr",
+     "dis": "d6kt80",
+     "aula": "al8pmm",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d3zien",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d257bj",
+     "aula": "",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d6kt80",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d3zien",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d257bj",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "cim5i5": {
+   "Lunedì": [
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d3zien",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d1q4we",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d1q4we",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d257bj",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    }
+   ],
+   "Mercoledì": [
+    {
+     "doc": "twx8d9",
+     "dis": "d1q4we",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d1q4we",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d6kt80",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d6kt80",
+     "aula": "ae8jox",
+     "lock": false
+    }
+   ],
+   "Giovedì": [
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a4mka1",
+     "lock": false
+    },
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a4mka1",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d1q4we",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "dfa0qt",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "de8afd",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "dfa0qt",
+     "aula": "ajsmj1",
+     "lock": true,
+     "co": [
+      {
+       "doc": "t1juhko",
+       "att": ""
+      }
+     ]
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d1q4we",
+     "aula": "ajsmj1",
+     "lock": true,
+     "co": [
+      {
+       "doc": "t1juhko",
+       "att": ""
+      }
+     ]
+    }
+   ],
+   "Venerdì": [
+    {
+     "doc": "t1juhko",
+     "dis": "dfa0qt",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d3zien",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "de8afd",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "dfa0qt",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "cjd9cw": {
+   "Lunedì": [
+    {
+     "doc": "tyymbm",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "tyymbm",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d6kt80",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d6kt80",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d3zien",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d257bj",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t21kj2v",
+     "dis": "d3zien",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d257bj",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "tyymbm",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "tyymbm",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "ckezq6": {
+   "Lunedì": [
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "tyymbm",
+     "dis": "d6kt80",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "ai910g",
+     "lock": false
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "ai910g",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1tg0ft",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1tg0ft",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d3zien",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d257bj",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "tyymbm",
+     "dis": "d6kt80",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d3zien",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d257bj",
+     "aula": "abioos",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1tg0ft",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "clmkp7": {
+   "Lunedì": [
+    {
+     "doc": "t20cxtv",
+     "dis": "d3zien",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d257bj",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t20cxtv",
+     "dis": "d3zien",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d257bj",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d6kt80",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d6kt80",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "cmm8wj": {
+   "Lunedì": [
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t159ogf",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t159ogf",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a7yh69",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a7yh69",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d3zien",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d257bj",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t159ogf",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t159ogf",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d3zien",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t159ogf",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t159ogf",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t11z6xn",
+     "dis": "d6kt80",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d6kt80",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d257bj",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "cnpj6b": {
+   "Lunedì": [
+    {
+     "doc": "t1rv2xr",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "ai910g",
+     "lock": false
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "dfa0qt",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    }
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d6kt80",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d6kt80",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d3zien",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d257bj",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    }
+   ],
+   "Giovedì": [
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "dfa0qt",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d3zien",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d257bj",
+     "aula": "abioos",
+     "lock": true,
+     "co": [
+      {
+       "doc": "t1rv2xr",
+       "att": ""
+      }
+     ]
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "de8afd",
+     "aula": "abioos",
+     "lock": true,
+     "co": [
+      {
+       "doc": "t1rv2xr",
+       "att": ""
+      }
+     ]
+    }
+   ],
+   "Venerdì": [
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "de8afd",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "dfa0qt",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d3zien",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "co7zw7": {
+   "Lunedì": [
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a7yh69",
+     "lock": false
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a7yh69",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t1a31ev",
+     "dis": "d257bj",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1a31ev",
+     "dis": "d257bj",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d6kt80",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d6kt80",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1z7z9s",
+     "dis": "d3zien",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t1z7z9s",
+     "dis": "d3zien",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "cp8vw0": {
+   "Lunedì": [
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d3zien",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d3zien",
+     "aula": "ajsmj1",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t1tg0ft",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1tg0ft",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "ai910g",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d6kt80",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d6kt80",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t21kj2v",
+     "dis": "d257bj",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t21kj2v",
+     "dis": "d257bj",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "ai910g",
+     "lock": false
+    },
+    {
+     "doc": "t1tg0ft",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "cqbsvv": {
+   "Lunedì": [
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d3zien",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t13rlph",
+     "dis": "d3zien",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d5jm6e",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a4mka1",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a4mka1",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d1q4we",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d6kt80",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    {
+     "doc": "t1xh0vg",
+     "dis": "d6kt80",
+     "aula": "a9ch4s",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "ai910g",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d257bj",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    {
+     "doc": "t12mp7v",
+     "dis": "d257bj",
+     "aula": "a8oy0u",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "ai910g",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "crupfk": {
+   "Lunedì": [
+    {
+     "doc": "t159ogf",
+     "dis": "d3zien",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t159ogf",
+     "dis": "d3zien",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t1z7z9s",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t1z7z9s",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a4mka1",
+     "lock": false
+    },
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d5jm6e",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1z7z9s",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1z7z9s",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t1z7z9s",
+     "dis": "d1q4we",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t1z7z9s",
+     "dis": "d1q4we",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1z7z9s",
+     "dis": "d257bj",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t1z7z9s",
+     "dis": "d257bj",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d6kt80",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    {
+     "doc": "t11z6xn",
+     "dis": "d6kt80",
+     "aula": "afb2rb",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "csgejm": {
+   "Lunedì": [
+    {
+     "doc": "twx8d9",
+     "dis": "d3zien",
+     "aula": "ajsmj1",
+     "lock": false,
+     "_g": "Lunedì",
+     "_s": 0
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d257bj",
+     "aula": "ajsmj1",
+     "lock": false,
+     "_g": "Lunedì",
+     "_s": 1
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false,
+     "_g": "Lunedì",
+     "_s": 2
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false,
+     "_g": "Lunedì",
+     "_s": 3
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false,
+     "_g": "Lunedì",
+     "_s": 4
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false,
+     "_g": "Lunedì",
+     "_s": 5
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "a14k4d",
+     "lock": false,
+     "_g": "Martedì",
+     "_s": 0
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "a14k4d",
+     "lock": false,
+     "_g": "Martedì",
+     "_s": 1
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d1q4we",
+     "aula": "a14k4d",
+     "lock": false,
+     "_g": "Martedì",
+     "_s": 2
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d1q4we",
+     "aula": "a14k4d",
+     "lock": false,
+     "_g": "Martedì",
+     "_s": 3
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false,
+     "_g": "Martedì",
+     "_s": 4
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d6kt80",
+     "aula": "afb2rb",
+     "lock": false,
+     "_g": "Martedì",
+     "_s": 5
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false,
+     "_g": "Martedì",
+     "_s": 6
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "de8afd",
+     "aula": "ajsmj1",
+     "lock": false,
+     "_g": "Martedì",
+     "_s": 7
+    }
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t1juhko",
+     "dis": "d1q4we",
+     "aula": "a14k4d",
+     "lock": false,
+     "_g": "Mercoledì",
+     "_s": 0
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d1q4we",
+     "aula": "a14k4d",
+     "lock": false,
+     "_g": "Mercoledì",
+     "_s": 1
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d3zien",
+     "aula": "ajsmj1",
+     "lock": false,
+     "_g": "Mercoledì",
+     "_s": 2
+    },
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a4mka1",
+     "lock": false,
+     "_g": "Mercoledì",
+     "_s": 3
+    },
+    {
+     "doc": "t1o49gh",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false,
+     "_g": "Mercoledì",
+     "_s": 4
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false,
+     "_g": "Mercoledì",
+     "_s": 5
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false,
+     "_g": "Mercoledì",
+     "_s": 6
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false,
+     "_g": "Mercoledì",
+     "_s": 7
+    }
+   ],
+   "Giovedì": [
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false,
+     "_g": "Giovedì",
+     "_s": 0
+    },
+    {
+     "doc": "t10c0j6",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false,
+     "_g": "Giovedì",
+     "_s": 1
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false,
+     "_g": "Giovedì",
+     "_s": 2
+    },
+    {
+     "doc": "twx8d9",
+     "dis": "d257bj",
+     "aula": "ajsmj1",
+     "lock": false,
+     "_g": "Giovedì",
+     "_s": 3
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "d6kt80",
+     "aula": "afb2rb",
+     "lock": false,
+     "_g": "Giovedì",
+     "_s": 4
+    },
+    {
+     "doc": "t1rv2xr",
+     "dis": "de8afd",
+     "aula": "afb2rb",
+     "lock": false,
+     "_g": "Giovedì",
+     "_s": 5
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "dfa0qt",
+     "aula": "ae8jox",
+     "lock": false,
+     "_g": "Giovedì",
+     "_s": 6
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false,
+     "_g": "Giovedì",
+     "_s": 7
+    }
+   ],
+   "Venerdì": [
+    {
+     "doc": "t1rv2xr",
+     "dis": "dfa0qt",
+     "aula": "al8pmm",
+     "lock": false,
+     "_g": "Venerdì",
+     "_s": 0
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "dfa0qt",
+     "aula": "ae8jox",
+     "lock": false,
+     "_g": "Venerdì",
+     "_s": 1
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "al8pmm",
+     "lock": false,
+     "_g": "Venerdì",
+     "_s": 2
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "ai910g",
+     "lock": false,
+     "_g": "Venerdì",
+     "_s": 3
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d1q4we",
+     "aula": "ajsmj1",
+     "lock": false,
+     "_g": "Venerdì",
+     "_s": 4
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d1q4we",
+     "aula": "a14k4d",
+     "lock": false,
+     "_g": "Venerdì",
+     "_s": 5
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "ctp68t": {
+   "Lunedì": [
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "aci2l2",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "al8pmm",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "al8pmm",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1n68kj",
+     "dis": "d7z35w",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "tzr01h",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "ai910g",
+     "lock": false
+    },
+    {
+     "doc": "t1c9ajg",
+     "dis": "d963b0",
+     "aula": "ai910g",
+     "lock": false
+    },
+    {
+     "doc": "txjf81",
+     "dis": "d8xytj",
+     "aula": "ai910g",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d1q4we",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t1z7z9s",
+     "dis": "d3zien",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1z7z9s",
+     "dis": "d3zien",
+     "aula": "aa7k2r",
+     "lock": false
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a7yh69",
+     "lock": false
+    },
+    {
+     "doc": "t1b66i",
+     "dis": "dab27m",
+     "aula": "a7yh69",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d257bj",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t14srjp",
+     "dis": "d257bj",
+     "aula": "adpl4r",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d6kt80",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1kqsbg",
+     "dis": "d6kt80",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "cuqifq": {
+   "Lunedì": [
+    {
+     "doc": "t1juhko",
+     "dis": "d3zien",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d257bj",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    {
+     "doc": "t1uqgka",
+     "dis": "dcwgvj",
+     "aula": "a2xjvq",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Martedì": [
+    {
+     "doc": "t20cxtv",
+     "dis": "d1q4we",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d1q4we",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t1tg0ft",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "ai910g",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Mercoledì": [
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t1vrul1",
+     "dis": "d963b0",
+     "aula": "agipu1",
+     "lock": false
+    },
+    {
+     "doc": "t19gmvt",
+     "dis": "d8xytj",
+     "aula": "aht1e8",
+     "lock": false
+    },
+    {
+     "doc": "t1hzz67",
+     "dis": "ddy9iv",
+     "aula": "a57y9w",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    {
+     "doc": "t1d7dkm",
+     "dis": "dab27m",
+     "aula": "a63x6f",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Giovedì": [
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d5jm6e",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d3zien",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t1juhko",
+     "dis": "d257bj",
+     "aula": "a14k4d",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    {
+     "doc": "t1fg8gl",
+     "dis": "dbi611",
+     "aula": "a3szfq",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Venerdì": [
+    {
+     "doc": "t1l8u7k",
+     "dis": "d6kt80",
+     "aula": "ae8jox",
+     "lock": false
+    },
+    {
+     "doc": "t1l8u7k",
+     "dis": "d6kt80",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t1tg0ft",
+     "dis": "d7z35w",
+     "aula": "ak3u00",
+     "lock": false
+    },
+    {
+     "doc": "t1tg0ft",
+     "dis": "d7z35w",
+     "aula": "",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    {
+     "doc": "t20cxtv",
+     "dis": "d1q4we",
+     "aula": "abioos",
+     "lock": false
+    },
+    null,
+    null
+   ],
+   "Sabato": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ },
+ "vincoli": {
+  "maxConsec": 3,
+  "maxConsecDoc": 4,
+  "maxOreGiorno": 5,
+  "maxOreDiscGiorno": 2,
+  "rispettaIndisp": true,
+  "giornoLibero": true,
+  "pesoBuchi": 6,
+  "pesoMattino": 5,
+  "pesoUnaOra": 4,
+  "pesoDistribuzione": 5,
+  "pesoBlocchi": 8,
+  "pesoAulaStabile": 5,
+  "pesoUltimaOra": 3,
+  "pesoCarico": 3
+ },
+ "ui": {
+  "tab": "orario",
+  "vista": "classe",
+  "soggetto": "cghovs"
+ },
+ "pubblicato": "2026-09-25"
 }
