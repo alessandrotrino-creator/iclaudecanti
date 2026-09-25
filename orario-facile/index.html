@@ -369,6 +369,7 @@ td input[type=number]{width:64px}
     <div class="card no-print">
       <div class="toolbar">
         <button class="btn" id="btnGenera">Genera orario</button>
+        <button class="btn" id="btnOttimizza" title="Migliora l'orario attuale (anche importato) spostando poche ore: meno buchi e giornate di un'ora, stessi vincoli">✨ Ottimizza</button>
         <button class="btn ghost sm danger" id="btnFerma" hidden title="Ferma il calcolo e tieni il miglior orario trovato finora">Interrompi</button>
         <button class="btn ghost sm" id="btnFattibilita" title="Verifica se con i dati e i vincoli attuali un orario senza criticità è possibile">Controlla fattibilità</button>
         <label class="fl" style="flex-direction:row;align-items:center;gap:6px">Qualità
@@ -380,6 +381,8 @@ td input[type=number]{width:64px}
         </label>
         <label class="row" style="gap:6px"><input type="checkbox" id="chkLock" checked> Mantieni le caselle bloccate</label>
         <button class="btn ghost sm" id="btnSvuotaOrario">Svuota orario</button>
+        <button class="btn ghost sm" id="btnImportOrario" title="Carica un orario già compilato da un file Excel (una riga per docente, una colonna per ogni ora)">Importa orario compilato</button>
+        <input type="file" id="fileOrarioComp" accept=".xlsx,.xlsm" hidden>
         <span id="genState" class="hint"></span>
       </div>
       <div class="stats" id="statsOrario"></div>
@@ -1274,6 +1277,18 @@ function rifinisci(I, best, rnd){
   const r = tentativo(I, rnd, Object.assign({ da: best.pos }, OPZ_RIFINITURA));
   return r.costo <= best.costo ? r : best;
 }
+// «Ottimizza»: parte dall'orario attuale (ricollocando, se c'è posto, le ore mancanti) e lo rifinisce più volte;
+// ogni giro tiene il risultato solo se non peggiora
+function ottimizzaGiri(I, da, giri, rnd, onGiro){
+  let best = tentativo(I, rnd, { da });
+  onGiro(0, best);
+  for(let n=1; n<=giri; n++){
+    const r = tentativo(I, rnd, Object.assign({ da: best.pos }, OPZ_RIFINITURA));
+    if(r.costo <= best.costo) best = r;
+    onGiro(n, best);
+  }
+  return best;
+}
 
 /* ---- ciclo con riavvii ----
    Di norma gira in un Web Worker (un calcolo parallelo alla pagina, che resta usabile e si può interrompere).
@@ -1310,12 +1325,14 @@ ${oreDocente.toString()}
 ${tentativo.toString()}
 const OPZ_TENTATIVO = ${JSON.stringify(OPZ_TENTATIVO)}, OPZ_RIFINITURA = ${JSON.stringify(OPZ_RIFINITURA)};
 ${rifinisci.toString()}
+${ottimizzaGiri.toString()}
 onmessage = e => {
   const m = e.data, I = m.I;
   S.oreM = m.oreM;
   I.kk = (gi, s) => gi * I.T + s;
   let seed = m.seed;
   const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+  if(m.da){ ottimizzaGiri(I, m.da, m.giri, rnd, (n, best) => postMessage({ tipo:'progresso', n, best })); postMessage({ tipo:'fine' }); return; }
   const lotto = Math.max(1, Math.round(m.tentativi / 12)), t0 = performance.now();
   let best = null, n = 0;
   for(;;){
@@ -1356,6 +1373,74 @@ function generaNellaPagina(I, tentativi, budget, seed0, onProgress, onDone){
   }
   setTimeout(step, 0);
   return { modo:'pagina', ferma(){ fine(best, true); } };
+}
+
+/* ---- «Ottimizza»: traduce l'orario attuale nel formato del generatore ----
+   ogni lezione non bloccata va alla sua cattedra (due ore consecutive formano un blocco);
+   le lezioni che non corrispondono a nessuna cattedra, o in compresenza, restano ferme dove sono */
+function istanzaDaOrario(){
+  const I = costruisciIstanza(true), T = I.T;
+  const perChiave = {}, celle = {}, ferme = [];
+  I.units.forEach((u, ui) => (perChiave[u.clId + '|' + u.tId + '|' + u.d] = perChiave[u.clId + '|' + u.tId + '|' + u.d] || []).push(ui));
+  S.classi.forEach(c => I.G.forEach((g, gi) => { for(let s=0;s<T;s++){
+    const v = cella(c.id, g, s);
+    if(!v || v.lock) continue;
+    const k = c.id + '|' + v.doc + '|' + v.dis;
+    if(perChiave[k] && !compresenti(v).length) (celle[k] = celle[k] || []).push({ gi, s, a: I.ai[v.aula] === undefined ? -1 : I.ai[v.aula], c, g, v });
+    else ferme.push({ c, g, s, gi, v });
+  }}));
+  const da = I.units.map(() => []), usate = I.units.map(() => 0);
+  Object.keys(celle).forEach(k => {
+    const libere = celle[k], uis = perChiave[k];
+    // prima le coppie di ore consecutive, per le cattedre a blocchi di 2
+    uis.filter(ui => I.units[ui].size === 2).forEach(ui => {
+      const i = libere.findIndex((x, j) => j + 1 < libere.length && libere[j+1].gi === x.gi && libere[j+1].s === x.s + 1 && isPom(x.s) === isPom(x.s + 1));
+      if(i < 0) return;
+      // un'aula per il blocco solo se è la stessa nelle due ore (altrimenti la sceglie il generatore)
+      da[ui].push({ gi:libere[i].gi, s0:libere[i].s, a: libere[i].a === libere[i+1].a ? libere[i].a : -1, size:2 }); usate[ui] = 2;
+      libere.splice(i, 2);
+    });
+    // poi le ore singole, dove resta posto
+    libere.forEach(x => {
+      const ui = uis.find(ui => usate[ui] < I.units[ui].size);
+      if(ui === undefined){ ferme.push({ c:x.c, g:x.g, s:x.s, gi:x.gi, v:x.v }); return; }
+      da[ui].push({ gi:x.gi, s0:x.s, a:x.a, size:1 }); usate[ui]++;
+    });
+  });
+  const mancanti = I.units.reduce((n, u, ui) => n + u.size - usate[ui], 0);   // ore delle cattedre assenti dall'orario
+  ferme.forEach(f => I.fissi.push({ c:I.ci[f.c.id], gi:f.gi, s:f.s, doc:f.v.doc, dis:f.v.dis, aula:f.v.aula||'', co:compresenti(f.v).map(x => x.doc) }));
+  return { I, da, ferme, mancanti };
+}
+// come generaAsync, ma per ottimizzare: giri di rifinitura a partire da «da». onDone(best, interrotta)
+function ottimizzaAsync(I, da, giri, onProgress, onDone){
+  const seed = (Date.now() % 100000) + 11;
+  let best = null, finito = false, w = null;
+  const chiudi = interrotta => { if(finito) return; finito = true; if(w) w.terminate(); onDone(best, interrotta); };
+  const nellaPagina = () => {
+    let s = seed, n = -1;
+    const rnd = () => { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; };
+    const step = () => {
+      if(finito) return;
+      if(n < 0) best = tentativo(I, rnd, { da });
+      else { const r = tentativo(I, rnd, Object.assign({ da: best.pos }, OPZ_RIFINITURA)); if(r.costo <= best.costo) best = r; }
+      n++; onProgress(n, giri, best);
+      if(n >= giri) chiudi(false); else setTimeout(step, 0);
+    };
+    setTimeout(step, 0);
+    return { ferma(){ chiudi(true); } };
+  };
+  try{ w = new Worker(URL.createObjectURL(new Blob([sorgenteWorker()], { type:'text/javascript' }))); }catch(e){ w = null; }
+  if(!w) return nellaPagina();
+  let ripiego = null;
+  w.onmessage = e => {
+    const m = e.data;
+    if(m.tipo === 'progresso'){ best = m.best; onProgress(m.n, giri, best); }
+    else if(m.tipo === 'fine') chiudi(false);
+  };
+  w.onerror = ev => { if(ev.preventDefault) ev.preventDefault(); if(finito) return; w.terminate(); w = null; ripiego = nellaPagina(); };
+  const dati = Object.assign({}, I); delete dati.kk;
+  w.postMessage({ I:dati, da, giri, seed, oreM:S.oreM });
+  return { ferma(){ if(ripiego) ripiego.ferma(); else chiudi(true); } };
 }
 
 /* ---- scrittura del risultato nello stato ---- */
@@ -2645,6 +2730,248 @@ async function importaFogli(files){
     }));
 }
 
+/* ---------------- import di un orario già compilato ----------------
+   foglio con una riga per docente (colonna «Docente», di solito il cognome) e, per ogni giorno, una colonna
+   per ora: sopra «LUNEDÌ», «MARTEDÌ»…, sotto «1 2 3 4 5 6 M 7 8». In ogni casella la classe (1A, 2B…).
+   Le ore dopo la colonna «M» (mensa) sono pomeridiane. La materia non c'è: si ricava dalle cattedre */
+function leggiOrarioCompilato(righe){
+  const txt = (r, j) => String((r||[])[j] == null ? '' : r[j]).trim();
+  for(let h=0; h<righe.length-2; h++){
+    const int = (righe[h]||[]).map(norma);
+    const cD = int.indexOf('docente'); if(cD < 0) continue;
+    const giorni = [];
+    int.forEach((x, j) => {
+      const g = j > cD && /^(lun|mar|mer|gio|ven|sab)/.test(x) && GIORNI_ALL.find(gg => norma(gg).slice(0,3) === x.slice(0,3));
+      if(g) giorni.push({ j, g });
+    });
+    if(giorni.length < 2) continue;
+    const sotto = righe[h+1] || [], colonne = [];
+    giorni.forEach((G, n) => {
+      const fine = n + 1 < giorni.length ? giorni[n+1].j : G.j + 12;
+      let pom = false, kp = 0;
+      for(let j=G.j; j<fine; j++){
+        const l = norma(txt(sotto, j)), m = l.match(/^(\d+)(\s*o\s*m)?$/);
+        if(l === 'm'){ pom = true; colonne.push({ j, g:G.g, s:-1, et:'M' }); }
+        else if(m) colonne.push({ j, g:G.g, s: pom ? S.oreM + (kp++) : +m[1] - 1, et:txt(sotto, j) });
+        else if(j > G.j) break;
+      }
+    });
+    if(!colonne.length) continue;
+    const cM = int.findIndex(x => x === 'materia' || x === 'disciplina');
+    const docenti = [], scarti = [];
+    let vuote = 0;
+    for(let i=h+2; i<righe.length; i++){
+      const r = righe[i] || [], nome = txt(r, cD);
+      if(!nome){ if(docenti.length && ++vuote >= 2) break; continue; }
+      vuote = 0;
+      if(norma(nome) === 'docente' || norma(nome).startsWith('classe')) break;   // tabella successiva
+      const celle = [];
+      colonne.forEach(col => {
+        const val = txt(r, col.j); if(!val) return;
+        const dove = `${nome}, ${col.g} ora «${col.et}»`;
+        const c = perNome(S.classi, nomeClasse(val)), gi = S.giorni.indexOf(col.g);
+        if(!c) scarti.push(`${dove}: «${val}» non è una classe del programma`);
+        else if(col.s < 0) scarti.push(`${dove}: ${c.nome} nella colonna della mensa`);
+        else if(gi < 0) scarti.push(`${dove}: ${col.g} non è tra i giorni di scuola impostati`);
+        else if(col.s >= totSlot() || !attivo(c, col.g, col.s)) scarti.push(`${dove}: la classe ${c.nome} non ha lezione in quell'ora (vedi Impostazioni)`);
+        else celle.push({ c, g:col.g, gi, s:col.s });
+      });
+      const materia = cM >= 0 ? txt(r, cM) : '';
+      if(celle.length) docenti.push({ nome, materia: /^\d*$/.test(materia) ? '' : materia, celle });
+    }
+    return docenti.length ? { docenti, scarti } : null;
+  }
+  return null;
+}
+// il nome del foglio (cognome, eventualmente con l'iniziale del nome: «GIORDA A») può essere il docente t?
+// 3 nome identico · 2 cognome contenuto nel nome completo · 1 iniziali compatibili («Ma. Bu.» ↔ BUNINO) · 0 no
+function compatibile(t, nomeFoglio){
+  if(norma(t.nome) === norma(nomeFoglio)) return 3;
+  const f = norma(nomeFoglio).replace(/[^a-z ]/g, '').split(' ').filter(Boolean);
+  const cogn = f.find(x => x.length > 1), iniz = f.find(x => x.length === 1);
+  if(!cogn) return 0;
+  const parti = norma(t.nome).replace(/[^a-z. ]/g, '').split(' ').filter(Boolean);
+  if(parti.length && parti.every(p => /^[a-z]{1,2}\.$/.test(p))){
+    const ic = parti[parti.length-1].replace('.', ''), in0 = parti[0].replace('.', '');
+    return cogn.startsWith(ic) && (!iniz || in0.startsWith(iniz)) ? 1 : 0;
+  }
+  return parti.some(p => p.replace('.', '') === cogn) ? 2 : 0;
+}
+const oreDelFoglio = r => { const o = {}; r.celle.forEach(x => o[x.c.id] = (o[x.c.id]||0) + 1); return o; };
+const oreCattedre = t => { const o = {}; t.cattedre.forEach(k => o[k.cl] = (o[k.cl]||0) + k.ore); return o; };
+// differenze tra le ore del foglio e le cattedre del docente, classe per classe
+function differenzeOre(r, t){
+  const a = oreDelFoglio(r), b = oreCattedre(t);
+  return [...new Set(Object.keys(a).concat(Object.keys(b)))].filter(cl => cls(cl) && (a[cl]||0) !== (b[cl]||0))
+    .map(cl => `${cls(cl).nome} ${a[cl]||0} invece di ${b[cl]||0}`);
+}
+// abbina ogni riga del foglio a un docente del programma: nomi compatibili e ore per classe più simili
+function abbinaDocenti(O){
+  const coppie = [];
+  O.docenti.forEach((r, i) => {
+    const a = oreDelFoglio(r);
+    S.docenti.forEach(t => {
+      const comp = compatibile(t, r.nome); if(!comp) return;
+      const b = oreCattedre(t);
+      let comuni = 0, diff = 0;
+      new Set(Object.keys(a).concat(Object.keys(b))).forEach(cl => { comuni += Math.min(a[cl]||0, b[cl]||0); diff += Math.abs((a[cl]||0) - (b[cl]||0)); });
+      coppie.push({ i, t, p: comp * 100 + comuni * 3 - diff });
+    });
+  });
+  const scelta = O.docenti.map(() => null), preso = new Set();
+  coppie.sort((x, y) => y.p - x.p).forEach(c => { if(scelta[c.i] === null && !preso.has(c.t.id)){ scelta[c.i] = c.t; preso.add(c.t.id); } });
+  return scelta;
+}
+// materia di ogni ora: si distribuiscono le ore della classe tra le cattedre del docente in quella classe,
+// a blocchi di 2 per le materie che li prevedono e, se si può, una materia diversa per giorno.
+// Le ore oltre le cattedre (fuori: true) prendono la materia del docente in quella classe o la sua prevalente.
+// Se il docente in quella classe non ha cattedre, le ore vanno alle materie ancora senza docente (scoperte[cl][di])
+// e la cattedra si aggiunge al docente (elencata in nuove)
+function assegnaMaterie(t, celle, diFisso, scoperte, nuove){
+  const out = [], perCl = {};
+  celle.forEach(x => (perCl[x.c.id] = perCl[x.c.id] || []).push(x));
+  const tot = {}; t.cattedre.forEach(k => tot[k.di] = (tot[k.di]||0) + k.ore);
+  const prevalente = Object.keys(tot).sort((a, b) => tot[b] - tot[a])[0] || null;
+  Object.keys(perCl).forEach(cid => {
+    const lista = perCl[cid].sort((a, b) => a.gi - b.gi || a.s - b.s);
+    if(diFisso){ lista.forEach(x => out.push({ x, di:diFisso, fuori:false })); return; }
+    const resto = {}; t.cattedre.forEach(k => { if(k.cl === cid) resto[k.di] = (resto[k.di]||0) + k.ore; });
+    const daScoperte = !Object.keys(resto).length && scoperte && scoperte[cid];
+    // solo materie che il docente insegna già altrove (o qualunque, se non ha ancora cattedre)
+    if(daScoperte) Object.keys(scoperte[cid]).forEach(d => { if(scoperte[cid][d] > 0 && (!Object.keys(tot).length || tot[d])) resto[d] = scoperte[cid][d]; });
+    const inizio = Object.assign({}, resto);
+    const riserva = Object.keys(resto).sort((a, b) => resto[b] - resto[a])[0] || prevalente;
+    const gruppi = [];
+    lista.forEach(x => {
+      const g = gruppi[gruppi.length-1], y = g && g[g.length-1];
+      if(y && y.gi === x.gi && y.s + 1 === x.s && isPom(y.s) === isPom(x.s)) g.push(x); else gruppi.push([x]);
+    });
+    const oggi = {};
+    gruppi.forEach(gr => {
+      for(let i=0; i<gr.length; ){
+        const gi = gr[i].gi, liberi = Object.keys(resto).filter(d => resto[d] > 0);
+        const blocco = gr.length - i >= 2 && liberi.find(d => disc(d) && disc(d).blocchi2 && resto[d] >= 2 && !oggi[gi + '|' + d]);
+        const d = blocco || liberi.sort((a, b) => (!!oggi[gi + '|' + a] - !!oggi[gi + '|' + b]) || resto[b] - resto[a])[0];
+        if(!d){ gr.slice(i).forEach(x => out.push({ x, di:riserva, fuori:true })); break; }
+        const n = blocco ? 2 : 1;
+        for(let j=0; j<n; j++) out.push({ x:gr[i+j], di:d, fuori:false });
+        resto[d] -= n; oggi[gi + '|' + d] = true; i += n;
+      }
+    });
+    if(daScoperte) Object.keys(inizio).forEach(d => {
+      const n = inizio[d] - resto[d]; if(n <= 0) return;
+      t.cattedre.push({ cl:cid, di:d, ore:n }); scoperte[cid][d] -= n;
+      if(nuove) nuove.push(`${t.nome}: ${cls(cid).nome} ${disc(d).nome} ${n} ore`);
+    });
+  });
+  return out;
+}
+// scrive l'orario: scelte[i] = docente del programma, { nuovo:true, di } oppure null (riga non importata)
+function applicaOrarioCompilato(O, scelte, blocca){
+  const T = totSlot(), esito = { messe:0, compresenze:0, fuori:0, senzaMateria:[], nuove:[], senzaAula:0 };
+  S.classi.forEach(c => { S.orario[c.id] = {}; S.giorni.forEach(g => S.orario[c.id][g] = new Array(T).fill(null)); });
+  // ore del quadro orario che nessun docente copre ancora, classe per classe
+  const scoperte = {};
+  S.classi.forEach(c => { scoperte[c.id] = Object.assign({}, S.quadro[c.id] || {}); });
+  S.docenti.forEach(t => t.cattedre.forEach(k => { if(scoperte[k.cl]) scoperte[k.cl][k.di] = (scoperte[k.cl][k.di]||0) - k.ore; }));
+  O.docenti.forEach((r, i) => {
+    const sc = scelte[i]; if(!sc) return;
+    let t = sc, diFisso = null;
+    if(sc.nuovo){
+      // docente che nel programma non c'era: cattedre ricavate dalle ore del foglio
+      t = nuovoDocente(r.nome.charAt(0).toUpperCase() + r.nome.slice(1).toLowerCase());
+      const o = oreDelFoglio(r);
+      t.cattedre = Object.keys(o).map(cl => ({ cl, di:sc.di, ore:o[cl] }));
+      S.docenti.push(t); diFisso = sc.di;
+    }
+    else if(r.materia && perNome(S.discipline, r.materia)) diFisso = perNome(S.discipline, r.materia).id;
+    assegnaMaterie(t, r.celle, diFisso, scoperte, esito.nuove).forEach(({ x, di, fuori }) => {
+      if(!di){ esito.senzaMateria.push(`${r.nome} ${x.c.nome} ${x.g} ${slotLabel(x.s)}`); return; }
+      const v = cella(x.c.id, x.g, x.s);
+      if(v){   // due docenti nella stessa classe alla stessa ora: compresenza, bloccata come quelle fatte a mano
+        if(v.doc !== t.id && !compresenti(v).some(y => y.doc === t.id)){ v.co = compresenti(v).concat({ doc:t.id, att:'' }); v.lock = true; esito.compresenze++; }
+        return;
+      }
+      setCella(x.c.id, x.g, x.s, { doc:t.id, dis:di, aula:'', lock:!!blocca });
+      esito.messe++; if(fuori) esito.fuori++;
+    });
+  });
+  // aule: la prima libera tra quelle del docente; se sono tutte occupate la lezione resta senza aula (niente conflitti)
+  S.classi.forEach(c => S.giorni.forEach(g => { for(let s=0; s<T; s++){
+    const v = cella(c.id, g, s); if(!v) continue;
+    const a = aulaPerCella(v.doc, g, s, c.id);
+    const occupata = a && !aula(a).contemporanea && S.classi.some(c2 => c2.id !== c.id && (cella(c2.id, g, s)||{}).aula === a);
+    v.aula = occupata ? '' : a;
+    if(occupata) esito.senzaAula++;
+  } }));
+  POOL = []; POOL_SEL = null;
+  normalizza(); save(true);
+  return esito;
+}
+async function importaOrarioCompilato(f){
+  let O = null, foglio = '';
+  try{
+    for(const sh of await leggiXLSX(await f.arrayBuffer())){
+      const x = leggiOrarioCompilato(sh.righe);
+      // se più fogli sono nel formato giusto si prende quello con più ore
+      const n = x ? x.docenti.reduce((s, r) => s + r.celle.length, 0) : 0;
+      if(n && (!O || n > O.n)){ O = Object.assign(x, { n }); foglio = sh.nome; }
+    }
+  }catch(err){ avvisa(`Non riesco a leggere ${f.name}: salvalo come .xlsx o .xlsm e riprova.`); return; }
+  if(!O){ avvisa('Nel file non trovo un orario compilato: serve una riga di intestazione con «Docente» e i giorni (LUNEDÌ, MARTEDÌ…) e sotto i numeri delle ore.'); return; }
+  const scelta = abbinaDocenti(O);
+  const elencoOre = r => { const o = oreDelFoglio(r); return S.classi.filter(c => o[c.id]).map(c => c.nome + ' ' + o[c.id]).join(' · '); };
+  const opzDoc = S.docenti.map(t => `<option value="${t.id}">${esc(t.nome)}</option>`).join('');
+  const opzDisc = S.discipline.map(d => `<option value="${d.id}">${esc(d.nome)}</option>`).join('');
+  const stato = (r, v) => {
+    if(!v) return '<span class="mini">non importato</span>';
+    if(v === '+') return '<span class="mini">nuovo docente con la materia scelta</span>';
+    const d = differenzeOre(r, doc(v));
+    return d.length ? `<span class="mini" style="color:var(--warn,#b7791f)">⚠ ore diverse dalle cattedre: ${esc(d.join(', '))}</span>` : '<span class="mini">✓ ore uguali alle cattedre</span>';
+  };
+  const righe = O.docenti.map((r, i) => `<tr>
+      <td><b>${esc(r.nome)}</b><div class="mini">${esc(elencoOre(r))}</div></td>
+      <td><select data-oc="${i}"><option value="">— non importare —</option><option value="+">+ nuovo docente</option>${opzDoc}</select>
+        <select data-ocd="${i}" hidden>${opzDisc}</select></td>
+      <td data-ocs="${i}"></td></tr>`).join('');
+  const scarti = O.scarti.length ? `<div class="msg warn" style="margin-top:10px"><b>${O.scarti.length} caselle non importabili</b><br>${O.scarti.slice(0,20).map(esc).join('<br>')}${O.scarti.length>20?`<br>…e altre ${O.scarti.length-20}`:''}</div>` : '';
+  apriModal(`<h3>Importa orario compilato</h3>
+    <p class="mini">${esc(f.name)} · foglio «${esc(foglio)}» · ${O.docenti.length} docenti · ${O.n} ore</p>
+    <p>Controlla a quale docente del programma corrisponde ogni nome del foglio (proposta automatica: iniziali compatibili e ore per classe più simili).
+      La materia di ogni ora si ricava dalle cattedre del docente in quella classe.</p>
+    <div style="max-height:46vh;overflow:auto"><table><thead><tr><th>Nel foglio</th><th>Docente del programma</th><th>Controllo</th></tr></thead><tbody>${righe}</tbody></table></div>
+    ${scarti}
+    <label class="row" style="gap:6px;margin-top:10px"><input type="checkbox" id="ocBlocca"> Blocca le ore importate (Ottimizza non le sposterà)</label>
+    <div id="ocErr" style="margin-top:8px"></div>
+    <p class="hint">L'orario attuale viene sostituito, comprese le caselle bloccate. Dopo l'import puoi premere «✨ Ottimizza» per migliorarlo.</p>
+    <div class="foot"><button class="btn ghost" data-close="1">Annulla</button><button class="btn" id="ocGo">Importa</button></div>`,
+    box => {
+      const agg = i => {
+        const v = $(`[data-oc="${i}"]`, box).value;
+        $(`[data-ocd="${i}"]`, box).hidden = v !== '+';
+        $(`[data-ocs="${i}"]`, box).innerHTML = stato(O.docenti[i], v);
+      };
+      O.docenti.forEach((r, i) => { $(`[data-oc="${i}"]`, box).value = scelta[i] ? scelta[i].id : ''; agg(i); });
+      box.addEventListener('change', e => { const i = e.target.dataset.oc; if(i !== undefined) agg(+i); });
+      $('#ocGo', box).addEventListener('click', () => {
+        const sc = O.docenti.map((r, i) => {
+          const v = $(`[data-oc="${i}"]`, box).value;
+          return !v ? null : v === '+' ? { nuovo:true, di:$(`[data-ocd="${i}"]`, box).value } : doc(v);
+        });
+        const doppi = S.docenti.filter(t => sc.filter(x => x === t).length > 1).map(t => t.nome);
+        if(doppi.length){ $('#ocErr', box).innerHTML = `<div class="msg bad">Lo stesso docente è scelto per più righe del foglio: ${esc(doppi.join(', '))}.</div>`; return; }
+        const E = applicaOrarioCompilato(O, sc, $('#ocBlocca', box).checked);
+        chiudiModal(); vai('orario');
+        $('#genState').textContent = `Orario importato: ${E.messe} ore`
+          + (E.compresenze ? ` · ${E.compresenze} compresenze` : '')
+          + (E.senzaAula ? ` · ${E.senzaAula} ore senza aula (le aule del docente erano occupate)` : '')
+          + (E.fuori ? ` · ${E.fuori} ore oltre le cattedre` : '')
+          + (E.nuove.length ? ` · cattedre aggiunte (materie che non avevano docente): ${E.nuove.join('; ')}` : '')
+          + (E.senzaMateria.length ? ` · ${E.senzaMateria.length} ore saltate (docente senza cattedre)` : '');
+      });
+    });
+}
+
 /* ===========================================================
    Eventi e avvio
    =========================================================== */
@@ -2966,7 +3293,7 @@ $('#btnFattibilita').addEventListener('click', () => mostraFattibilita(fattibili
 let GEN = null;   // generazione in corso (per il pulsante Interrompi)
 function avviaGenerazione(){
   const q = num($('#selQualita').value,120), keep = $('#chkLock').checked;
-  const b = $('#btnGenera'); b.disabled = true;
+  const b = $('#btnGenera'); b.disabled = $('#btnOttimizza').disabled = true;
   $('#btnFerma').hidden = false;
   $('#genState').textContent = 'Calcolo in corso…';
   GEN = generaAsync(q, keep,
@@ -2974,7 +3301,7 @@ function avviaGenerazione(){
       ? `rifinitura del miglior orario (${n} tentativi) · ore non collocate: ${best ? best.mancanti : '—'}`
       : `tentativo ${n}/${tot} · ore non collocate: ${best ? best.mancanti : '—'}`; },
     (best, I, interrotta) => {
-      GEN = null; b.disabled = false; $('#btnFerma').hidden = true;
+      GEN = null; b.disabled = $('#btnOttimizza').disabled = false; $('#btnFerma').hidden = true;
       if(interrotta && !best){ $('#genState').textContent = 'Generazione interrotta prima del primo risultato: orario invariato.'; return; }
       POOL = applicaSoluzione(best, I, keep); POOL_SEL = null;
       const auto = Object.keys(I.autoDay||{}).length;
@@ -2984,6 +3311,37 @@ function avviaGenerazione(){
     });
 }
 $('#btnFerma').addEventListener('click', () => { if(GEN) GEN.ferma(); });
+// «Ottimizza»: migliora l'orario presente senza rifarlo da capo (le caselle bloccate non si toccano)
+const GIRI_OTTIMIZZA = { 24:1, 120:4, 400:12 };
+function avviaOttimizzazione(){
+  if(!orarioCompilato()){ avvisa('L\'orario è vuoto: generalo o importalo prima di ottimizzarlo.'); return; }
+  const giri = GIRI_OTTIMIZZA[$('#selQualita').value] || 4;
+  const { I, da, ferme, mancanti } = istanzaDaOrario();
+  const prima = analizza();
+  const bG = $('#btnGenera'), bO = $('#btnOttimizza');
+  bG.disabled = bO.disabled = true; $('#btnFerma').hidden = false;
+  $('#genState').textContent = 'Ottimizzazione in corso…';
+  GEN = ottimizzaAsync(I, da, giri,
+    (n, tot, best) => { $('#genState').textContent = `ottimizzazione: giro ${n}/${tot}`; },
+    (best, interrotta) => {
+      GEN = null; bG.disabled = bO.disabled = false; $('#btnFerma').hidden = true;
+      if(!best){ $('#genState').textContent = 'Ottimizzazione interrotta: orario invariato.'; return; }
+      POOL = applicaSoluzione(best, I, true); POOL_SEL = null;
+      ferme.forEach(f => setCella(f.c.id, f.g, f.s, f.v));   // lezioni fuori cattedra: tornano al loro posto
+      normalizza(); save(true); renderOrario();
+      const dopo = ANALISI, dopoPool = POOL.reduce((s,p) => s + p.ore, 0);
+      $('#genState').textContent = (interrotta ? 'Ottimizzazione interrotta: applicato il meglio trovato' : 'Ottimizzazione completata')
+        + ` · ore buche docenti ${prima.buchi} → ${dopo.buchi}`
+        + (mancanti || dopoPool ? ` · ore delle cattedre non in orario ${mancanti} → ${dopoPool}` : '')
+        + (ferme.length ? ` · ${ferme.length} ore lasciate ferme (fuori cattedra o in compresenza)` : '');
+    });
+}
+$('#btnOttimizza').addEventListener('click', avviaOttimizzazione);
+$('#btnImportOrario').addEventListener('click', () => $('#fileOrarioComp').click());
+$('#fileOrarioComp').addEventListener('change', e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if(f) importaOrarioCompilato(f);
+});
 $('#btnSvuotaOrario').addEventListener('click', () => {
   chiedi('Svuoto tutte le caselle non bloccate?', () => {
     S.classi.forEach(c => S.giorni.forEach(g => { const r = S.orario[c.id][g]; for(let s=0;s<r.length;s++) if(r[s] && !r[s].lock) r[s] = null; }));
