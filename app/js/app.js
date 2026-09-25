@@ -114,6 +114,25 @@
     return n >= 5 && n <= 600 ? n : (CONFIG.secondiRotazioneIngresso || 20);
   }
 
+  // L'utente sceglie ogni quanti secondi cambiano le viste: se il numero va bene lo salva
+  // e fa ripartire la rotazione, altrimenti spiega cosa scrivere e rimette il valore di prima
+  function impostaSecondi(valore) {
+    const n = Number(String(valore).replace(',', '.'));
+    const esito = $('#esitoSecondi');
+    if (!Number.isInteger(n) || n < 5 || n > 600) {
+      esito.textContent = 'Scrivi un numero intero di secondi, da 5 a 600.';
+      esito.classList.add('errore-secondi');
+      $('#sceltaSecondi').value = String(secondiIngresso);
+      return;
+    }
+    secondiIngresso = n;
+    scrivi(CHIAVE_INGRESSO, String(n));
+    $('#sceltaSecondi').value = String(n);
+    esito.classList.remove('errore-secondi');
+    esito.textContent = `Fatto: la vista cambia ogni ${n} secondi.`;
+    schermataIniziale();
+  }
+
   // Valore della tendina "Uso di questo dispositivo"
   const valoreUso = () => secondiIngresso ? USO_INGRESSO : aulaMonitor;
 
@@ -143,8 +162,6 @@
       `<optgroup label="Monitor dell'aula">` +
       D.aula.map(a => `<option value="${Viste.esc(a.id)}">${Viste.esc(a.nome)}</option>`).join('') + '</optgroup>';
     // Ogni quanti secondi cambia vista lo schermo all'ingresso
-    const secondi = [...new Set([10, 15, 20, 30, 45, 60, secondiValidi(CONFIG.secondiRotazioneIngresso), secondiIngresso].filter(Boolean))].sort((a, b) => a - b);
-    $('#sceltaSecondi').innerHTML = secondi.map(s => `<option value="${s}">${s} secondi</option>`).join('');
     $('#sceltaSecondi').value = String(secondiIngresso || secondiValidi(CONFIG.secondiRotazioneIngresso));
     $('#gruppoRotazione').hidden = !secondiIngresso;
     // Intestazione
@@ -256,6 +273,7 @@
     $('#sceltaMonitor').value = valoreUso();
     $('#gruppoRotazione').hidden = !secondiIngresso;
     $('#sceltaSecondi').value = String(secondiIngresso || secondiValidi(CONFIG.secondiRotazioneIngresso));
+    $('#esitoSecondi').textContent = '';
     schermataIniziale();
   }
 
@@ -310,12 +328,11 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#menu').hidden) { chiudiMenu(); $('#btnUtente').focus(); } });
     document.addEventListener('click', e => { if (!$('#menu').hidden && !e.target.closest('#menu, #btnUtente')) chiudiMenu(); });
     $('#sceltaMonitor').addEventListener('change', e => { impostaMonitor(e.target.value); chiudiMenu(); });
-    $('#sceltaSecondi').addEventListener('change', e => {
-      secondiIngresso = secondiValidi(e.target.value);
-      scrivi(CHIAVE_INGRESSO, String(secondiIngresso));
-      chiudiMenu();
-      schermataIniziale();
-    });
+    // Secondi della rotazione: si scrivono nel campo (conferma con Invio o uscendo dal campo)
+    // oppure si regolano con − e + (di 5 in 5). Il menu resta aperto per altre prove.
+    $('#sceltaSecondi').addEventListener('change', e => impostaSecondi(e.target.value));
+    $('#menoSecondi').addEventListener('click', () => impostaSecondi(Math.max(5, (Math.ceil(secondiIngresso / 5) - 1) * 5)));
+    $('#piuSecondi').addEventListener('click', () => impostaSecondi(Math.min(600, (Math.floor(secondiIngresso / 5) + 1) * 5)));
     $('#btnSchermoIntero').addEventListener('click', () => {
       document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {});
       chiudiMenu();

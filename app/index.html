@@ -82,8 +82,15 @@
         <select id="sceltaMonitor"></select>
         <!-- Compare solo per lo schermo all'ingresso -->
         <div id="gruppoRotazione" class="gruppo-menu" hidden>
-          <label for="sceltaSecondi">Cambia vista ogni:</label>
-          <select id="sceltaSecondi"></select>
+          <!-- L'utente sceglie liberamente ogni quanti secondi cambiano le viste -->
+          <label for="sceltaSecondi">Cambia vista ogni quanti secondi? (da 5 a 600)</label>
+          <div class="campo-secondi">
+            <button type="button" id="menoSecondi" class="pulsante" aria-label="5 secondi in meno">−</button>
+            <input type="number" id="sceltaSecondi" min="5" max="600" step="1" inputmode="numeric">
+            <span aria-hidden="true">secondi</span>
+            <button type="button" id="piuSecondi" class="pulsante" aria-label="5 secondi in più">+</button>
+          </div>
+          <p id="esitoSecondi" class="esito-secondi" role="status"></p>
         </div>
         <label for="sceltaTema">Tema:</label>
         <select id="sceltaTema">

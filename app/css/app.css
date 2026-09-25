@@ -316,6 +316,17 @@ body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario td { min-width: 0
 body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario thead th { white-space: normal; }
 body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario thead th.angolo { width: 110px; }
 
+/* Campo del menu per scegliere ogni quanti secondi cambia la vista: − [ 20 ] secondi + */
+.campo-secondi { display: flex; align-items: center; gap: 6px; }
+.campo-secondi input {
+  width: 5.5em; min-height: 40px; padding: 6px 8px; text-align: center; font: inherit;
+  border: 1px solid var(--bordo); border-radius: 8px; background: var(--superficie); color: var(--testo);
+}
+.campo-secondi .pulsante { min-width: 40px; justify-content: center; font-size: 1.2rem; }
+.esito-secondi { margin: 0; font-size: .85rem; color: var(--testo-tenue); }
+.esito-secondi:empty { display: none; }
+.esito-secondi.errore-secondi { color: var(--errore); }
+
 .indicatore-ingresso {
   position: relative; display: flex; align-items: center; gap: 16px;
   margin-bottom: 10px; padding-bottom: 8px; font-weight: 700; font-size: 1.2rem;
