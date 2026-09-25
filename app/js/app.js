@@ -12,6 +12,7 @@
   const $ = sel => document.querySelector(sel);
   const $$ = sel => Array.from(document.querySelectorAll(sel));
   const CHIAVE_MONITOR = 'orariodada.monitor';
+  const CHIAVE_NOMI = 'orariodada.nomi';     // nomi veri automatici, oppure 'codici' (vedi caricaNomiDaSoli)
   const CHIAVE_BREVE = 'orariodada.breve';   // di chi si è scelto di vedere la giornata in "In breve"
   const CHIAVE_INGRESSO = 'orariodada.ingresso'; // schermo all'ingresso: secondi della rotazione ('' = no)
   const USO_INGRESSO = '__ingresso';         // valore della voce "Schermo all'ingresso" nel menu
@@ -165,6 +166,38 @@
     b.setAttribute('aria-pressed', String(!!nomi));
     b.title = nomi ? 'Torna a mostrare i codici dei docenti (DOC01…)' : 'Mostra i nomi dei docenti al posto dei codici (DOC01…)';
     $('#btnNomiMenu').textContent = nomi ? '🙈 Mostra solo i codici dei docenti' : '👁 Mostra i nomi dei docenti';
+  }
+
+  /*
+    Nomi veri caricati in automatico (come premere «👁 Nomi»), solo per chi ha il permesso sul file dei nomi.
+    Preferenza salvata sul dispositivo (chiave orariodada.nomi):
+    - ''                : automatico (normale)
+    - 'codici'          : l'utente ha scelto «🙈 Codici», quindi non li carichiamo da soli
+    - 'negato:<email>'  : Google ha detto che questo account non può aprire il file: non riproviamo più
+    I nomi restano sempre e solo in memoria.
+  */
+  let attesaTocco = false;   // i nomi aspettano il primo tocco (il browser ha bloccato la finestra di Google)
+  async function caricaNomiDaSoli() {
+    if (nomi || !utente || aulaMonitor || secondiIngresso) return;
+    if (typeof NomiDocenti === 'undefined' || !CONFIG.fileNomiDocenti || !CONFIG.googleClientId) return;
+    const scelta = leggi(CHIAVE_NOMI);
+    if (scelta === 'codici' || scelta === 'negato:' + utente.email.toLowerCase()) return;
+    try {
+      nomi = await NomiDocenti.carica(utente.email);
+    } catch (e) {
+      const msg = String(e && e.message || '');
+      if (/permesso|non trovato/i.test(msg)) scrivi(CHIAVE_NOMI, 'negato:' + utente.email.toLowerCase());   // niente accesso al file
+      else if (/bloccato la finestra|popup/i.test(msg) && !attesaTocco) {
+        // Il browser apre la finestra di Google solo dopo un tocco: riproviamo al primo tocco sullo schermo
+        attesaTocco = true;
+        document.addEventListener('pointerdown', () => { attesaTocco = false; caricaNomiDaSoli(); }, { once: true, capture: true });
+      }
+      return;
+    }
+    applicaNomi();
+    mioDocente = Dati.docentePerEmail(utente.email);
+    preparaControlli();
+    aggiorna();
   }
 
   /* ---------- costruzione dei controlli ---------- */
@@ -573,11 +606,12 @@
     });
     $('#btnRicarica').addEventListener('click', async () => { chiudiMenu(); await ricaricaDati(true); });
     // "Nomi" (barra o menu): li legge dal file riservato su Drive (serve il permesso sul file); "Codici" li toglie
+    // La scelta resta sul dispositivo: «Codici» ferma il caricamento automatico, «Nomi» lo riattiva
     const cambiaNomi = async () => {
       chiudiMenu();
-      if (nomi) nomi = null;
+      if (nomi) { nomi = null; scrivi(CHIAVE_NOMI, 'codici'); }
       else {
-        try { nomi = await NomiDocenti.carica(utente.email); }
+        try { nomi = await NomiDocenti.carica(utente.email); scrivi(CHIAVE_NOMI, ''); }
         catch (e) { $('#avviso').hidden = false; $('#avviso').textContent = 'Non riesco a mostrare i nomi: ' + e.message + '.'; return; }
       }
       applicaNomi();
@@ -719,6 +753,7 @@
     schermataIniziale();
     avviaTimer();
     tocco();
+    caricaNomiDaSoli();   // nomi veri dei docenti in automatico (se l'account può aprire il file dei nomi)
     if (conStorie && modificheDaMostrare().length) apriStorie(0);
     // Tocco sulla notifica mentre l'app è già aperta: il service worker chiede di mostrare le storie
     if (navigator.serviceWorker) {

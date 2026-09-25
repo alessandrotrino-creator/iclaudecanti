@@ -85,6 +85,19 @@ Per cambiare un orario o aggiungere un intervallo basta modificare il file (orar
   - Settimana + classe 1A + docente Costa → le ore di Costa nella 1A
 - I pulsanti dei giorni cambiano giorno; "Oggi" torna al giorno corrente.
 
+## Nomi veri dei docenti
+
+Nell'orario pubblicato i docenti sono codici (DOC01, DOC02…). Chi ha il permesso di aprire il **file riservato dei nomi**
+su Google Drive (`fileNomiDocenti` in `js/config.js`) vede invece i **nomi veri**, che restano solo in memoria.
+
+- I nomi si caricano **da soli** all'avvio (come premere «👁 Nomi»). Se il browser blocca la finestra di Google,
+  si caricano al **primo tocco** sullo schermo.
+- Il tasto **«🙈 Codici»** (barra da 960 px in su, oppure nel menu) torna ai codici: la scelta resta sul dispositivo
+  e i nomi non si caricano più da soli finché non si preme di nuovo **«👁 Nomi»**.
+- Chi non ha accesso al file non viene disturbato: dopo il primo rifiuto di Google l'app non riprova più su quel dispositivo
+  (il tasto «👁 Nomi» resta, per riprovare a mano).
+- Sui monitor di classe e sullo schermo all'ingresso i nomi non si caricano da soli.
+
 ## Icona e caricamento: il robottino a pixel
 
 La mascotte dell'app è un **robottino a pixel** bianco, un po' animaletto: due antenne con le palline gialle,
