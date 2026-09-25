@@ -12,8 +12,7 @@
    La campanella no: quando è attiva è riempita di giallo con l'alone (css/campanella.css). */
 .azioni-barra [aria-pressed="true"],
 .azioni-barra [aria-expanded="true"]:not(.pulsante-campanella) {
-  border-color: var(--primario);
-  box-shadow: 0 0 0 1px var(--primario);   /* bordo (1px) + ombra (1px) = cerchio sottile di 2px */
+  border-color: var(--primario);   /* solo il bordo diventa blu: cerchio sottilissimo di 1px */
 }
 /* Il tondo del profilo è già blu: il cerchio si vede solo se c'è un filo del colore di fondo in mezzo */
 .azioni-barra .pulsante-utente[aria-expanded="true"] {
