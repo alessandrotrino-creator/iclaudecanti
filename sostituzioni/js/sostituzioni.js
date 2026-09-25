@@ -248,17 +248,25 @@ const Sostituzioni = (() => {
     }
   }
 
+  /*
+    Aggiunge "quante" ore (anche negative) nella cella di un docente, nella colonna della settimana,
+    leggendo prima il valore attuale (cella vuota = 0). Restituisce true se ci è riuscito, false se il foglio
+    non è su Drive o il docente non è abbinato a una riga; se Google dà errore lo lancia a chi chiama.
+  */
+  async function segnaOre(idDocente, settimana, quante) {
+    const r = rigaDi(idDocente);
+    if (!foglio || !foglio.driveId || !suDrive() || !r) return false;
+    const nuovo = await FoglioDrive.aggiungi(foglio, r, settimana, quante, emailUtente());
+    r.settimane[settimana] = nuovo;
+    r.totale += quante;
+    salva('foglio', foglio);
+    return true;
+  }
+
   // Aggiunge (+1) o toglie (-1) l'ora di sostituzione nel foglio su Drive; restituisce true se ci è riuscito
   async function segnaNelFoglio(s, quante) {
-    if (!foglio || !foglio.driveId || !suDrive()) return false;
-    const r = rigaDi(s.sostituto);
-    if (!r) return false;
     try {
-      const nuovo = await FoglioDrive.aggiungi(foglio, r, s.settimana, quante, emailUtente());
-      r.settimane[s.settimana] = nuovo;
-      r.totale += quante;
-      salva('foglio', foglio);
-      return true;
+      return await segnaOre(s.sostituto, s.settimana, quante);
     } catch (errore) {
       console.error(errore);
       avvisa((quante > 0 ? 'Non ho potuto segnare l\'ora nel foglio del conteggio: ' : 'Non ho potuto togliere l\'ora dal foglio del conteggio: ') +
@@ -387,6 +395,34 @@ const Sostituzioni = (() => {
       console.error(errore);
       avvisa('Non ho potuto togliere la sostituzione dal foglio «Sostituzioni»: ' + errore.message + '. Correggi il foglio a mano.');
       return false;
+    }
+  }
+
+  /*
+    Permesso: le ore di assenza sono ore a DEBITO da recuperare. Nel foglio del conteggio si toglie 1
+    per ogni ora al docente assente, nella settimana del giorno (se la cella è vuota diventa -1).
+    a.permessoSegnate = quante ore sono già state tolte nel foglio per questa assenza:
+    si corregge solo la differenza (per esempio se si cambiano le ore o si toglie il permesso).
+  */
+  async function aggiornaPermesso(a, oreGiuste) {
+    const differenza = oreGiuste - (a.permessoSegnate || 0);
+    if (!differenza) return;
+    const sett = settimanaDi(a.data);
+    try {
+      if (await segnaOre(a.docente, sett, -differenza)) {
+        a.permessoSegnate = oreGiuste;
+        salva('assenze', assenze);
+        avvisa(differenza > 0
+          ? `Permesso: ${ore(differenza)} a debito per ${nomeDocente(a.docente)} nel foglio del conteggio (settimana ${sett}).`
+          : `Permesso: ${differenza === -1 ? 'restituita' : 'restituite'} ${ore(-differenza)} a ${nomeDocente(a.docente)} nel foglio del conteggio (settimana ${sett}).`);
+        disegnaTutto();
+      } else {
+        avvisa(`Permesso registrato, ma non posso aggiornare il foglio del conteggio (non è su Drive o ${nomeDocente(a.docente)} ` +
+          `non è abbinato a una riga): ${differenza > 0 ? 'togli' : 'aggiungi'} a mano ${ore(Math.abs(differenza))} nella settimana ${sett}.`);
+      }
+    } catch (errore) {
+      console.error(errore);
+      avvisa('Non ho potuto aggiornare il permesso nel foglio del conteggio: ' + errore.message + '. Correggi la cella a mano.');
     }
   }
 
@@ -540,7 +576,8 @@ const Sostituzioni = (() => {
     }
     box.append(el('h3', {}, 'Assenti'), el('ul', { class: 'sost-assenze' }, elenco.map(a =>
       el('li', {},
-        el('span', {}, el('strong', {}, nomeDocente(a.docente)), ' – ', a.ore.map(n => n + 'ª').join(', '), ' ora'),
+        el('span', {}, el('strong', {}, nomeDocente(a.docente)), ' – ', a.ore.map(n => n + 'ª').join(', '), ' ora',
+          a.permesso ? el('span', { class: 'tag' }, a.permessoSegnate ? `permesso · −${a.permessoSegnate} nel foglio` : 'permesso') : null),
         el('button', {
           type: 'button', class: 'btn ghost sm',
           'aria-label': 'Togli l\'assenza di ' + nomeDocente(a.docente),
@@ -576,26 +613,33 @@ const Sostituzioni = (() => {
     if (!id) { avvisa('Scegli il docente assente.'); $('docenteAssente').focus(); return; }
     const oreScelte = [...document.querySelectorAll('#sost-oreAssenza input[name="ora"]:checked')].map(c => Number(c.value));
     if (!oreScelte.length) { avvisa('Spunta almeno un\'ora di assenza.'); return; }
+    const permesso = $('permesso').checked;
     // Se il docente era già assente quel giorno, aggiorniamo le sue ore
-    const esistente = assenzeDel(dataScelta).find(a => a.docente === id);
-    if (esistente) esistente.ore = oreScelte.sort((a, b) => a - b);
-    else assenze.push({ id: nuovoId(), data: dataScelta, docente: id, ore: oreScelte.sort((a, b) => a - b) });
+    let assenza = assenzeDel(dataScelta).find(a => a.docente === id);
+    if (assenza) assenza.ore = oreScelte.sort((a, b) => a - b);
+    else { assenza = { id: nuovoId(), data: dataScelta, docente: id, ore: oreScelte.sort((a, b) => a - b) }; assenze.push(assenza); }
+    assenza.permesso = permesso;
     // Le sostituzioni già assegnate per ore tolte non servono più (anche nel foglio «Sostituzioni»)
     const superate = registro.filter(x => x.data === dataScelta && x.assente === id && !oreScelte.includes(x.ora) && !x.riportata);
     togliDalRegistro(superate);
     registro = registro.filter(x => !superate.includes(x));
     salva('assenze', assenze);
     salva('registro', registro);
-    avvisa(`Assenza registrata: ${nomeDocente(id)}, ${ore(oreScelte.length)}.`);
+    avvisa(`Assenza registrata: ${nomeDocente(id)}, ${ore(oreScelte.length)}${permesso ? ' (permesso)' : ''}.`);
     $('docenteAssente').value = '';
+    $('permesso').checked = true;   // per la prossima assenza il permesso torna spuntato
     disegnaTutto();
     $('titoloCoprire').scrollIntoView({ behavior: 'smooth' });
+    // Permesso: -1 per ogni ora nel foglio del conteggio (o si restituiscono le ore se il permesso è stato tolto)
+    aggiornaPermesso(assenza, permesso ? oreScelte.length : 0);
   }
 
-  function togliAssenza(a) {
+  async function togliAssenza(a) {
     if (!controllaPermesso()) return;
     const collegate = registro.filter(x => x.data === a.data && x.assente === a.docente);
     if (collegate.length && !confirm(`Togliendo l'assenza vengono annullate anche ${collegate.length} sostituzioni già assegnate. Continuare?`)) return;
+    // Se era un permesso già segnato nel foglio del conteggio, le ore tolte vengono restituite
+    if (a.permessoSegnate) await aggiornaPermesso(a, 0);
     togliDalRegistro(collegate);
     assenze = assenze.filter(x => x.id !== a.id);
     registro = registro.filter(x => !collegate.includes(x));
@@ -893,6 +937,12 @@ const Sostituzioni = (() => {
         <label class="fl" for="sost-docenteAssente">Docente assente</label>
         <select id="sost-docenteAssente"></select>
         <div id="sost-oreAssenza"></div>
+        <!-- Permesso (spuntato di default): le ore di assenza vanno a debito del docente nel foglio del conteggio -->
+        <label class="sost-casella sost-permesso">
+          <input type="checkbox" id="sost-permesso" checked>
+          <span><b>Permesso</b> – le ore di assenza sono a debito: nel foglio del conteggio tolgo 1 per ogni ora
+            al docente assente (se la cella è vuota parte da −1)</span>
+        </label>
         <button type="submit" class="btn">Registra l'assenza</button>
       </form>
       <div id="sost-elencoAssenze"></div>
@@ -939,7 +989,12 @@ const Sostituzioni = (() => {
     $('giornoPrima').addEventListener('click', () => { dataScelta = spostaGiorni(dataScelta, -1); aperte.clear(); disegnaTutto(); });
     $('giornoDopo').addEventListener('click', () => { dataScelta = spostaGiorni(dataScelta, 1); aperte.clear(); disegnaTutto(); });
     $('oggi').addEventListener('click', () => { dataScelta = giornoPredefinito(); aperte.clear(); disegnaTutto(); });
-    $('docenteAssente').addEventListener('change', disegnaOreAssenza);
+    $('docenteAssente').addEventListener('change', () => {
+      // Docente già assente quel giorno: la casella Permesso riprende la sua scelta; altrimenti spuntata
+      const gia = assenzeDel(dataScelta).find(a => a.docente === $('docenteAssente').value);
+      $('permesso').checked = gia ? gia.permesso !== false : true;
+      disegnaOreAssenza();
+    });
     $('moduloAssenza').addEventListener('submit', registraAssenza);
     $('stampa').addEventListener('click', stampa);
     $('scaricaRegistro').addEventListener('click', scaricaRegistro);

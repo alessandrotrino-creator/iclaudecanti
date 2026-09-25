@@ -55,6 +55,10 @@ Serve la Google Sheets API attiva e, per chi assegna, il permesso di **modifica*
    in alto (serve il permesso sul file riservato dei nomi, su Google Drive): ogni docente viene collegato
    in automatico alla sua riga del foglio. Senza i nomi, o se un abbinamento manca o è dubbio, sceglilo dall'elenco.
 3. Scegli il **giorno** e registra il **docente assente** spuntando le ore di assenza.
+   La casella **"Permesso"** è spuntata di default: le ore di assenza sono **a debito** del docente, quindi nel foglio
+   del conteggio su Drive la scheda legge la cella della settimana e **toglie 1 per ogni ora** (cella vuota → −1).
+   Se si cambiano le ore o si toglie la spunta, corregge solo la differenza; togliendo l'assenza restituisce le ore.
+   Se il foglio non è su Drive o il docente non è abbinato, un avviso dice quante ore togliere a mano.
 4. In **"Ore da coprire"**, per ogni ora compare l'elenco dei docenti liberi: premi **Assegna**.
 5. A fine settimana copia nel foglio le ore della tabella **"Da aggiungere nel foglio"** (+1 per ogni ora
    di sostituzione, nella colonna della settimana), poi premi **"Segna come già riportate"** e ricarica il foglio.
