@@ -250,6 +250,7 @@
       D.fonte === 'bozza' ? 'Stai vedendo l’orario di <a href="../orario-facile/" target="orariofacile">Orario Facile</a> salvato su questo dispositivo: si aggiorna da solo mentre lo modifichi.' : ''
     ].filter(Boolean).join(' · ');
     if (breveAperta) disegnaBreve();
+    aggiornaMioOrario();
     aggiornaIntervallo();
     disegnaModifiche();
   }
@@ -434,7 +435,15 @@
     document.body.classList.toggle('breve-aperta', breveAperta);
     $('#vistaBreve').hidden = !breveAperta;
     $('#btnBreve').setAttribute('aria-pressed', String(breveAperta));
+    aggiornaMioOrario();
     if (breveAperta) { disegnaBreve(); window.scrollTo(0, 0); $('#vistaBreve').focus({ preventScroll: true }); }
+  }
+
+  // "Il mio orario" è acceso (blu, come "In breve") quando la tabella mostra proprio l'orario del docente
+  function aggiornaMioOrario() {
+    const acceso = !!mioDocente && !breveAperta && stato.colonne === 'docente' &&
+      stato.filtri.docente === mioDocente.id && !stato.filtri.classe && !stato.filtri.aula;
+    $('#btnMioOrario').setAttribute('aria-pressed', String(acceso));
   }
 
   function aggiornaOrologio() {
