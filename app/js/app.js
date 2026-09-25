@@ -208,6 +208,8 @@
   function aggiorna() {
     const a = adesso();
     ultimoMinuto = a.minuto;
+    // Momento della giornata (mattina, pomeriggio, sera): colora i tasti «In breve» e «Il mio orario»
+    document.body.dataset.momento = Breve.momento(a.minuto);
     // Stato dei pulsanti
     $$('[data-colonne]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.colonne === stato.colonne)));
     Viste.FILTRI.forEach(k => { $('#filtro-' + k).value = stato.filtri[k]; });

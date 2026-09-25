@@ -15,6 +15,9 @@
   box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--primario);
 }
 
+/* Tutti i tasti della barra hanno la stessa forma tondeggiante (a pillola), come «In breve» */
+.azioni-barra .pulsante { border-radius: 999px; }
+
 /* Icone che servono solo sui telefoni */
 .icona-telefono { display: none; }
 

@@ -163,5 +163,5 @@ const Breve = (() => {
     el.innerHTML = html;
   }
 
-  return { disegna };
+  return { disegna, momento };
 })();
