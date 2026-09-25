@@ -46,13 +46,13 @@ Aprendo [Orario Facile](https://alessandrotrino-creator.github.io/iclaudecanti/o
 si trova già la nostra scuola, ricavata dall'elenco "Docenti con materie e classi" 2026/27:
 
 - 15 classi (1A–3E) e 43 docenti con 174 cattedre;
-- i docenti sono **anonimi: DOC1, DOC2…** (codici in ordine casuale): il repository è pubblico, quindi
+- i docenti sono **anonimi: DOC01, DOC02…** (codici in ordine casuale): il repository è pubblico, quindi
   nomi e iniziali non vanno messi qui; la corrispondenza con i nomi è in un file riservato su Google Drive;
 - orario dal lunedì al venerdì, 6 ore al mattino; 1C, 2C e 3C anche martedì, mercoledì e giovedì pomeriggio (2 ore);
 - Approfondimento a 0 ore; nuove discipline **Mensa** e **Laboratorio** (per ora a 0 ore);
 - nuovo pulsante in alto **"Dati scuola 2026/27"**: chi aveva già aperto Orario Facile vede ancora i suoi dati salvati
   e con questo pulsante carica quelli nuovi;
-- nella griglia dell'orario si vede il codice del docente (DOC1, DOC2…).
+- nella griglia dell'orario si vede il codice del docente (DOC01, DOC02…).
 
 Da completare: ore e docenti di Mensa e Laboratorio per le classi C; Arte in 1C, 2C, 3C, 1D, 2D, 3D non ha ancora un docente.
 
