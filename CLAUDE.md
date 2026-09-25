@@ -25,11 +25,14 @@ Le parti del progetto:
   (`CSV_SCUOLA_CLASSI`, `CSV_SCUOLA_DOCENTI` e `datiScuola()`), caricati alla prima apertura e con il pulsante
   "Dati scuola 2026/27". **Privacy**: il repo è pubblico, quindi i docenti compaiono solo con le iniziali
   ("F. A.", due lettere se ambigue); non pubblicare mai nomi completi, PDF o fogli con i nomi dei docenti.
-- **`sostituzioni/` – Sostituzioni docenti (in prova)**: parte *separata*, da unire all'app solo se il gruppo
-  la approva (per ora niente link dalla pagina iniziale). Legge il foglio del conteggio ore (.ods/.xlsx/.csv)
-  **solo nel browser** e salva tutto in `localStorage` con chiavi `sostituzioni.`; nel repo ci sono solo facsimili
-  con nomi inventati in `sostituzioni/esempio/`. Riusa senza modificarli `app/js/config.js` e `app/js/dati.js`:
-  se cambi l'interfaccia di `Dati` controlla anche `sostituzioni/js/sostituzioni.js`. Dettagli in `sostituzioni/LEGGIMI.md`.
+- **Sostituzioni docenti**: è la scheda 9 di Orario Facile (`#p-sostituzioni`, `renderSostituzioni()`), ma il suo codice
+  sta in file separati in `sostituzioni/` (css/, js/) per non gonfiare `orario-facile/index.html` e ridurre i conflitti.
+  Orario Facile li carica con `<script src="../sostituzioni/js/...">` insieme a `../app/js/dati.js` e chiama
+  `Sostituzioni.monta(contenitore, () => Dati.normalizza(S))`: se cambi il formato di `S` o l'interfaccia di `Dati`,
+  controlla anche la scheda. Id HTML con prefisso `sost-`, classi CSS `.sost`/`sost-` (Orario Facile ha già un `#fileFoglio`).
+  Legge il foglio del conteggio ore (.ods/.xlsx/.csv) **solo nel browser** e salva in `localStorage` con chiavi
+  `sostituzioni.`; nel repo solo facsimili con nomi inventati in `sostituzioni/esempio/`. `sostituzioni/index.html`
+  rimanda a `orario-facile/#sostituzioni`. Dettagli in `sostituzioni/LEGGIMI.md`.
   Copie di file riservati vanno in `privato/` (esclusa da git).
 
 ## Il gruppo
@@ -50,7 +53,7 @@ index.html        pagina iniziale del sito (link alle due app)
 .nojekyll         dice a GitHub Pages di pubblicare i file così come sono
 app/              Orario DADA, app di visualizzazione (css/, js/, icone/, sw.js, manifest)
 orario-facile/    l'app Orario Facile (un unico index.html autonomo + modelli CSV)
-sostituzioni/     Sostituzioni docenti (in prova, separata: css/, js/, esempio/ con facsimili)
+sostituzioni/     codice della scheda Sostituzioni di Orario Facile (css/, js/, esempio/ con facsimili)
 dati/orario.json  l'orario letto da app/ (formato dell'app o backup di Orario Facile)
 img/              immagini
 ```
