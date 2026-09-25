@@ -1,0 +1,32 @@
+/*
+  menu.css – il menu del profilo (tondo con le iniziali, in alto a destra).
+  Tutte le voci hanno la stessa forma: icona blu a sinistra + testo nel colore normale,
+  divise in gruppi con un piccolo titolo grigio (Impostazioni, Orario, Gestione, App); «Esci» in fondo, in rosso.
+  Le regole hanno ".menu" davanti, così valgono solo qui e vincono su quelle generali di app.css.
+*/
+
+/* Su schermi bassi il menu si scorre invece di uscire dallo schermo */
+#menu { max-height: calc(100vh - 80px); max-height: calc(100dvh - 80px); overflow-y: auto; }
+
+/* Gruppi di voci, separati da una linea sottile */
+.menu .sezione-menu { display: grid; gap: 4px; border-top: 1px solid var(--bordo); padding-top: 8px; }
+/* Un gruppo senza voci visibili (es. «Gestione» per chi non può modificare) sparisce del tutto */
+.menu .sezione-menu:not(:has(.voce-menu:not([hidden]), select:not([hidden]))) { display: none; }
+.menu .titolo-sezione {
+  margin: 0 0 2px; font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--testo-tenue);
+}
+
+/* Voce del menu: pulsante o link, stesso aspetto */
+.menu .voce-menu {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px;
+  padding: 8px 10px; border: 0; border-radius: 10px; background: transparent;
+  color: var(--testo); font: inherit; font-weight: 500; text-align: left; text-decoration: none; cursor: pointer;
+}
+.menu .voce-menu:hover { background: var(--avviso); }
+.menu .voce-menu.installa { color: var(--testo); font-weight: 500; }   /* prima era blu in grassetto */
+.menu .icona-voce { width: 20px; height: 20px; flex: none; color: var(--primario); }
+
+/* «Esci»: in fondo, separato, in rosso (anche l'icona) */
+.menu .voce-esci { margin-top: 4px; border-top: 1px solid var(--bordo); border-radius: 0 0 10px 10px; padding-top: 12px; color: var(--errore); }
+.menu .voce-esci .icona-voce { color: var(--errore); }

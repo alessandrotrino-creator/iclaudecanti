@@ -165,7 +165,8 @@
     b.textContent = nomi ? '🙈 Codici' : '👁 Nomi';
     b.setAttribute('aria-pressed', String(!!nomi));
     b.title = nomi ? 'Torna a mostrare i codici dei docenti (DOC01…)' : 'Mostra i nomi dei docenti al posto dei codici (DOC01…)';
-    $('#btnNomiMenu').textContent = nomi ? '🙈 Mostra solo i codici dei docenti' : '👁 Mostra i nomi dei docenti';
+    // (cambia solo la scritta: l'icona dell'occhio resta, come nelle altre voci del menu)
+    $('#btnNomiMenu .testo-voce').textContent = nomi ? 'Mostra solo i codici dei docenti' : 'Mostra i nomi dei docenti';
   }
 
   /*

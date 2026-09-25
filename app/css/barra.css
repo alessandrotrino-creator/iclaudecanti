@@ -45,4 +45,7 @@
   .pulsante-utente { font-size: .85rem; }
   /* Con i tasti piccoli c'è di nuovo posto per la scritta "Orario" accanto al logo */
   .testo-marchio { display: flex; }
+  /* Il logo prende solo lo spazio che avanza dai tasti (base 0): così è il nome della scuola ad accorciarsi con "…"
+     e i tasti non vanno a capo */
+  .marchio { flex: 1 1 0; }
 }
