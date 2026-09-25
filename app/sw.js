@@ -5,7 +5,7 @@
 const CACHE = 'orario-dada';
 const FILE_APP = [
   './', 'index.html', 'css/app.css', 'css/brief.css', 'manifest.webmanifest',
-  'js/config.js', 'js/tema.js', 'js/dati.js', 'js/accesso.js', 'js/viste.js', 'js/brief.js', 'js/installa.js', 'js/condividi.js', 'js/app.js',
+  'js/config.js', 'js/tema.js', 'js/dati.js', 'js/accesso.js', 'js/viste.js', 'js/brief.js', 'js/ingresso.js','js/installa.js', 'js/condividi.js', 'js/app.js',
   'icone/icona.svg', 'icone/icona-192.png', 'icone/apple-touch-icon.png', 'icone/qr-app.svg',
   '../dati/orario.json'
 ];

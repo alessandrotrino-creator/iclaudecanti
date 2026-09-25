@@ -292,6 +292,46 @@ body.modalita-monitor .num-ora { font-size: 1.3rem; }
 body.modalita-monitor .orario-ora { font-size: .9rem; }
 body.modalita-monitor .contenitore-tabella { max-height: none; }
 
+/* ---------- Schermo all'ingresso: viste a rotazione (vedi js/ingresso.js) ---------- */
+body.modalita-ingresso { font-size: 20px; }
+body.modalita-ingresso .titolo-monitor {
+  display: block; font-size: 1.6rem; font-weight: 700; flex: 1; text-align: center;
+}
+body.modalita-ingresso .orologio { display: inline; font-size: 1.3rem; font-weight: 600; color: var(--testo); }
+body.modalita-ingresso .info-scuola { display: none; }
+body.modalita-ingresso .materia { font-size: 1.1rem; }
+body.modalita-ingresso .dato { font-size: .95rem; }
+body.modalita-ingresso .num-ora { font-size: 1.3rem; }
+body.modalita-ingresso .orario-ora { font-size: .9rem; }
+body.modalita-ingresso .tabella-orario caption { font-size: 1.3rem; }
+/* Mentre ruota nessuno usa i controlli: li nascondiamo (tornano con un tocco) */
+body.modalita-ingresso:not(.ingresso-in-pausa) .controlli,
+body.modalita-ingresso:not(.ingresso-in-pausa) .pulsante-breve,
+body.modalita-ingresso:not(.ingresso-in-pausa) #btnOggi,
+body.modalita-ingresso:not(.ingresso-in-pausa) #btnMioOrario { display: none; }
+/* Le colonne della pagina si dividono lo schermo in parti uguali: niente da scorrere */
+body.modalita-ingresso:not(.ingresso-in-pausa) .contenitore-tabella { max-height: none; overflow: hidden; }
+body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario { table-layout: fixed; }
+body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario td { min-width: 0; }
+body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario thead th { white-space: normal; }
+body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario thead th.angolo { width: 110px; }
+
+.indicatore-ingresso {
+  position: relative; display: flex; align-items: center; gap: 16px;
+  margin-bottom: 10px; padding-bottom: 8px; font-weight: 700; font-size: 1.2rem;
+}
+.ingresso-punti { display: flex; gap: 8px; }
+.ingresso-punti span { width: 12px; height: 12px; border-radius: 50%; background: var(--bordo); }
+.ingresso-punti span.attivo { background: var(--primario); }
+/* Barretta che si riempie mentre passano i secondi della vista */
+.ingresso-barra {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 4px; border-radius: 2px;
+  background: var(--primario); transform-origin: left;
+  animation-name: riempi-barra; animation-timing-function: linear; animation-fill-mode: forwards;
+}
+@keyframes riempi-barra { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .ingresso-barra { display: none; } }
+
 /* ---------- Stampa ---------- */
 @media print {
   .barra, .controlli, .adesso, .piede, .salta { display: none !important; }

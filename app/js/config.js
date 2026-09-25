@@ -23,6 +23,10 @@ window.CONFIG = {
   // Monitor di classe: dopo quanti minuti senza tocchi si torna alla schermata iniziale
   minutiRitornoMonitor: 2,
 
+  // Schermo all'ingresso: ogni quanti secondi cambia vista (classi, docenti, aule).
+  // Si può cambiare anche dal menu o con l'indirizzo .../app/?ingresso=30
+  secondiRotazioneIngresso: 20,
+
   // Ogni quanti minuti si ricontrolla se l'orario è stato aggiornato
   minutiAggiornamentoDati: 15,
 

@@ -13,17 +13,21 @@
   const $$ = sel => Array.from(document.querySelectorAll(sel));
   const CHIAVE_MONITOR = 'orariodada.monitor';
   const CHIAVE_BREVE = 'orariodada.breve';   // di chi si è scelto di vedere la giornata in "In breve"
+  const CHIAVE_INGRESSO = 'orariodada.ingresso'; // schermo all'ingresso: secondi della rotazione ('' = no)
+  const USO_INGRESSO = '__ingresso';         // valore della voce "Schermo all'ingresso" nel menu
   const NOMI_GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
 
   let D = null;             // dati dell'orario
   let utente = null;        // chi ha fatto l'accesso
   let mioDocente = null;    // il docente corrispondente all'utente (se c'è)
   let aulaMonitor = '';     // id dell'aula se questo dispositivo è un monitor di classe
+  let secondiIngresso = 0;  // > 0 se questo dispositivo è lo schermo all'ingresso (viste a rotazione)
   let avvisoGiorno = null;  // { giorno, testo } es. "le lezioni di oggi sono finite"
   let ultimoMinuto = -1;
   let timerInattivita = null;
   let breveAperta = false;  // true quando si vede la vista "In breve" al posto della tabella
-  const stato = { colonne: 'classe', giorno: '', filtri: { classe: '', docente: '', aula: '' } };
+  // pagina: solo per lo schermo all'ingresso, quali colonne mostrare (null = tutte)
+  const stato = { colonne: 'classe', giorno: '', filtri: { classe: '', docente: '', aula: '' }, pagina: null };
 
   const leggi = k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
   const scrivi = (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch (e) { /* ignorato */ } };
@@ -62,12 +66,56 @@
     stato.giorno = gi.giorno;
     avvisoGiorno = gi.testo ? gi : null;
     stato.filtri = { classe: '', docente: '', aula: '' };
+    stato.pagina = null;
+    // Schermo all'ingresso: parte la rotazione delle viste (ridisegna lei la pagina)
+    if (secondiIngresso) { avviaRotazione(); return; }
+    Ingresso.ferma();
+    document.body.classList.remove('ingresso-in-pausa');
     if (aulaMonitor) { stato.colonne = 'aula'; stato.filtri.aula = aulaMonitor; }
     else if (mioDocente) { stato.colonne = 'docente'; stato.filtri.docente = mioDocente.id; }
     else stato.colonne = 'classe';
     aggiorna();
     mostraOraCorrente();
   }
+
+  /* ---------- schermo all'ingresso: viste a rotazione (vedi ingresso.js) ---------- */
+  function avviaRotazione() {
+    document.body.classList.remove('ingresso-in-pausa');
+    Ingresso.avvia({
+      secondi: secondiIngresso,
+      calcolaPassi: () => {
+        // A ogni giro ricontrolla il giorno (es. finite le lezioni si passa a domani)
+        const gi = giornoIniziale();
+        stato.giorno = gi.giorno;
+        avvisoGiorno = gi.testo ? gi : null;
+        return Ingresso.passi(D, stato.giorno, $('#contenuto').clientWidth - 32);
+      },
+      mostra: (passo, indice, quanti) => {
+        stato.colonne = passo.colonne;
+        stato.pagina = passo.pagina;
+        aggiorna();
+        Ingresso.indicatore($('#indicatoreIngresso'), passo, indice, quanti, secondiIngresso);
+      }
+    });
+  }
+
+  // Qualcuno tocca lo schermo: la rotazione si ferma e si può usare l'app normalmente;
+  // dopo qualche minuto senza tocchi riparte da sola (vedi tocco)
+  function pausaRotazione() {
+    Ingresso.ferma();
+    stato.pagina = null;
+    document.body.classList.add('ingresso-in-pausa');
+    aggiorna();
+  }
+
+  // Secondi della rotazione validi (da 5 a 600), altrimenti quelli di config.js
+  function secondiValidi(valore) {
+    const n = parseInt(valore, 10);
+    return n >= 5 && n <= 600 ? n : (CONFIG.secondiRotazioneIngresso || 20);
+  }
+
+  // Valore della tendina "Uso di questo dispositivo"
+  const valoreUso = () => secondiIngresso ? USO_INGRESSO : aulaMonitor;
 
   // Porta in vista la riga dell'ora in corso (utile sui telefoni)
   function mostraOraCorrente() {
@@ -89,9 +137,16 @@
     // Pulsanti dei giorni (abbreviati sui telefoni)
     $('#giorni').innerHTML = D.giorni.map(g =>
       `<button type="button" data-giorno="${Viste.esc(g)}"><span class="giorno-lungo">${Viste.esc(g)}</span><span class="giorno-corto" aria-hidden="true">${Viste.esc(g.slice(0, 3))}</span></button>`).join('');
-    // Scelta dell'aula per la modalità monitor
-    $('#sceltaMonitor').innerHTML = `<option value="">No, dispositivo personale</option>` +
-      D.aula.map(a => `<option value="${Viste.esc(a.id)}">${Viste.esc(a.nome)}</option>`).join('');
+    // Uso del dispositivo: personale, schermo all'ingresso o monitor di un'aula
+    $('#sceltaMonitor').innerHTML = `<option value="">Dispositivo personale</option>` +
+      `<option value="${USO_INGRESSO}">📺 Schermo all'ingresso (viste a rotazione)</option>` +
+      `<optgroup label="Monitor dell'aula">` +
+      D.aula.map(a => `<option value="${Viste.esc(a.id)}">${Viste.esc(a.nome)}</option>`).join('') + '</optgroup>';
+    // Ogni quanti secondi cambia vista lo schermo all'ingresso
+    const secondi = [...new Set([10, 15, 20, 30, 45, 60, secondiValidi(CONFIG.secondiRotazioneIngresso), secondiIngresso].filter(Boolean))].sort((a, b) => a - b);
+    $('#sceltaSecondi').innerHTML = secondi.map(s => `<option value="${s}">${s} secondi</option>`).join('');
+    $('#sceltaSecondi').value = String(secondiIngresso || secondiValidi(CONFIG.secondiRotazioneIngresso));
+    $('#gruppoRotazione').hidden = !secondiIngresso;
     // Intestazione
     $('#infoScuola').textContent = [D.scuola, D.anno].filter(Boolean).join(' · ');
     $('#nomeUtente').textContent = utente.nome;
@@ -122,10 +177,15 @@
       b.classList.toggle('e-oggi', b.dataset.giorno === a.giorno);
     });
     document.body.classList.toggle('modalita-monitor', !!aulaMonitor);
-    $('#titoloMonitor').textContent = aulaMonitor ? Dati.nome('aula', aulaMonitor) : '';
+    document.body.classList.toggle('modalita-ingresso', !!secondiIngresso);
+    $('#titoloMonitor').textContent = aulaMonitor ? Dati.nome('aula', aulaMonitor) : secondiIngresso ? 'Orario delle lezioni' : '';
+    $('#indicatoreIngresso').hidden = !(secondiIngresso && Ingresso.attiva());
 
     // Messaggi
     const avvisi = [];
+    if (secondiIngresso && !Ingresso.attiva()) {
+      avvisi.push(`Rotazione delle viste in pausa: riparte da sola dopo ${CONFIG.minutiRitornoMonitor} minuti senza tocchi.`);
+    }
     const settimanaSenzaFiltro = stato.colonne === 'giorno' && !Viste.FILTRI.some(k => stato.filtri[k]);
     if (settimanaSenzaFiltro) avvisi.push('Per vedere la settimana scegli una classe, un docente o un\'aula.');
     else if (avvisoGiorno && stato.colonne !== 'giorno' && stato.giorno === avvisoGiorno.giorno) avvisi.push(avvisoGiorno.testo);
@@ -187,17 +247,28 @@
   }
 
   /* ---------- modalità monitor ---------- */
+  // id = aula del monitor, USO_INGRESSO = schermo all'ingresso, '' = dispositivo personale
   function impostaMonitor(id) {
+    secondiIngresso = id === USO_INGRESSO ? secondiValidi(leggi(CHIAVE_INGRESSO)) : 0;
+    scrivi(CHIAVE_INGRESSO, secondiIngresso ? String(secondiIngresso) : '');
     aulaMonitor = id && D.mappa.aula.has(id) ? id : '';
     scrivi(CHIAVE_MONITOR, aulaMonitor);
-    $('#sceltaMonitor').value = aulaMonitor;
+    $('#sceltaMonitor').value = valoreUso();
+    $('#gruppoRotazione').hidden = !secondiIngresso;
+    $('#sceltaSecondi').value = String(secondiIngresso || secondiValidi(CONFIG.secondiRotazioneIngresso));
     schermataIniziale();
   }
 
-  // Sul monitor, dopo qualche minuto senza tocchi, si torna all'orario dell'aula
-  function tocco() {
+  // Sul monitor, dopo qualche minuto senza tocchi, si torna all'orario dell'aula.
+  // Sullo schermo all'ingresso un tocco mette in pausa la rotazione, che riparte dopo
+  // qualche minuto senza tocchi. (evento manca quando la chiama l'app all'avvio)
+  function tocco(evento) {
     clearTimeout(timerInattivita);
-    if (!aulaMonitor) return;
+    if (!aulaMonitor && !secondiIngresso) return;
+    if (secondiIngresso) {
+      if (!evento) return;                         // nessun tocco vero: la rotazione continua
+      if (Ingresso.attiva()) pausaRotazione();
+    }
     timerInattivita = setTimeout(() => { chiudiMenu(); schermataIniziale(); }, CONFIG.minutiRitornoMonitor * 60000);
   }
 
@@ -239,6 +310,12 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#menu').hidden) { chiudiMenu(); $('#btnUtente').focus(); } });
     document.addEventListener('click', e => { if (!$('#menu').hidden && !e.target.closest('#menu, #btnUtente')) chiudiMenu(); });
     $('#sceltaMonitor').addEventListener('change', e => { impostaMonitor(e.target.value); chiudiMenu(); });
+    $('#sceltaSecondi').addEventListener('change', e => {
+      secondiIngresso = secondiValidi(e.target.value);
+      scrivi(CHIAVE_INGRESSO, String(secondiIngresso));
+      chiudiMenu();
+      schermataIniziale();
+    });
     $('#btnSchermoIntero').addEventListener('click', () => {
       document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {});
       chiudiMenu();
@@ -261,7 +338,7 @@
       mioDocente = Dati.docentePerEmail(utente.email);
       preparaControlli();
       if (aulaMonitor && !D.mappa.aula.has(aulaMonitor)) aulaMonitor = '';
-      $('#sceltaMonitor').value = aulaMonitor;
+      $('#sceltaMonitor').value = valoreUso();
       // Cambiata la fonte (bozza <-> pubblicato): classi, docenti e aule sono diversi, si riparte
       if (D.fonte !== fontePrima) { schermataIniziale(); return; }
       // Stessa fonte aggiornata: tengo la vista, ma solo i filtri che esistono ancora
@@ -297,17 +374,27 @@
     mioDocente = Dati.docentePerEmail(utente.email);
 
     // Monitor: si attiva con ?monitor=NomeAula nell'indirizzo, oppure dal menu
-    const param = new URLSearchParams(location.search).get('monitor');
+    const parametri = new URLSearchParams(location.search);
+    const param = parametri.get('monitor');
     let scelta = leggi(CHIAVE_MONITOR);
     if (param !== null) {
       const a = D.aula.find(x => x.id === param || semplifica(x.nome) === semplifica(param));
       scelta = a ? a.id : '';
       scrivi(CHIAVE_MONITOR, scelta);
+      scrivi(CHIAVE_INGRESSO, '');
+    }
+    // Schermo all'ingresso: si attiva con ?ingresso (o ?ingresso=30 per 30 secondi), oppure dal menu
+    const paramIngresso = parametri.get('ingresso');
+    if (paramIngresso !== null) {
+      scrivi(CHIAVE_INGRESSO, String(secondiValidi(paramIngresso)));
+      scrivi(CHIAVE_MONITOR, '');
+      scelta = '';
     }
     aulaMonitor = scelta && D.mappa.aula.has(scelta) ? scelta : '';
+    secondiIngresso = !aulaMonitor && leggi(CHIAVE_INGRESSO) ? secondiValidi(leggi(CHIAVE_INGRESSO)) : 0;
 
     preparaControlli();
-    $('#sceltaMonitor').value = aulaMonitor;
+    $('#sceltaMonitor').value = valoreUso();
     collegaEventi();
     $('#caricamento').hidden = true;
     $('#app').hidden = false;

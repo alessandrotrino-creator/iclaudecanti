@@ -45,6 +45,8 @@ const Viste = (() => {
     // Con filtri su altre variabili, tengo solo le colonne che hanno almeno una lezione
     const altriFiltri = FILTRI.some(f => f !== k && stato.filtri[f]);
     if (altriFiltri) elenco = elenco.filter(e => lezioni.some(l => l[k] === e.id));
+    // Schermo all'ingresso: solo le colonne della pagina che si sta mostrando (vedi ingresso.js)
+    if (stato.pagina) elenco = elenco.filter(e => stato.pagina.ids.includes(e.id));
     return elenco;
   }
 
@@ -64,7 +66,10 @@ const Viste = (() => {
     const parti = [stato.colonne === 'giorno' ? 'Settimana' : stato.giorno];
     const filtri = FILTRI.filter(k => stato.filtri[k]).map(k => DIMENSIONI[k].singolare.toLowerCase() + ' ' + Dati.nome(k, stato.filtri[k]));
     // Il nome delle colonne serve solo se non è già chiaro (es. "Classi" senza filtro sulla classe)
-    if (stato.colonne !== 'giorno' && !stato.filtri[stato.colonne]) parti.push(DIMENSIONI[stato.colonne].plurale);
+    if (stato.colonne !== 'giorno' && !stato.filtri[stato.colonne]) {
+      const p = stato.pagina;
+      parti.push(DIMENSIONI[stato.colonne].plurale + (p && p.totale > 1 ? ` (${p.numero} di ${p.totale})` : ''));
+    }
     return parti.concat(filtri).join(' · ');
   }
 
