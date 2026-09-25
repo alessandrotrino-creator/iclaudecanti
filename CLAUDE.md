@@ -65,6 +65,8 @@ index.html        pagina iniziale del sito (link alle due app)
 app/              Orario DADA, app di visualizzazione (css/, js/, icone/, sw.js, manifest; lim/ = script per le LIM Windows)
 orario-facile/    l'app Orario Facile (un unico index.html autonomo + modelli CSV)
 sostituzioni/     codice della scheda Sostituzioni di Orario Facile (css/, js/, esempio/ con facsimili)
+potenziamento/    linee guida per assegnare le ore di potenziamento di italiano L2 (linee-guida-L2.md):
+                  da seguire quando si costruisce in Orario Facile l'orario dei docenti di potenziamento
 dati/orario.json  l'orario letto da app/ (formato dell'app o backup di Orario Facile)
 dati/campanella.json  orari della campanella per il tasto 🔔 dell'app (vedi app/js/campanella.js)
 img/              immagini

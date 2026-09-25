@@ -4,6 +4,15 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**25/09/2026 – Linee guida per le ore di potenziamento di italiano L2** (Margherita)
+
+- nuova cartella `potenziamento/` con le [linee guida per l'assegnazione delle ore di potenziamento di italiano L2](potenziamento/linee-guida-L2.md)
+  (scuola secondaria di I grado), da portare all'approvazione del Collegio dei docenti;
+- dicono come si calcolano le ore di ogni alunno (griglia a punteggio su 20, da 2 a 6 ore, 18 ore in tutto),
+  come si abbinano alunni e docenti e in quali discipline collocare le ore: sono la guida da seguire ogni anno
+  per costruire l'orario dei docenti di potenziamento in Orario Facile;
+- valgono per tutti gli anni scolastici; alunni e docenti compaiono solo con codici (AL1…, DOC1…).
+
 **25/09/2026 – Modifiche all'orario in stile storie** (Chiara)
 
 - le modifiche dell'ultimo minuto ora si vedono **come le storie di Instagram**: cerchi colorati in alto (grigi quando già visti),
@@ -122,5 +131,6 @@ Regole e convenzioni complete in [CLAUDE.md](CLAUDE.md).
 - `app/` – **Orario DADA**, per vedere l'orario da telefono, tablet e monitor di classe ([istruzioni](app/LEGGIMI.md))
 - `orario-facile/` – l'app Orario Facile, per creare l'orario
 - `sostituzioni/` – codice della scheda **Sostituzioni** di Orario Facile ([istruzioni](sostituzioni/LEGGIMI.md))
+- `potenziamento/` – [linee guida per le ore di potenziamento di italiano L2](potenziamento/linee-guida-L2.md), da seguire per l'orario dei docenti di potenziamento
 - `dati/orario.json` – l'orario mostrato dall'app
 - `img/` – immagini
