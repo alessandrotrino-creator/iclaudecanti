@@ -287,7 +287,23 @@ const Sostituzioni = (() => {
       abilitazione = { stato: 'errore', nome: '', messaggio: errore.message };
     }
     disegnaAbilitazione();
+    // Chi è autorizzato vede i nomi veri dei docenti (servono anche per il foglio «Sostituzioni»)
+    if (abilitazione.stato === 'si') { await preparaNomiVeri(); aggiorna(); }
   }
+
+  // Mette i nomi veri nell'orario usato dalla scheda (come fa «👁 Nomi» di Orario Facile): il codice resta in .codice
+  function applicaNomiVeri(orario) {
+    if (!nomiVeri || !nomiVeri.size) return;
+    orario.docente.forEach(t => {
+      const n = !t.codice && nomiVeri.get(String(t.nome || '').trim().toUpperCase());
+      if (n) { t.codice = t.nome; t.nome = (n.cognome + ' ' + n.nome).trim(); }
+    });
+  }
+
+  // Vero se l'orario usa ancora le iniziali dei docenti ("F. A.") invece dei codici DOC01…:
+  // in quel caso i nomi veri non si possono trovare (il file dei nomi collega solo i codici)
+  const conIniziali = () => !!D && D.docente.some(t => /^(\p{L}{1,2}\.\s*)+$/u.test(t.codice || t.nome)) &&
+    !D.docente.some(t => /^DOC\d+$/i.test(t.codice || t.nome));
 
   function disegnaAbilitazione() {
     const box = $('boxAbilitazione');
@@ -307,6 +323,8 @@ const Sostituzioni = (() => {
     box.dataset.stato = abilitazione.stato;
     $('verifica').hidden = abilitazione.stato === 'si' || abilitazione.stato === 'verifica';
     $('verifica').textContent = abilitazione.stato === 'da-verificare' ? '🔐 Verifica la mia abilitazione' : '↻ Riprova';
+    // Orario ancora con le iniziali: lo diciamo, perché così nel foglio non si possono scrivere i nomi veri
+    $('avvisoIniziali').hidden = !conIniziali();
     contenitore.classList.toggle('sost-non-abilitato', !puoFare());
   }
 
@@ -835,6 +853,9 @@ const Sostituzioni = (() => {
     <div class="card sost-abilitazione" id="sost-boxAbilitazione" hidden>
       <h3>Abilitazione alle sostituzioni</h3>
       <p id="sost-statoAbilitazione" role="status"></p>
+      <p id="sost-avvisoIniziali" class="sost-attenzione" hidden>⚠️ L'orario salvato su questo dispositivo usa ancora le
+        <b>iniziali</b> dei docenti ("F. A."), non i codici DOC01…: così non si possono trovare i nomi veri.
+        In alto premi <b>«Dati scuola 2026/27»</b> per caricare l'orario aggiornato, poi torna in questa scheda.</p>
       <button type="button" id="sost-verifica" class="btn">🔐 Verifica la mia abilitazione</button>
     </div>
 
@@ -942,6 +963,7 @@ const Sostituzioni = (() => {
     if (!contenitore || !contenitore.isConnected) return;
     try {
       D = leggiOrario();
+      applicaNomiVeri(D);   // nomi veri al posto dei codici, se sono stati caricati (solo in memoria)
     } catch (errore) {
       console.error(errore);
       $('statoOrario').textContent = 'Non riesco a leggere l\'orario: ' + errore.message;

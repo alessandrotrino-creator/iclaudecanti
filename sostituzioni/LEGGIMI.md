@@ -40,7 +40,9 @@ Il Foglio Google **delle sostituzioni** (ID in `app/js/config.js`, campo `fileSo
   Se il foglio è vuoto l'app scrive prima l'intestazione; se ci sono già delle colonne, riempie quelle con lo stesso nome.
 
 **Nomi veri solo su Drive.** Nel foglio «Sostituzioni» i docenti compaiono con il **nome vero**, preso dal file
-riservato dei nomi (`fileNomiDocenti`) e tenuto **solo in memoria**. Su GitHub e nella memoria del dispositivo
+riservato dei nomi (`fileNomiDocenti`) e tenuto **solo in memoria**. Dopo la verifica dell'autorizzazione anche la
+scheda mostra i nomi veri. Il file dei nomi collega i **codici** DOC01… ai nomi: se l'orario salvato sul dispositivo
+usa ancora le iniziali ("F. A."), la scheda lo segnala e bisogna premere «Dati scuola 2026/27» in Orario Facile. Su GitHub e nella memoria del dispositivo
 restano i codici DOC01, DOC02…: non scrivere mai nomi veri nei file del repository.
 
 Serve la Google Sheets API attiva e, per chi assegna, il permesso di **modifica** sul foglio delle sostituzioni:
