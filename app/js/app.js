@@ -439,11 +439,15 @@
     if (breveAperta) { disegnaBreve(); window.scrollTo(0, 0); $('#vistaBreve').focus({ preventScroll: true }); }
   }
 
-  // "Il mio orario" è acceso (blu, come "In breve") quando la tabella mostra proprio l'orario del docente
+  // Tasti della barra accesi (blu con l'anello, vedi css/barra.css):
+  // - "Il mio orario" quando la tabella mostra proprio l'orario del docente
+  // - "Oggi" quando la tabella mostra il giorno di oggi (o il prossimo giorno di scuola)
   function aggiornaMioOrario() {
     const acceso = !!mioDocente && !breveAperta && stato.colonne === 'docente' &&
       stato.filtri.docente === mioDocente.id && !stato.filtri.classe && !stato.filtri.aula;
     $('#btnMioOrario').setAttribute('aria-pressed', String(acceso));
+    const oggi = !breveAperta && stato.colonne !== 'giorno' && !!D && stato.giorno === giornoIniziale().giorno;
+    $('#btnOggi').setAttribute('aria-pressed', String(oggi));
   }
 
   function aggiornaOrologio() {

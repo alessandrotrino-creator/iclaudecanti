@@ -5,6 +5,22 @@
   Su tablet e computer non cambia niente (le icone di "Oggi" e "Il mio orario" lì non si vedono).
 */
 
+/* ---------- Tasti attivi: blu pieno con un anello intorno (su tutti gli schermi) ----------
+   aria-pressed="true"  = la funzione è accesa (In breve, Il mio orario, Oggi, Nomi)
+   aria-expanded="true" = il suo pannello è aperto (menu del profilo, campanella)
+   L'anello è fatto con due ombre: una sottile del colore di fondo e una blu fuori. */
+.azioni-barra .pulsante[aria-pressed="true"] {
+  background: var(--primario); color: var(--primario-testo); border-color: var(--primario);
+}
+.azioni-barra [aria-pressed="true"],
+.azioni-barra [aria-expanded="true"] {
+  box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--primario);
+}
+/* La campanella accesa resta gialla con l'alone; col pannello aperto si aggiunge l'anello */
+.azioni-barra .pulsante-campanella.accesa[aria-expanded="true"] {
+  box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--primario), 0 0 16px 2px var(--evidenza-bordo);
+}
+
 /* Icone che servono solo sui telefoni */
 .icona-telefono { display: none; }
 
