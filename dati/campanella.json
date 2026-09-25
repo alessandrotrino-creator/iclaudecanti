@@ -5,9 +5,11 @@
   "suoni": [
     { "ora": "08:00", "nome": "Inizio 1ª ora" },
     { "ora": "09:00", "nome": "Inizio 2ª ora" },
-    { "ora": "10:00", "nome": "Inizio 3ª ora" },
+    { "ora": "09:55", "nome": "Inizio intervallo" },
+    { "ora": "10:05", "nome": "Fine intervallo · inizio 3ª ora" },
     { "ora": "11:00", "nome": "Inizio 4ª ora" },
-    { "ora": "12:00", "nome": "Inizio 5ª ora" },
+    { "ora": "11:50", "nome": "Inizio intervallo" },
+    { "ora": "12:05", "nome": "Fine intervallo · inizio 5ª ora" },
     { "ora": "13:00", "nome": "Inizio 6ª ora" },
     { "ora": "14:00", "nome": "Inizio 7ª ora" },
     { "ora": "15:00", "nome": "Inizio 8ª ora" },
