@@ -54,10 +54,11 @@ Le sostituzioni sono ora la **scheda 9 «Sostituzioni»** di
 - create le **21 aule** dal documento "Occupazione aule", con nome = numero aula + prime tre lettere del nome + numero
   (es. `110ITA4`, `S19MUS1`, `C1PAL`), più l'aula **MENSA**; ogni docente ha le sue aule, e chi ha ore di Mensa anche MENSA;
 - palestra e mensa possono ospitare più classi insieme, le altre aule una classe per volta;
-- chi apre Orario Facile trova già un **orario completo**: 460 ore collocate, nessun conflitto di aule o docenti.
+- chi apre Orario Facile trova già l'**orario definitivo 2026/27** (importato dal foglio «Definitivo PUBBLICATO»):
+  468 ore, nessun conflitto; chi aveva già aperto il programma preme «Dati scuola 2026/27» per caricarlo;
+- il docente di Arte di 1C, 2C, 3C, 1D, 2D, 3D è DOC44;
 
-Da completare: il docente di Arte per 1C, 2C, 3C, 1D, 2D, 3D (nel documento aule c'è un docente di Arte non ancora inserito);
-in 1C e 2C le cattedre di Laboratorio sommano 5 ore contro le 3 del quadro orario.
+Da completare: in 1C e 2C le cattedre di Laboratorio sommano 5 ore contro le 3 del quadro orario.
 
 **24/09/2026 – Orario Facile già compilato con i dati 2026/27** (Alessandro)
 
