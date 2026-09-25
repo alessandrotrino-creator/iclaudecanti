@@ -138,13 +138,21 @@ Quando l'orario pubblicato cambia (per esempio un'aula spostata o una sostituzio
 - l'app ricontrolla l'orario **ogni 5 minuti** (`minutiAggiornamentoDati` in `js/config.js`) e lo confronta con l'ultima
   versione vista su quel dispositivo;
 - se sono cambiate lezioni **della giornata** (oggi, o il prossimo giorno di scuola se le lezioni di oggi sono finite)
-  compare in alto un **riquadro giallo** "⚠️ Modifiche all'orario di oggi", con com'era **prima** (barrato) e com'è **adesso**,
-  e le lezioni aggiunte o tolte;
+  compare in alto un **riquadro giallo** "⚠️ Modifiche all'orario di oggi";
+- le modifiche sono **in stile storie** (come su Instagram): una fila di **cerchi** (es. "1ª · 1A"), colorati se da vedere e
+  grigi se già visti; quelle che riguardano il docente hanno l'anello arancione. Toccando un cerchio la modifica si apre
+  **a tutto schermo** con com'era **prima** (barrato) e com'è **adesso** (materia, docente, aula a caratteri grandi):
+  le storie scorrono da sole ogni 6 secondi (barrette in alto), tocco a destra/sinistra per andare avanti/indietro,
+  ⏸ per fermarle, ✕ o Esc per chiudere; da tastiera frecce e spazio. Chi ha chiesto al dispositivo di ridurre le animazioni
+  le vede ferme;
+- sotto i cerchi, **Vedi l'elenco** mostra le stesse modifiche scritte (sui monitor d'aula e sullo schermo all'ingresso
+  l'elenco è sempre aperto, perché lì nessuno tocca lo schermo);
 - nella tabella le lezioni cambiate hanno il bordo evidenziato e l'etichetta **CAMBIATA** per tutta la giornata;
 - al **docente** le modifiche che lo riguardano compaiono per prime, con "ti riguarda"; sul **monitor di un'aula** si vedono
   solo quelle di quell'aula; sullo schermo all'ingresso tutte;
-- **Ho visto** nasconde il riquadro finché non arrivano altre modifiche;
-- con **🔔 Avvisami anche con una notifica** (solo sui dispositivi personali) arriva anche la notifica del telefono o del PC.
+- **Segna tutte come viste** ingrigisce i cerchi; il riquadro resta, più discreto, per tutta la giornata;
+- con **🔔 Avvisami anche con una notifica** (solo sui dispositivi personali) arriva anche la notifica del telefono o del PC:
+  toccandola si apre l'app direttamente sulle storie.
 
 Limiti: le notifiche arrivano solo mentre l'app è aperta (anche in secondo piano); per avvisare ad app chiusa servirebbe un
 server, che su GitHub Pages non c'è. Chi apre l'app per la prima volta su un dispositivo non vede modifiche "vecchie":
@@ -275,6 +283,7 @@ app/
   js/ingresso.js        schermo all'ingresso: viste a rotazione
   js/intervallo.js      LIM: schermata dell'intervallo (dove vanno le classi nell'ora dopo)
   js/modifiche.js       avvisi delle modifiche dell'ultimo minuto all'orario della giornata
+  js/storie.js          le modifiche in stile storie (cerchi e visualizzatore a tutto schermo)
   lim/                  script per aprire l'app sulle LIM Windows agli intervalli
   js/app.js             schermata iniziale, pulsanti, monitor, aggiornamenti
   sw.js                 funzionamento senza connessione

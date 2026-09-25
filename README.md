@@ -4,6 +4,14 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**25/09/2026 – Modifiche all'orario in stile storie** (Chiara)
+
+- le modifiche dell'ultimo minuto ora si vedono **come le storie di Instagram**: cerchi colorati in alto (grigi quando già visti),
+  e toccandone uno la modifica si apre a tutto schermo, con barrette, passaggio automatico, pausa e chiusura;
+  toccando la notifica del telefono si aprono direttamente le storie;
+- corretto un difetto dell'app sui telefoni: la pagina risultava più larga dello schermo e si rimpiccioliva
+  (colpa di testi nascosti per i lettori di schermo che "uscivano" dalla tabella).
+
 **25/09/2026 – Modifiche dell'ultimo minuto e campanella degli intervalli** (Chiara)
 
 - **Modifiche dell'ultimo minuto**: se l'orario pubblicato cambia, l'app lo mostra in un riquadro giallo in alto
