@@ -131,6 +131,49 @@ Ci sono due tipi di utenti, tutti con l'account della scuola:
 
 Su **iPhone/iPad** l'app si installa da Safari: *Condividi → Aggiungi alla schermata Home*.
 
+## LIM: dove andare dopo l'intervallo
+
+Nelle scuole DADA dopo l'intervallo i ragazzi cambiano aula. Sulle LIM in modalità **monitor dell'aula**, agli orari
+degli intervalli (**9:55 e 11:50**) l'app mostra per 10 minuti, a tutto schermo e a caratteri grandi:
+
+- per ogni classe che era in quell'aula prima dell'intervallo, **dove andare** nell'ora successiva (aula, materia, docente),
+  oppure "Restate qui";
+- quale classe **arriva** in quell'aula dopo l'intervallo.
+
+Il tasto **Chiudi** la toglie fino all'intervallo successivo. Orari e durata si cambiano in `js/config.js`
+(`intervalliLim` e `minutiSchermataIntervallo`).
+
+### Aprire l'app sulla LIM anche quando è chiusa
+
+**Una pagina web non può aprirsi da sola**: è una regola di sicurezza di tutti i browser, e l'app (che vive su GitHub
+Pages, senza server) non la può aggirare. Se l'app è già aperta sulla LIM la schermata compare da sola; per aprirla
+quando è chiusa serve l'aiuto del sistema della LIM.
+
+**LIM con Windows (PC OPS)** – nella cartella [`lim/`](lim/) ci sono gli script pronti:
+
+1. Copiare sulla LIM i file della cartella `app/lim/` (o scaricarli dal sito:
+   `.../app/lim/installa-apertura-intervallo.bat`, `apertura-intervallo.ps1`, `rimuovi-apertura-intervallo.bat`).
+2. Sulla LIM aprire una volta l'app in Edge e fare l'accesso con **"Ricordami"** spuntato.
+3. Doppio clic su **`installa-apertura-intervallo.bat`** e scrivere il nome dell'aula (es. `110ITA4`).
+   Lo script crea nell'*Utilità di pianificazione* di Windows due attività, dal lunedì al venerdì alle 9:55 e alle 11:50,
+   che aprono Edge sull'app, già sul monitor di quell'aula e a schermo intero.
+4. Finito l'intervallo (o premendo *Chiudi*) l'app chiude da sola la finestra che era stata aperta dallo script.
+5. Per togliere tutto: doppio clic su **`rimuovi-apertura-intervallo.bat`**.
+
+Se si cambiano gli orari degli intervalli, vanno cambiati sia in `js/config.js` sia nello script
+(`-Orari "10:50","12:45"`) e lo script va rilanciato. Per vedere cosa farebbe senza cambiare niente:
+`powershell -ExecutionPolicy Bypass -File apertura-intervallo.ps1 -Aula "110ITA4" -Prova`.
+
+**LIM con Android** – da una pagina web non si può programmare l'apertura. Si può usare:
+- la funzione di *programmazione / accensione pianificata* del pannello, se il modello ce l'ha, oppure la console di gestione
+  (MDM) delle LIM della scuola;
+- in alternativa un'app di automazione (per esempio *MacroDroid* o *Automate*) con un'azione a orario, dal lunedì al venerdì
+  alle 9:55 e alle 11:50, che apre l'indirizzo `https://alessandrotrino-creator.github.io/iclaudecanti/app/?monitor=NOMEAULA&intervallo`
+  (con Chrome, o l'app installata).
+
+In ogni caso, se l'app resta sempre aperta sulla LIM (magari dietro ad altre finestre), la schermata compare comunque in
+quella finestra: il browser però non può portarla davanti alle altre da solo.
+
 ## Schermo all'ingresso (proiezione a rotazione)
 
 Per il televisore o il proiettore all'ingresso, dove nessuno tocca lo schermo: l'app mostra l'orario di oggi
@@ -211,6 +254,8 @@ app/
   js/campanella.js      tasto campanella: suoni agli orari di dati/campanella.json
   css/campanella.css    stile del tasto e del pannello della campanella
   js/ingresso.js        schermo all'ingresso: viste a rotazione
+  js/intervallo.js      LIM: schermata dell'intervallo (dove vanno le classi nell'ora dopo)
+  lim/                  script per aprire l'app sulle LIM Windows agli intervalli
   js/app.js             schermata iniziale, pulsanti, monitor, aggiornamenti
   sw.js                 funzionamento senza connessione
   manifest.webmanifest  installazione come app

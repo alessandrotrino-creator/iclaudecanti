@@ -58,7 +58,7 @@ Le parti del progetto:
 index.html        pagina iniziale del sito (link alle due app)
 404.html          pagina per indirizzi inesistenti su GitHub Pages
 .nojekyll         dice a GitHub Pages di pubblicare i file così come sono
-app/              Orario DADA, app di visualizzazione (css/, js/, icone/, sw.js, manifest)
+app/              Orario DADA, app di visualizzazione (css/, js/, icone/, sw.js, manifest; lim/ = script per le LIM Windows)
 orario-facile/    l'app Orario Facile (un unico index.html autonomo + modelli CSV)
 sostituzioni/     codice della scheda Sostituzioni di Orario Facile (css/, js/, esempio/ con facsimili)
 dati/orario.json  l'orario letto da app/ (formato dell'app o backup di Orario Facile)

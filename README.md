@@ -4,6 +4,15 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**25/09/2026 – LIM: dove andare dopo l'intervallo** (Chiara)
+
+- sulle LIM (monitor dell'aula), alle **9:55 e alle 11:50** l'app mostra a tutto schermo, per 10 minuti, dove va ogni classe
+  nell'ora successiva (aula, materia, docente) e chi arriva in quell'aula;
+- una pagina web non può aprirsi da sola quando è chiusa: sulle **LIM Windows** ci pensa lo script
+  `app/lim/installa-apertura-intervallo.bat` (doppio clic, si scrive il nome dell'aula), che programma l'apertura
+  dell'app agli intervalli; finito l'intervallo la finestra si chiude da sola. Per le LIM Android ci sono le istruzioni;
+- dettagli in [app/LEGGIMI.md](app/LEGGIMI.md#lim-dove-andare-dopo-lintervallo).
+
 **25/09/2026 – Modificatori e fruitori** (Chiara)
 
 Non tutti possono modificare l'orario: ora ci sono due ruoli.
