@@ -48,7 +48,5 @@
   /* Se i tasti non stanno su una riga vanno a capo a destra, senza uscire dallo schermo */
   .azioni-barra { flex: 0 1 auto; min-width: 0; flex-wrap: wrap; justify-content: flex-end; }
 }
-/* Telefoni stretti: accanto al logo non c'è la scritta "Orario" */
-@media (max-width: 420px) { .testo-marchio { display: none; } }
 
 @media print { .pulsante-campanella, .pannello-campanella { display: none !important; } }

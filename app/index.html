@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/brief.css">
   <link rel="stylesheet" href="css/campanella.css">
+  <link rel="stylesheet" href="css/barra.css">
   <!-- Impostazioni e tema prima della pagina, per non vedere un lampo di colore sbagliato -->
   <script src="js/config.js"></script>
   <script src="js/tema.js"></script>
@@ -74,12 +75,19 @@
         <!-- Apre/chiude la vista "In breve" (la giornata a schede) -->
         <button type="button" id="btnBreve" class="pulsante pulsante-breve" aria-pressed="false" aria-controls="vistaBreve">
           <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M2 2h5v5H2zM9 2h5v3H9zM9 7h5v7H9zM2 9h5v5H2z"/></svg>
-          In breve
+          <span class="testo-tasto">In breve</span>
         </button>
-        <button type="button" id="btnMioOrario" class="pulsante" hidden>Il mio orario</button>
+        <!-- Sui telefoni questi tasti mostrano solo l'icona: la scritta resta per i lettori di schermo (css/barra.css) -->
+        <button type="button" id="btnMioOrario" class="pulsante tasto-icona" title="Il mio orario" hidden>
+          <svg class="icona-telefono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5z"/></svg>
+          <span class="testo-tasto">Il mio orario</span>
+        </button>
         <!-- Nomi veri dei docenti, dal file riservato su Google Drive (js/nomi.js): solo per chi ha accesso al file -->
         <button type="button" id="btnNomi" class="pulsante" aria-pressed="false" title="Mostra i nomi dei docenti al posto dei codici (DOC01…)">👁 Nomi</button>
-        <button type="button" id="btnOggi" class="pulsante">Oggi</button>
+        <button type="button" id="btnOggi" class="pulsante tasto-icona" title="Oggi">
+          <svg class="icona-telefono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zM5 10h14v10H5V10zm2 2v4h4v-4H7z"/></svg>
+          <span class="testo-tasto">Oggi</span>
+        </button>
         <button type="button" id="btnUtente" class="pulsante-utente" aria-haspopup="true" aria-expanded="false" aria-controls="menu"></button>
       </div>
       <!-- Menu dell'utente (tabindex="-1": può ricevere il focus quando si apre, senza entrare nell'ordine del tasto Tab) -->

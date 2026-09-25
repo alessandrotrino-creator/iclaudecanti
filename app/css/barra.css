@@ -1,0 +1,31 @@
+/*
+  barra.css – tasti della barra in alto sui telefoni.
+  Sugli schermi stretti i tasti diventano piccoli tondi con la sola icona, per guadagnare spazio.
+  La scritta non si cancella: resta nascosta alla vista ma la leggono i lettori di schermo.
+  Su tablet e computer non cambia niente (le icone di "Oggi" e "Il mio orario" lì non si vedono).
+*/
+
+/* Icone che servono solo sui telefoni */
+.icona-telefono { display: none; }
+
+@media (max-width: 520px) {
+  /* Tutti i tasti della barra: tondi da 40px, solo icona */
+  .azioni-barra .pulsante,
+  .azioni-barra .pulsante-campanella,
+  .azioni-barra .pulsante-utente {
+    width: 40px; height: 40px; min-height: 40px; padding: 0;
+    display: inline-grid; place-items: center; flex: none; border-radius: 50%;
+  }
+  .azioni-barra .pulsante svg,
+  .azioni-barra .pulsante-campanella svg { width: 20px; height: 20px; }
+  .icona-telefono { display: block; }
+  /* La scritta sparisce alla vista (stessa tecnica di .solo-lettori in app.css) */
+  .azioni-barra .testo-tasto {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  .azioni-barra { gap: 6px; }
+  .pulsante-utente { font-size: .85rem; }
+  /* Con i tasti piccoli c'è di nuovo posto per la scritta "Orario" accanto al logo */
+  .testo-marchio { display: flex; }
+}
