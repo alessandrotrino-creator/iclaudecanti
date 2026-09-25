@@ -23,8 +23,10 @@ Le parti del progetto:
   "Scarica orario.json" per pubblicare (il file va caricato in `dati/`).
 - **Dati della scuola in Orario Facile**: `orario-facile/index.html` contiene i dati 2026/27
   (`CSV_SCUOLA_CLASSI`, `CSV_SCUOLA_DOCENTI` e `datiScuola()`), caricati alla prima apertura e con il pulsante
-  "Dati scuola 2026/27". **Privacy**: il repo è pubblico, quindi i docenti compaiono solo con le iniziali
-  ("F. A.", due lettere se ambigue); non pubblicare mai nomi completi, PDF o fogli con i nomi dei docenti.
+  "Dati scuola 2026/27". **Privacy**: il repo è pubblico, quindi i docenti compaiono solo con un codice
+  (DOC1, DOC2…, assegnati in ordine casuale: niente iniziali, niente ordine alfabetico). La corrispondenza codice → nome
+  sta in un Foglio Google ad accesso limitato (copia locale in `privato/`); non pubblicare mai nomi completi,
+  iniziali, PDF o fogli con i nomi dei docenti.
 - **Sostituzioni docenti**: è la scheda 9 di Orario Facile (`#p-sostituzioni`, `renderSostituzioni()`), ma il suo codice
   sta in file separati in `sostituzioni/` (css/, js/) per non gonfiare `orario-facile/index.html` e ridurre i conflitti.
   Orario Facile li carica con `<script src="../sostituzioni/js/...">` insieme a `../app/js/dati.js` e chiama
