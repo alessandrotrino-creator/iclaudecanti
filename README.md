@@ -4,6 +4,12 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**25/09/2026 – Nuova icona e caricamento con il robot** (Chiara)
+
+- l'app ha una mascotte: un **robot sorridente** con l'orologio sul petto; è la nuova **icona** (anche nella schermata di accesso);
+- quando si apre l'app, mentre si carica, il robot **dondola** su sfondo blu, sbatte le palpebre, l'antenna lampeggia e la lancetta gira;
+- dettagli in [app/LEGGIMI.md](app/LEGGIMI.md#icona-e-caricamento-il-robot-sorridente).
+
 **25/09/2026 – Linee guida per le ore di potenziamento di italiano L2** (Margherita)
 
 - nuova cartella `potenziamento/` con le [linee guida per l'assegnazione delle ore di potenziamento di italiano L2](potenziamento/linee-guida-L2.md)
