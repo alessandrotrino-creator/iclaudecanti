@@ -1,0 +1,182 @@
+# Manuale Orario Facile — Modificatori
+
+*Team Wolf — risolvo problemi*
+
+Guida per chi costruisce l'orario, lo pubblica e gestisce le sostituzioni dei docenti assenti. Serve il ruolo di
+**modificatore**: l'account Google della scuola da solo non basta.
+
+Indirizzo: **https://alessandrotrino-creator.github.io/iclaudecanti/orario-facile/**
+Sostituzioni: scheda 9 di Orario Facile
+
+## In breve
+
+1. Apri Orario Facile e accedi con l'account della scuola. Se vedi "Solo consultazione", copia il tuo **codice** e
+   mandalo a chi gestisce le abilitazioni.
+2. Una volta abilitato, lavora sulle schede: **Impostazioni** → **Discipline** → **Aule** → **Quadro orario** →
+   **Docenti e cattedre** → **Criteri** → **Orario** (genera e correggi a mano) → **Salvataggio**.
+3. Per pubblicare per tutti: scheda **Salvataggio** → **Scarica orario.json** → carica il file nella cartella
+   `dati/` del repository su GitHub → **Commit changes**.
+4. Per le sostituzioni: scheda **Sostituzioni** → carica il foglio del conteggio ore (o collegalo da Drive) → segna
+   il docente assente → assegna i sostituti proposti.
+5. Per registrare le sostituzioni sul Foglio Google condiviso serve essere nell'elenco **Abilitazioni** di quel
+   foglio (email, non codice).
+
+## Ruoli: fruitori e modificatori
+
+Tutti quelli della scuola possono **consultare** l'orario nell'app Orario DADA (i "fruitori"). Solo i
+**modificatori** possono aprire **Orario Facile** per costruire l'orario e fare le sostituzioni.
+
+1. Chi apre Orario Facile per la prima volta accede con l'account Google della scuola.
+2. Se non è ancora un modificatore vede la schermata **"Solo consultazione"**, con il link all'orario e un
+   **codice di 16 caratteri** da copiare.
+3. Manda quel codice a chi gestisce le abilitazioni (uno del gruppo con accesso al repository).
+4. Chi gestisce aggiunge il codice all'elenco `editori` in `app/js/config.js` e pubblica la modifica su GitHub.
+5. Da quel momento, con lo stesso account, la persona entra direttamente in Orario Facile.
+
+> **Perché un codice e non l'email.** Il repository è pubblico, quindi non si possono scrivere le email dei colleghi
+> nei file. Il codice si ricava dall'email con un calcolo a senso unico: non permette di risalire all'indirizzo, ma
+> identifica sempre la stessa persona.
+
+> **Se l'elenco è vuoto.** Finché `editori` è vuoto, **chiunque della scuola** può usare Orario Facile.
+
+## I due livelli di permesso da tenere distinti
+
+Essere "modificatore" nell'app e poter **pubblicare** le modifiche per tutti sono due cose diverse:
+
+| Permesso | Cosa permette | Chi lo concede |
+|---|---|---|
+| **Modificatore** (ruolo nell'app) | aprire Orario Facile, modificare l'orario *nel proprio browser*, fare sostituzioni | chi modifica `editori` in `config.js` |
+| **Collaboratore del repository GitHub** | caricare (commit) i file su GitHub, cioè **pubblicare per tutti** l'orario aggiornato | chi amministra il repository (Impostazioni → Collaborators) |
+
+Un modificatore che non è anche collaboratore del repository può preparare l'orario e le sostituzioni, ma per farle
+vedere a tutti deve passare il file a chi ha accesso a GitHub (o farsi aggiungere come collaboratore).
+
+## Le schede di Orario Facile
+
+| # | Scheda | A cosa serve |
+|---|---|---|
+| 1 | Impostazioni e classi | giorni di lezione, ore al mattino/pomeriggio, elenco classi |
+| 2 | Discipline | sigla e colore di ogni materia |
+| 3 | Aule | elenco aule, quali sono condivisibili da più classi (palestra, laboratorio) |
+| 4 | Quadro orario settimanale | quante ore di ogni materia per ogni classe |
+| 5 | Docenti e cattedre | materie, classi, ore e aule di ogni docente, indisponibilità |
+| 6 | Criteri e vincoli | vincoli rigidi (mai violati) e preferenze (pesate) per la generazione automatica |
+| 7 | Orario | genera e corregge a mano: trascina, blocca con il lucchetto, vede per classe/docente/aula |
+| 8 | Salvataggio ed esportazione | pubblicare nell'app, backup, CSV, importazione da Excel |
+| 9 | Sostituzioni docenti | gestire l'assenza di un docente e le proposte di sostituzione |
+
+### Costruire e correggere l'orario (scheda 7)
+
+- **Genera orario** crea una proposta automatica; **✨ Ottimizza** la migliora (qualità: Veloce, Normale, Accurata).
+- Per correggere a mano: **trascina** una lezione in un'altra casella, oppure clicca una casella e poi la destinazione.
+- Il **lucchetto 🔒** protegge una casella dalle rigenerazioni: diventa un'**assegnazione fissa**.
+- In alto: ore collocate, caselle vuote, ore non collocate, conflitti, con l'elenco dettagliato dei problemi.
+- **Controlla fattibilità** verifica se l'orario è risolvibile prima di generare.
+- Viste: **Per classe**, **Per docente**, **Per aula**, **Quadro generale**; da lì anche **Stampa / PDF**.
+
+## Pubblicare l'orario per tutti
+
+Il lavoro si salva da solo nel browser. Per farlo vedere a **tutti**:
+
+1. Scheda **Salvataggio ed esportazione** → pulsante **Scarica orario.json**.
+2. Apri la cartella `dati` del repository su GitHub.
+3. Trascina il file scaricato (sostituisce quello vecchio) e premi **Commit changes**.
+4. Dopo un paio di minuti tutti i dispositivi vedono il nuovo orario (si aggiorna ogni 15 minuti).
+
+> **Anteprima prima di pubblicare.** Sullo stesso computer, mentre lavori in Orario Facile, l'app Orario DADA (in
+> un'altra scheda del browser) mostra già la tua bozza e si aggiorna da sola: pulsante **📱 Vedi nell'app**.
+
+Nella stessa scheda ci sono anche: **backup completo** (.json), le **tabelle CSV** (orario classi, orario docenti,
+elenco cattedre) e l'**importazione** da modelli Excel o da un orario .xlsm già esistente.
+
+## Vedere i nomi veri dei docenti
+
+Nell'orario i docenti compaiono come codici (`DOC01`, `DOC02`…) perché il repository è pubblico. Il pulsante
+**👁 Nomi** collega ogni codice al nome vero, leggendolo da un Foglio Google riservato (serve il permesso su quel
+file, con l'account della scuola).
+
+> **Regola da rispettare sempre.** I nomi restano solo in memoria nel browser: non vanno mai salvati in file
+> scaricati, backup, CSV o altri documenti che potrebbero finire nel repository pubblico su GitHub.
+
+## Sostituzioni docenti
+
+È la scheda 9 di Orario Facile, per organizzare la sostituzione dei docenti assenti usando il foglio del conteggio
+ore (chi è a debito e chi è a credito).
+
+### Privacy: il foglio non va mai su GitHub
+
+- **Foglio su Google Drive** (consigliato): si legge con **👁 Nomi** o **☁️ Carica dal Drive**. Ogni sostituzione
+  assegnata scrive **+1** nella cella del sostituto, nella settimana giusta; annullandola toglie 1.
+- **Carica il foglio** (.ods, .xlsx, .csv): viene letto solo nel browser di quel computer, non è inviato a nessuno.
+
+Assenze, sostituzioni e foglio restano salvati solo sul dispositivo usato.
+
+### Chi può registrare le sostituzioni
+
+Foglio Google dedicato, con due schede:
+
+- **Abilitazioni**: nomi ed **email** di chi può registrare sostituzioni. **🔐 Verifica la mia abilitazione**
+  controlla l'email di chi è entrato. Per abilitare qualcuno si aggiunge una riga nel foglio.
+- **Sostituzioni**: ogni sostituzione assegnata diventa una riga, con i **nomi veri**, presi dal file riservato e
+  mai scritti su GitHub o nel dispositivo.
+
+### Come si usa
+
+1. Carica il foglio del conteggio ore.
+2. Controlla gli abbinamenti (**👁 Nomi**); se dubbio, scegli dall'elenco a mano.
+3. Scegli il giorno e spunta le ore di assenza.
+4. In "Ore da coprire", per ogni ora premi **Assegna** sul docente proposto.
+5. A fine settimana copia le ore in "Da aggiungere nel foglio", premi **"Segna come già riportate"** e ricarica.
+
+Si possono stampare le sostituzioni del giorno e scaricare il registro in CSV.
+
+### Come vengono proposti i docenti
+
+Per ogni ora scoperta, l'ordine dei docenti proposti è:
+
+1. prima chi è **a scuola quel giorno**;
+2. poi chi ha **più ore a debito** (saldo più basso);
+3. a parità: chi ha un'ora buca, poi chi ha lezione subito prima o dopo;
+4. poi chi conosce già la classe.
+
+Il saldo usato è: totale del foglio + sostituzioni già fatte ma non ancora riportate. In caso di compresenza, la
+scheda lo segnala.
+
+## Lavorare in gruppo sul codice
+
+Il gruppo lavora tutti insieme direttamente su `main`:
+
+- Prima di iniziare a modificare: `git pull --rebase`.
+- Commit piccoli e frequenti, un argomento per commit.
+- Per consegnare: `./sync.sh "cosa ho fatto"`.
+- Configurazione consigliata una volta sola: `git config pull.rebase true` e `git config rebase.autoStash true`.
+
+## Limiti e attenzioni
+
+> **Il controllo dei ruoli è lato browser.** Orario Facile è fatto di file pubblici: il controllo
+> "modificatore / solo consultazione" avviene nel browser, e separa bene i ruoli nell'uso normale — ma una persona
+> esperta potrebbe aggirarlo sul proprio computer. Non potrebbe comunque cambiare l'orario di tutti: le modifiche
+> restano nel suo browser finché non vengono caricate su GitHub, e per farlo serve essere collaboratori del
+> repository.
+
+> **Il file dell'orario resta scaricabile.** L'accesso Google impedisce di usare l'app a chi non è della scuola, ma
+> `dati/orario.json` resta scaricabile da chi conosce l'indirizzo esatto: GitHub Pages pubblica tutto. Va bene per un
+> orario senza nomi reali; per più riservatezza servirebbe un servizio con controllo d'accesso.
+
+## Domande frequenti
+
+**Ho aperto Orario Facile ma vedo "Solo consultazione".** Copia il codice mostrato e mandalo a chi gestisce le
+abilitazioni: verrà aggiunto all'elenco `editori`.
+
+**Ho pubblicato l'orario.json ma l'app non lo mostra.** Aspetta qualche minuto (si aggiorna ogni 15 minuti);
+controlla di aver caricato il file nella cartella `dati/` giusta e premuto "Commit changes".
+
+**Non vedo i nomi veri dei docenti.** Serve il permesso di lettura sul Foglio Google riservato dei nomi: se il
+pulsante "👁 Nomi" non funziona, chiedi l'accesso a chi gestisce quel foglio.
+
+**Non riesco a registrare una sostituzione.** Serve essere nell'elenco **Abilitazioni** del Foglio Google delle
+sostituzioni (per email, non per codice): controlla con "🔐 Verifica la mia abilitazione".
+
+---
+*Guida basata sulla documentazione del progetto iclaudecanti (`CLAUDE.md`, `sostituzioni/LEGGIMI.md`), aggiornata al
+25/09/2026.*
