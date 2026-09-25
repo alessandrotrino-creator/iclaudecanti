@@ -277,11 +277,54 @@
     [l.m || '—', l.d ? Dati.nome('docente', l.d) : '', l.a ? '📍 ' + Dati.nome('aula', l.a) : '']
       .filter(Boolean).map(Viste.esc).join(' · ')).join(' + ');
 
-  // Il riquadro in alto con l'elenco delle modifiche
+  // Il contenuto di una "storia" (vedi storie.js): com'era prima e com'è adesso, a caratteri grandi
+  function corpoStoria(x) {
+    const o = D.ore.find(k => k.n === x.ora);
+    const blocco = l => `<span class="storia-lezione"><strong class="storia-materia">${Viste.esc(l.m || '—')}</strong>` +
+      (l.d ? `<span>${Viste.esc(Dati.nome('docente', l.d))}</span>` : '') +
+      (l.a ? `<span class="storia-aula">📍 ${Viste.esc(Dati.nome('aula', l.a))}</span>` : '') + '</span>';
+    const prima = x.prima.length
+      ? `<div class="storia-prima"><span class="storia-etichetta">Prima</span><del>${descriviLezioni(x.prima)}</del></div>` : '';
+    const dopo = x.dopo.length
+      ? `<div class="storia-dopo"><span class="storia-etichetta">${x.prima.length ? 'Adesso' : 'Nuova lezione'}</span>${x.dopo.map(blocco).join('')}</div>`
+      : '<div class="storia-dopo"><strong class="storia-materia">Lezione tolta</strong></div>';
+    return `<p class="storia-quando">${x.ora}ª ora${o ? ` · ${Viste.esc(o.inizio)}–${Viste.esc(o.fine)}` : ''}</p>` +
+      `<p class="storia-classe">${Viste.esc(Dati.nome('classe', x.classe))}</p>` +
+      prima + (prima ? '<p class="storia-freccia" aria-hidden="true">↓</p>' : '') + dopo +
+      (x.tua ? '<p class="storia-riguarda">Ti riguarda</p>' : '');
+  }
+
+  // Le modifiche trasformate in storie: prima quelle da vedere, poi quelle già viste
+  function storieDaMostrare() {
+    return modificheDaMostrare()
+      .map(x => ({
+        id: x.id, vista: x.vista, tua: x.tua, cerchio: x.ora + 'ª', sotto: Dati.nome('classe', x.classe),
+        titolo: `${x.ora}ª ora · ${Dati.nome('classe', x.classe)}`, corpo: corpoStoria(x)
+      }))
+      .sort((a, b) => a.vista - b.vista);
+  }
+
+  function apriStorie(indice) {
+    Storie.apri(storieDaMostrare(), indice, {
+      quandoVista: id => Modifiche.segnaVista(id),
+      // alla chiusura rileggo le modifiche (ora "viste"), ridisegno i cerchi e ci riporto il focus
+      quandoChiusa: () => {
+        controllaModifiche(false);
+        disegnaModifiche();
+        const cerchio = $('#modifiche .storia-cerchio');
+        if (cerchio) cerchio.focus();
+      }
+    });
+  }
+
+  // Il riquadro in alto: la fila di storie (come su Instagram) e l'elenco scritto delle modifiche
   function disegnaModifiche() {
     const box = $('#modifiche');
     const elenco = modificheDaMostrare();
-    if (!modifiche || !modifiche.daVedere || !elenco.length) { box.hidden = true; box.innerHTML = ''; return; }
+    if (!modifiche || !elenco.length) { box.hidden = true; box.innerHTML = ''; return; }
+    const daVedere = elenco.some(x => !x.vista);
+    // Sui monitor e sullo schermo all'ingresso nessuno tocca: l'elenco resta sempre aperto
+    const schermoPubblico = aulaMonitor || secondiIngresso;
     const quando = modifiche.giorno === adesso().giorno ? 'di oggi' : 'di ' + modifiche.giorno.toLowerCase();
     const righe = elenco.map(x => {
       const prima = descriviLezioni(x.prima), dopo = descriviLezioni(x.dopo);
@@ -293,10 +336,14 @@
     }).join('');
     // La notifica si propone solo sui dispositivi personali, e solo se non è già stata decisa
     const proponiNotifica = 'Notification' in window && Notification.permission === 'default' && !aulaMonitor && !secondiIngresso;
+    box.classList.toggle('tutte-viste', !daVedere && !schermoPubblico);
     box.innerHTML =
-      `<div class="modifiche-testa"><h2 id="titoloModifiche">⚠️ Modifiche all'orario ${quando}</h2>` +
-      `<button type="button" id="btnModificheViste" class="pulsante">Ho visto</button></div>` +
-      `<ul class="modifiche-elenco">${righe}</ul>` +
+      `<div class="modifiche-testa"><h2 id="titoloModifiche">${daVedere ? '⚠️ ' : ''}Modifiche all'orario ${quando}</h2>` +
+      (daVedere && !schermoPubblico ? '<button type="button" id="btnModificheViste" class="pulsante leggero">Segna tutte come viste</button>' : '') +
+      '</div>' +
+      Storie.fila(storieDaMostrare()) +
+      `<details class="modifiche-dettagli"${schermoPubblico ? ' open' : ''}><summary>Vedi l'elenco</summary>` +
+      `<ul class="modifiche-elenco">${righe}</ul></details>` +
       (proponiNotifica ? '<button type="button" id="btnModificheNotifiche" class="pulsante leggero">🔔 Avvisami anche con una notifica</button>' : '');
     box.hidden = false;
   }
@@ -473,11 +520,15 @@
     // Quando Orario Facile (aperto in un'altra scheda) salva, l'app si aggiorna subito
     window.addEventListener('storage', e => { if (e.key === Dati.CHIAVE_BOZZA) ricaricaDati(false); });
     $('#btnEsci').addEventListener('click', () => Accesso.esci());
-    // Riquadro delle modifiche: "Ho visto" lo nasconde (le celle restano evidenziate), "Avvisami" chiede il permesso
+    // Riquadro delle modifiche: un cerchio apre le storie, "Segna tutte come viste" ingrigisce i cerchi
+    // (le celle restano evidenziate), "Avvisami" chiede il permesso per le notifiche
     $('#modifiche').addEventListener('click', e => {
-      if (e.target.closest('#btnModificheViste')) {
-        Modifiche.segnaViste();
-        modifiche.daVedere = false;
+      const cerchio = e.target.closest('[data-storia]');
+      if (cerchio) {
+        apriStorie(Number(cerchio.dataset.storia));
+      } else if (e.target.closest('#btnModificheViste')) {
+        Modifiche.segnaVista();
+        controllaModifiche(false);
         disegnaModifiche();
       } else if (e.target.closest('#btnModificheNotifiche')) {
         Notification.requestPermission().then(disegnaModifiche, disegnaModifiche);
@@ -564,6 +615,7 @@
     // LIM: lo script di Windows apre l'app all'intervallo con ?intervallo (vedi app/lim/)
     apertaPerIntervallo = parametri.has('intervallo');
     controllaModifiche(false);   // modifiche arrivate mentre l'app era chiusa: riquadro sì, notifica no
+    const conStorie = parametri.has('storie');   // aperta toccando la notifica: mostra subito le storie
 
     preparaControlli();
     $('#sceltaMonitor').value = valoreUso();
@@ -574,6 +626,13 @@
     schermataIniziale();
     avviaTimer();
     tocco();
+    if (conStorie && modificheDaMostrare().length) apriStorie(0);
+    // Tocco sulla notifica mentre l'app è già aperta: il service worker chiede di mostrare le storie
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener('message', e => {
+        if (e.data && e.data.tipo === 'apriStorie' && modificheDaMostrare().length) apriStorie(0);
+      });
+    }
   }
 
   // Service worker: permette di installare l'app e di usarla senza connessione

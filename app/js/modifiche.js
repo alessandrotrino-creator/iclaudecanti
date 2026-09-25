@@ -56,13 +56,16 @@ const Modifiche = (() => {
     Restituisce { giorno, elenco, nuove, daVedere }:
     - elenco: tutte le modifiche della giornata per quel giorno
     - nuove: quante ne sono arrivate con questo caricamento
-    - daVedere: true se ci sono modifiche che l'utente non ha ancora segnato come "viste"
+    - daVedere: true se ci sono modifiche che l'utente non ha ancora visto
+    Ogni modifica ha anche "vista" (true se la sua storia è già stata guardata) e "id"
+    (cambia se la stessa casella cambia di nuovo, così torna "da vedere").
   */
   function controlla(D, giorno) {
     let salvate = leggi(CHIAVE_ELENCO);
     if (!salvate || salvate.data !== oggi() || salvate.giorno !== giorno) {
-      salvate = { data: oggi(), giorno, elenco: [], vista: '' };
+      salvate = { data: oggi(), giorno, elenco: [], viste: [] };
     }
+    if (!Array.isArray(salvate.viste)) salvate.viste = [];
     let nuove = 0;
     if (D.fonte === 'pubblicato') {
       const adesso = D.lezioni.map(compatta);
@@ -82,21 +85,28 @@ const Modifiche = (() => {
       scrivi(CHIAVE_FOTO, { lezioni: adesso });
       scrivi(CHIAVE_ELENCO, salvate);
     }
-    return { giorno, elenco: salvate.elenco, nuove, daVedere: !!salvate.elenco.length && firmaElenco(salvate.elenco) !== salvate.vista };
+    const elenco = salvate.elenco.map(x => {
+      const id = idModifica(x);
+      return Object.assign({}, x, { id, vista: salvate.viste.includes(id) });
+    });
+    return { giorno, elenco, nuove, daVedere: elenco.some(x => !x.vista) };
   }
 
-  const firmaElenco = elenco => elenco.map(x => x.chiave + '=' + firma(x.dopo)).join(';');
+  // Identifica una modifica: casella + come è diventata
+  const idModifica = x => x.chiave + '=' + firma(x.dopo);
 
-  // L'utente ha premuto "Ho visto": il riquadro si nasconde finché non arrivano altre modifiche
-  function segnaViste() {
+  // Una storia è stata guardata (id) oppure, senza id, "Segna tutte come viste"
+  function segnaVista(id) {
     const salvate = leggi(CHIAVE_ELENCO);
     if (!salvate) return;
-    salvate.vista = firmaElenco(salvate.elenco);
+    if (!Array.isArray(salvate.viste)) salvate.viste = [];
+    const nuove = id ? [id] : salvate.elenco.map(idModifica);
+    nuove.forEach(v => { if (!salvate.viste.includes(v)) salvate.viste.push(v); });
     scrivi(CHIAVE_ELENCO, salvate);
   }
 
   // Le caselle modificate, per evidenziarle nella tabella ("giorno|ora|classe")
   const caselle = risultato => new Set((risultato ? risultato.elenco : []).map(x => x.chiave));
 
-  return { controlla, segnaViste, caselle };
+  return { controlla, segnaVista, caselle };
 })();

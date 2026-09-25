@@ -366,6 +366,79 @@ body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario thead th.angolo {
   padding: 0 6px; border-radius: 4px; background: var(--evidenza-bordo); color: #1a1f2b;
 }
 body.modalita-monitor .modifiche, body.modalita-ingresso .modifiche { font-size: 1.1em; }
+/* Quando tutte le storie sono state viste il riquadro diventa discreto (restano i cerchi grigi) */
+.modifiche.tutte-viste { background: var(--superficie); border-color: var(--bordo); }
+.modifiche.tutte-viste h2 { font-size: 1rem; color: var(--testo-tenue); }
+.modifiche-dettagli summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
+
+/* ---------- Modifiche in stile storie (vedi js/storie.js) ---------- */
+/* Fila di cerchi: scorre di lato se sono tanti */
+.storie-fila { list-style: none; display: flex; gap: 14px; margin: 10px 0 4px; padding: 2px 2px 6px; overflow-x: auto; }
+.storia-cerchio {
+  display: grid; justify-items: center; gap: 4px; padding: 0; border: 0; background: none;
+  color: var(--testo); font: inherit; cursor: pointer; min-width: 64px;
+}
+/* Anello colorato (da vedere) come nelle storie di Instagram */
+.storia-anello {
+  display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; padding: 3px;
+  background: conic-gradient(from 200deg, #f58529, #dd2a7b, #8134af, #515bd4, #f58529);
+}
+.storia-cerchio.tua .storia-anello { background: conic-gradient(from 200deg, #d9a300, #ff6b00, #d9a300); }
+.storia-cerchio.vista .storia-anello { background: var(--bordo); }
+.storia-interno {
+  display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%;
+  background: var(--superficie); border: 3px solid var(--superficie);
+  font-weight: 800; font-size: 1.15rem;
+}
+.storia-nome { font-size: .8rem; font-weight: 600; max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.storia-cerchio.vista .storia-nome { color: var(--testo-tenue); font-weight: 400; }
+.storia-cerchio:focus-visible .storia-anello { outline: 3px solid var(--primario); outline-offset: 2px; }
+
+/* Visualizzatore a tutto schermo: sempre scuro, come nelle app di storie */
+body.storie-aperte { overflow: hidden; }
+.visore-storie {
+  position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column;
+  padding: max(10px, env(safe-area-inset-top)) 12px max(16px, env(safe-area-inset-bottom));
+  background: radial-gradient(circle at 30% 20%, #3b2a6b, #10131c 70%); color: #fff;
+}
+.visore-storie[hidden] { display: none; }
+.visore-storie.storia-tua { background: radial-gradient(circle at 30% 20%, #6b4a00, #10131c 70%); }
+.storie-barre { display: flex; gap: 4px; }
+.storie-barra { flex: 1; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .3); overflow: hidden; }
+.storie-barra.piena { background: #fff; }
+.storie-riempimento {
+  display: block; height: 100%; background: #fff; transform-origin: left;
+  animation-name: riempi-barra; animation-timing-function: linear; animation-fill-mode: forwards;
+}
+.visore-storie.in-pausa .storie-riempimento { animation-play-state: paused; }
+.storie-testa { position: relative; z-index: 2; display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.storie-conteggio { flex: 1; font-weight: 600; font-size: .95rem; }
+.storie-pulsante {
+  width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .15);
+  color: #fff; font-size: 1.2rem; cursor: pointer;
+}
+.storie-pulsante:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.storia-contenuto {
+  flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+  gap: 10px; text-align: center; padding: 16px 8px; pointer-events: none;
+}
+.storia-quando { margin: 0; font-size: 1.1rem; opacity: .85; text-transform: uppercase; letter-spacing: .06em; }
+.storia-classe { margin: 0; font-size: clamp(3rem, 14vw, 6rem); font-weight: 800; line-height: 1; }
+.storia-etichetta { display: block; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; opacity: .75; margin-bottom: 2px; }
+.storia-prima { font-size: 1.1rem; opacity: .8; }
+.storia-freccia { margin: 0; font-size: 2rem; }
+.storia-dopo { display: grid; gap: 10px; padding: 16px 22px; border-radius: 20px; background: rgba(255, 255, 255, .12); }
+.storia-lezione { display: grid; gap: 2px; font-size: 1.15rem; }
+.storia-materia { font-size: clamp(1.8rem, 8vw, 3rem); line-height: 1.1; }
+.storia-aula { font-size: clamp(1.4rem, 6vw, 2.2rem); font-weight: 800; color: #ffd166; }
+.storia-riguarda {
+  margin: 4px 0 0; padding: 4px 14px; border-radius: 999px; background: #ffd166; color: #1a1f2b; font-weight: 800;
+}
+/* Metà sinistra = indietro, metà destra = avanti (sotto la testata) */
+.storie-zona { position: absolute; top: 80px; bottom: 0; width: 50%; border: 0; background: none; cursor: pointer; z-index: 1; }
+.storie-zona.indietro { left: 0; }
+.storie-zona.avanti { right: 0; }
+.storie-zona:focus-visible { outline: 3px solid rgba(255, 255, 255, .6); outline-offset: -6px; }
 @media (min-width: 700px) { .modifiche { margin: 12px 16px 0; } }
 
 /* ---------- LIM: schermata dell'intervallo (vedi js/intervallo.js) ---------- */

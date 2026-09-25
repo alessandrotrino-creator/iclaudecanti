@@ -5,7 +5,7 @@
 const CACHE = 'orario-dada';
 const FILE_APP = [
   './', 'index.html', 'css/app.css', 'css/brief.css', 'css/campanella.css', 'manifest.webmanifest',
-  'js/config.js', 'js/tema.js', 'js/dati.js', 'js/accesso.js', 'js/ruoli.js', 'js/nomi.js', 'js/viste.js', 'js/brief.js', 'js/ingresso.js', 'js/intervallo.js', 'js/modifiche.js', 'js/campanella.js', 'js/installa.js', 'js/condividi.js', 'js/app.js',
+  'js/config.js', 'js/tema.js', 'js/dati.js', 'js/accesso.js', 'js/ruoli.js', 'js/nomi.js', 'js/viste.js', 'js/brief.js', 'js/ingresso.js', 'js/intervallo.js', 'js/modifiche.js', 'js/storie.js', 'js/campanella.js', 'js/installa.js', 'js/condividi.js', 'js/app.js',
   'icone/icona.svg', 'icone/icona-192.png', 'icone/apple-touch-icon.png', 'icone/qr-app.svg',
   '../dati/orario.json', '../dati/campanella.json'
 ];
@@ -40,6 +40,8 @@ self.addEventListener('notificationclick', evento => {
   evento.notification.close();
   evento.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(finestre => {
     const app = finestre.find(f => f.url.includes('/app/'));
-    return app ? app.focus() : self.clients.openWindow('./');
+    // l'app aperta mostra subito le modifiche in stile storie (vedi storie.js)
+    if (app) return app.focus().then(f => (f || app).postMessage({ tipo: 'apriStorie' }));
+    return self.clients.openWindow('./?storie');
   }));
 });
