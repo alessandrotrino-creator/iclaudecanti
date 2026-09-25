@@ -4,6 +4,15 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**25/09/2026 – Icona nuova: il robottino a pixel** (Chiara)
+
+- la mascotte è stata ridisegnata a **quadrettoni**, nello stile di Claude Code ma tutta nostra: un robottino bianco
+  che sembra un animaletto, con **due antenne** a pallina gialla, occhi a stanghetta, braccine, piedi gialli e un
+  **orologio giallo sulla pancia**, sempre su sfondo blu;
+- cambiano tutte le icone (scheda del browser, schermata di accesso, app installata su Android e iPhone) e anche il
+  robot che dondola durante il caricamento;
+- dettagli in [app/LEGGIMI.md](app/LEGGIMI.md#icona-e-caricamento-il-robottino-a-pixel).
+
 **25/09/2026 – Manuali per fruitori e modificatori** (Alessandro)
 
 - due guide, in breve e dettagliate: una per chi consulta l'orario ([manuali/orario-dada-fruitori.md](manuali/orario-dada-fruitori.md)) e una per chi lo modifica e fa le sostituzioni ([manuali/orario-facile-modificatori.md](manuali/orario-facile-modificatori.md));
@@ -13,7 +22,7 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 - l'app ha una mascotte: un **robot sorridente** con l'orologio sul petto; è la nuova **icona** (anche nella schermata di accesso);
 - quando si apre l'app, mentre si carica, il robot **dondola** su sfondo blu, sbatte le palpebre, l'antenna lampeggia e la lancetta gira;
-- dettagli in [app/LEGGIMI.md](app/LEGGIMI.md#icona-e-caricamento-il-robot-sorridente).
+- dettagli in [app/LEGGIMI.md](app/LEGGIMI.md#icona-e-caricamento-il-robottino-a-pixel).
 
 **25/09/2026 – Linee guida per le ore di potenziamento di italiano L2** (Margherita)
 

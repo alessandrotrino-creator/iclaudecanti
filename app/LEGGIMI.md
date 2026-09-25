@@ -68,17 +68,20 @@ Per cambiare un orario o aggiungere un intervallo basta modificare il file (orar
   - Settimana + classe 1A + docente Costa → le ore di Costa nella 1A
 - I pulsanti dei giorni cambiano giorno; "Oggi" torna al giorno corrente.
 
-## Icona e caricamento: il robot sorridente
+## Icona e caricamento: il robottino a pixel
 
-La mascotte dell'app è un **robot sorridente** con l'orologio sul petto (è l'app dell'orario):
+La mascotte dell'app è un **robottino a pixel** bianco, un po' animaletto: due antenne con le palline gialle,
+occhi a stanghetta, braccine, piedi gialli e un orologio giallo sulla pancia (è l'app dell'orario).
+Lo stile a quadrettoni si ispira alla mascotte di Claude Code, ma forma e colori sono nostri:
 
 - è l'**icona** dell'app (schermata Home, schede del browser, schermata di accesso);
-- mentre l'app si apre, lo stesso robot **dondola** al centro dello schermo blu, sbatte le palpebre, la luce dell'antenna
-  pulsa e la lancetta dell'orologio gira, con la scritta "Preparo l'orario…". Resta almeno un secondo e poi sfuma
+- mentre l'app si apre, lo stesso robot **dondola** al centro dello schermo blu, sbatte le palpebre, le palline delle antenne
+  pulsano e la lancetta dell'orologio gira, con la scritta "Preparo l'orario…". Resta almeno un secondo e poi sfuma
   lasciando il posto all'app. Chi ha chiesto al dispositivo di ridurre le animazioni lo vede fermo.
 
 File dell'icona, in `icone/`:
-- `icona.svg` – l'originale, con gli angoli arrotondati (si modifica questo);
+- `icona.svg` – l'originale, con gli angoli arrotondati (si modifica questo). Il robot è disegnato su una griglia
+  di 16×16 quadretti: ogni `rect` misura in quadretti e il `transform` lo ingrandisce;
 - `icona-piena.svg` – sfondo fino ai bordi e robot più piccolo: Android e iPhone ritagliano da soli la forma;
 - `icona-192.png`, `icona-512.png` (da `icona.svg`), `icona-maskable-512.png` e `apple-touch-icon.png` (180×180,
   da `icona-piena.svg`): servono per installare l'app.
@@ -90,8 +93,8 @@ Se si cambia il disegno, i PNG si rigenerano con Microsoft Edge da PowerShell (d
 ```
 
 (e lo stesso con 192 e, per `icona-piena.svg`, 512 → `icona-maskable-512.png` e 180 → `apple-touch-icon.png`).
-Il robot del caricamento è disegnato direttamente in `index.html` (con le animazioni in `css/app.css`): se cambia l'icona,
-conviene aggiornarlo uguale. Sui telefoni l'icona dell'app già installata si aggiorna da sola dopo qualche giorno,
+Il robot del caricamento è disegnato direttamente in `index.html` con gli stessi quadretti (animazioni in `css/app.css`):
+se cambia l'icona, conviene aggiornarlo uguale. Sui telefoni l'icona dell'app già installata si aggiorna da sola dopo qualche giorno,
 oppure disinstallando e reinstallando l'app.
 
 ## Installare l'app e scegliere il tema
