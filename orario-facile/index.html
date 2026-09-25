@@ -14,6 +14,8 @@ img{max-width:100%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600&display=swap">
+<!-- stile della scheda Sostituzioni (i suoi file stanno nella cartella sostituzioni/) -->
+<link rel="stylesheet" href="../sostituzioni/css/sostituzioni.css">
 <style>
 :root{
   --bg:#f2f4f6; --surface:#ffffff; --surface-2:#e9ecf1; --surface-3:#f7f8fa;
@@ -466,9 +468,26 @@ td input[type=number]{width:64px}
       </div>
     </div>
   </section>
+
+  <!-- 9 SOSTITUZIONI: il contenuto lo disegna sostituzioni/js/sostituzioni.js -->
+  <section class="panel" id="p-sostituzioni" role="tabpanel" hidden>
+    <div class="phead">
+      <h2>Sostituzioni docenti</h2>
+      <p>Segna i docenti assenti di un giorno: per ogni ora scoperta vengono proposti i docenti liberi,
+        a partire da chi ha più ore a debito nel foglio del conteggio ore.</p>
+    </div>
+    <div id="sostituzioniApp"><p class="hint">Caricamento…</p></div>
+  </section>
 </main>
 
 <div class="overlay" id="overlay" hidden><div class="modal" id="modal"></div></div>
+
+<!-- Scheda Sostituzioni: lettura dell'orario (dall'app Orario DADA) e file della cartella sostituzioni/ -->
+<script src="../app/js/dati.js"></script>
+<script src="../sostituzioni/js/foglio.js"></script>
+<script src="../sostituzioni/js/archivio.js"></script>
+<script src="../sostituzioni/js/abbinamenti.js"></script>
+<script src="../sostituzioni/js/sostituzioni.js"></script>
 
 <script>
 /* ===========================================================
@@ -1382,7 +1401,8 @@ function aulaPerCella(docId, g, s, escludiClasse){
    =========================================================== */
 const TABS = [
   ['setup','Impostazioni'], ['discipline','Discipline'], ['aule','Aule'], ['quadro','Quadro orario'],
-  ['docenti','Docenti'], ['vincoli','Vincoli'], ['orario','Orario'], ['esporta','Esporta']
+  ['docenti','Docenti'], ['vincoli','Vincoli'], ['orario','Orario'], ['esporta','Esporta'],
+  ['sostituzioni','Sostituzioni']
 ];
 
 function renderTabs(){
@@ -1399,8 +1419,21 @@ function vai(tab){
 function render(){
   $('#brandSub').textContent = (S.meta.nome||'') + (S.meta.anno ? ' · ' + S.meta.anno : '');
   const f = { setup:renderSetup, discipline:renderDiscipline, aule:renderAule, quadro:renderQuadro,
-              docenti:renderDocenti, vincoli:renderVincoli, orario:renderOrario, esporta:()=>{} }[S.ui.tab];
+              docenti:renderDocenti, vincoli:renderVincoli, orario:renderOrario, esporta:()=>{},
+              sostituzioni:renderSostituzioni }[S.ui.tab];
   if(f) f();
+}
+
+/* ---------------- 9. sostituzioni ---------------- */
+// La scheda vive nei file di sostituzioni/: qui le passiamo l'orario attuale di Orario Facile,
+// trasformato con Dati.normalizza (lo stesso usato dall'app Orario DADA)
+function renderSostituzioni(){
+  const box = $('#sostituzioniApp');
+  if(typeof Sostituzioni === 'undefined' || typeof Dati === 'undefined'){
+    box.innerHTML = '<p class="hint">La scheda Sostituzioni non è disponibile: mancano i file della cartella <b>sostituzioni/</b> o <b>app/js/dati.js</b>.</p>';
+    return;
+  }
+  Sostituzioni.monta(box, () => Dati.normalizza(S));
 }
 
 /* ---------------- 1. impostazioni ---------------- */
@@ -3173,6 +3206,8 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') chiudiModal(); 
   const salvato = load();
   S = salvato || datiScuola();
   if(!salvato) S.ui.tab = 'orario';
+  // l'indirizzo .../orario-facile/#sostituzioni apre direttamente la scheda Sostituzioni
+  if(location.hash === '#sostituzioni') S.ui.tab = 'sostituzioni';
   normalizza();
   renderTabs();
   TABS.forEach(([k]) => { const p = $('#p-'+k); if(p) p.hidden = (k !== S.ui.tab); });

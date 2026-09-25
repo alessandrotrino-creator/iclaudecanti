@@ -149,7 +149,7 @@ const Foglio = (() => {
 
   // ---------- 4. File .csv (testo separato da ; o ,) ----------
   function leggiCsv(testo) {
-    testo = testo.replace(/^﻿/, '');
+    if (testo.charCodeAt(0) === 0xFEFF) testo = testo.slice(1);   // toglie il BOM iniziale
     const primaRiga = testo.split(/\r?\n/)[0];
     const conta = s => primaRiga.split(s).length;
     const separatore = [';', ',', '\t'].sort((a, b) => conta(b) - conta(a))[0];

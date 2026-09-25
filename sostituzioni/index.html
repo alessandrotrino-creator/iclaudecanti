@@ -4,129 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sostituzioni docenti</title>
-  <meta name="description" content="Sostituzione dei docenti assenti in base al conteggio delle ore a credito e a debito.">
-  <link rel="icon" href="../app/icone/icona.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/sostituzioni.css">
+  <!-- Le Sostituzioni ora sono una scheda di Orario Facile: questa pagina porta lì chi usa il vecchio indirizzo -->
+  <meta http-equiv="refresh" content="0; url=../orario-facile/#sostituzioni">
+  <link rel="canonical" href="../orario-facile/#sostituzioni">
 </head>
 <body>
-  <a class="salta" href="#contenuto">Vai al contenuto</a>
-
-  <header class="testata">
-    <a class="indietro" href="../">← Pagina iniziale</a>
-    <h1>Sostituzioni docenti</h1>
-    <p class="sottotitolo">
-      <strong>Versione di prova</strong>, separata dalle altre app del sito:
-      verrà unita all'Orario DADA se il gruppo la approva.
-    </p>
-  </header>
-
-  <main id="contenuto">
-
-    <!-- ===== 1. Dati: orario e foglio del conteggio ore ===== -->
-    <section class="scheda" aria-labelledby="titoloDati">
-      <h2 id="titoloDati">1. Dati</h2>
-      <div class="colonne">
-        <div>
-          <h3>Orario delle lezioni</h3>
-          <p id="statoOrario" role="status">Caricamento dell'orario…</p>
-          <p id="boxFonte" hidden>
-            <label for="sceltaFonte">Orario da usare</label>
-            <select id="sceltaFonte">
-              <option value="">Automatico (la bozza di Orario Facile, se c'è)</option>
-              <option value="bozza">Bozza di Orario Facile su questo computer</option>
-              <option value="pubblicato">Orario pubblicato (dati/orario.json)</option>
-            </select>
-          </p>
-        </div>
-        <div>
-          <h3>Foglio del conteggio ore</h3>
-          <p id="statoFoglio">Nessun foglio caricato.</p>
-          <label class="pulsante primario scegli-file">
-            Carica il foglio (.ods, .xlsx o .csv)
-            <input type="file" id="fileFoglio" accept=".ods,.xlsx,.csv" class="solo-lettori">
-          </label>
-          <p class="nota">
-            🔒 Il file viene letto <strong>solo su questo computer</strong>: non viene inviato a nessuno
-            e non finisce su GitHub. Per fare una prova:
-            <a href="esempio/conteggio-ore-esempio.ods" download>facsimile .ods</a> ·
-            <a href="esempio/conteggio-ore-esempio.xlsx" download>facsimile .xlsx</a> (nomi inventati).
-          </p>
-        </div>
-      </div>
-      <details id="boxAbbinamenti" class="abbinamenti">
-        <summary id="riassuntoAbbinamenti">Abbinamenti tra orario e foglio</summary>
-        <div id="abbinamenti"></div>
-      </details>
-    </section>
-
-    <!-- ===== 2. Giorno e assenze ===== -->
-    <section class="scheda" aria-labelledby="titoloGiorno">
-      <h2 id="titoloGiorno">2. Assenze del giorno</h2>
-      <div class="navigazione-giorno">
-        <button type="button" id="giornoPrima" class="pulsante" aria-label="Giorno precedente">‹</button>
-        <label for="data" class="solo-lettori">Giorno</label>
-        <input type="date" id="data" required>
-        <button type="button" id="giornoDopo" class="pulsante" aria-label="Giorno successivo">›</button>
-        <button type="button" id="oggi" class="pulsante">Oggi</button>
-      </div>
-      <p id="descrizioneGiorno" class="descrizione-giorno"></p>
-
-      <form id="moduloAssenza" class="modulo-assenza">
-        <fieldset>
-          <legend>Nuova assenza</legend>
-          <label for="docenteAssente">Docente assente</label>
-          <select id="docenteAssente"></select>
-          <div id="oreAssenza"></div>
-          <button type="submit" class="pulsante primario">Registra l'assenza</button>
-        </fieldset>
-      </form>
-
-      <div id="elencoAssenze"></div>
-    </section>
-
-    <!-- ===== 3. Ore da coprire ===== -->
-    <section class="scheda" aria-labelledby="titoloCoprire">
-      <h2 id="titoloCoprire">3. Ore da coprire</h2>
-      <p class="nota">
-        Per ogni ora vengono proposti prima i docenti <strong>già a scuola</strong> quel giorno e liberi in quell'ora,
-        dal più <strong>alto debito di ore</strong> in giù. A parità di debito vengono prima chi ha un'ora buca
-        e chi conosce già la classe.
-      </p>
-      <div id="oreDaCoprire"></div>
-
-      <div id="stampaGiorno" class="stampa-giorno"></div>
-    </section>
-
-    <!-- ===== 4. Saldo ore ===== -->
-    <section class="scheda" aria-labelledby="titoloSaldi">
-      <h2 id="titoloSaldi">4. Saldo ore dei docenti</h2>
-      <div id="saldi"></div>
-    </section>
-
-    <!-- ===== 5. Riportare nel foglio ed esportare ===== -->
-    <section class="scheda" aria-labelledby="titoloEsporta">
-      <h2 id="titoloEsporta">5. Riportare nel foglio ed esportare</h2>
-      <div id="daRiportare"></div>
-      <div class="pulsanti">
-        <button type="button" id="stampa" class="pulsante">🖨️ Stampa le sostituzioni del giorno</button>
-        <button type="button" id="scaricaRiepilogo" class="pulsante">Scarica le ore da riportare (CSV)</button>
-        <button type="button" id="scaricaRegistro" class="pulsante">Scarica il registro completo (CSV)</button>
-        <button type="button" id="segnaRiportate" class="pulsante">✔ Segna come già riportate nel foglio</button>
-        <button type="button" id="cancellaTutto" class="pulsante pericolo">Cancella tutti i dati da questo dispositivo</button>
-      </div>
-    </section>
+  <main>
+    <p>Le sostituzioni ora si trovano in <a href="../orario-facile/#sostituzioni">Orario Facile, scheda «Sostituzioni»</a>.</p>
   </main>
-
-  <!-- Messaggi brevi (es. "Sostituzione assegnata") -->
-  <div id="avviso" class="avviso" role="status" aria-live="polite"></div>
-
-  <!-- Riusiamo, SENZA modificarli, la configurazione e la lettura dell'orario dell'app Orario DADA -->
-  <script src="../app/js/config.js"></script>
-  <script src="../app/js/dati.js"></script>
-  <!-- File di questa parte -->
-  <script src="js/foglio.js"></script>
-  <script src="js/archivio.js"></script>
-  <script src="js/abbinamenti.js"></script>
-  <script src="js/sostituzioni.js"></script>
 </body>
 </html>

@@ -1,21 +1,31 @@
 /*
-  sostituzioni.js – la pagina delle sostituzioni.
-  1. carica l'orario (lo stesso dell'app Orario DADA) e il foglio del conteggio ore;
+  sostituzioni.js – la scheda "Sostituzioni" di Orario Facile.
+  1. usa l'orario di Orario Facile e il foglio del conteggio ore caricato dal computer;
   2. si registrano i docenti assenti di un giorno;
   3. per ogni ora scoperta propone i docenti liberi, prima quelli con più ore a debito;
   4. tiene il conto delle ore fatte, da riportare poi nel foglio.
+
+  Orario Facile la usa così:  Sostituzioni.monta(contenitore, () => orario)
+  dove orario è nel formato di Dati.normalizza() (app/js/dati.js).
+  Si può richiamare ogni volta che si apre la scheda: la prima volta disegna la scheda,
+  le volte dopo rilegge l'orario (che nel frattempo può essere cambiato).
 */
-(() => {
+const Sostituzioni = (() => {
   // Lunedì della settimana 1, se il foglio non lo scrive (settimana 1: dal 9 all'11 settembre 2026)
   const INIZIO_PREDEFINITO = '2026-09-07';
   // Quanti docenti proporre per ogni ora prima di "Mostra tutti"
   const PROPOSTE_VISIBILI = 4;
   const NOMI_GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
+  // Dove si trovano i facsimili del foglio, rispetto alla pagina di Orario Facile
+  const CARTELLA_ESEMPI = '../sostituzioni/esempio/';
 
-  const $ = id => document.getElementById(id);
+  // Tutti gli id della scheda iniziano con "sost-" per non confondersi con quelli di Orario Facile
+  const $ = id => document.getElementById('sost-' + id);
 
-  // ---------- Stato della pagina ----------
-  let D = null;                                   // l'orario (da Dati.carica)
+  // ---------- Stato della scheda ----------
+  let contenitore = null;                         // dove è disegnata la scheda
+  let leggiOrario = null;                         // funzione che restituisce l'orario aggiornato
+  let D = null;                                   // l'orario (formato di Dati.normalizza)
   let foglio = Archivio.leggi('foglio', null);     // il foglio del conteggio ore
   let assenze = Archivio.leggi('assenze', []);     // [{ id, data, docente, ore: [1, 2…] }]
   let registro = Archivio.leggi('registro', []);   // le sostituzioni assegnate
@@ -27,7 +37,7 @@
 
   // ---------- Piccoli aiuti ----------
 
-  // Crea un elemento HTML: el('p', { class: 'nota' }, 'testo', altroElemento)
+  // Crea un elemento HTML: el('p', { class: 'hint' }, 'testo', altroElemento)
   // (i testi sono inseriti come testo semplice, mai come HTML: più sicuro)
   function el(tag, attributi, ...figli) {
     const e = document.createElement(tag);
@@ -43,6 +53,9 @@
     return e;
   }
 
+  // Nome di una classe, di un'aula o di un docente a partire dal suo id
+  const nome = (tipo, id) => { const e = D && D.mappa[tipo].get(id); return e ? e.nome : id; };
+
   // Mostra un messaggio breve in basso per qualche secondo
   let timerAvviso = null;
   function avvisa(testo) {
@@ -54,8 +67,8 @@
   }
 
   // Salva nella memoria del browser e avvisa se non ci riesce
-  function salva(nome, valore) {
-    if (!Archivio.scrivi(nome, valore)) {
+  function salva(cosa, valore) {
+    if (!Archivio.scrivi(cosa, valore)) {
       avvisa('Attenzione: non riesco a salvare su questo dispositivo (memoria piena o bloccata). I dati andranno persi chiudendo la pagina.');
     }
   }
@@ -118,7 +131,7 @@
   // Nome da mostrare: quello completo del foglio se c'è, altrimenti quello dell'orario
   function nomeDocente(id) {
     const r = rigaDi(id);
-    return r ? nomeRiga(r) : Dati.nome('docente', id);
+    return r ? nomeRiga(r) : nome('docente', id);
   }
 
   // Vero se accanto al nome completo conviene mostrare anche le iniziali dell'orario ("F. A.")
@@ -138,11 +151,11 @@
   }
 
   function etichettaSaldo(saldo) {
-    if (!saldo) return el('span', { class: 'etichetta' }, 'non nel foglio');
+    if (!saldo) return el('span', { class: 'tag' }, 'non nel foglio');
     const n = saldo.attuale;
-    const tipo = n < 0 ? 'debito' : n > 0 ? 'credito' : 'pari';
+    const tipo = n < 0 ? 'bad' : n > 0 ? 'ok' : '';   // rosso = debito, verde = credito
     const testo = n < 0 ? `${ore(-n)} a debito` : n > 0 ? `${ore(n)} a credito` : 'in pari';
-    return el('span', { class: 'etichetta ' + tipo }, `${conSegno(n)} · ${testo}`);
+    return el('span', { class: 'tag ' + tipo }, `${conSegno(n)} · ${testo}`);
   }
 
   // ---------- Assenze e ore da coprire ----------
@@ -217,7 +230,7 @@
       assente: l.assente, sostituto: idSostituto, riportata: false
     });
     salva('registro', registro);
-    avvisa(`${testoOra(l.ora)} in ${Dati.nome('classe', l.classe)}: sostituisce ${nomeDocente(idSostituto)}.`);
+    avvisa(`${testoOra(l.ora)} in ${nome('classe', l.classe)}: sostituisce ${nomeDocente(idSostituto)}.`);
     disegnaTutto();
   }
 
@@ -231,13 +244,8 @@
 
   // ---------- Disegno della sezione 1: dati ----------
   function disegnaDati() {
-    if (D) {
-      const fonte = D.fonte === 'bozza' ? 'la bozza di Orario Facile su questo computer' : 'l\'orario pubblicato';
-      $('statoOrario').textContent = `Uso ${fonte}${D.scuola ? ' – ' + D.scuola : ''}: ` +
-        `${D.docente.length} docenti, ${D.lezioni.length} lezioni.` + (D.offline ? ' (copia salvata: sei senza connessione)' : '');
-      $('boxFonte').hidden = !D.bozzaDisponibile;
-      $('sceltaFonte').value = Dati.fonte();
-    }
+    $('statoOrario').textContent = `Orario usato: quello di Orario Facile (${D.docente.length} docenti, ${D.lezioni.length} lezioni). ` +
+      'Se modifichi l\'orario, le proposte si aggiornano da sole.';
 
     const stato = $('statoFoglio');
     stato.replaceChildren();
@@ -266,7 +274,7 @@
       (daControllare ? ` · ${daControllare} da controllare` : ' ✔');
 
     const righeOrdinate = foglio.docenti.slice().sort((a, b) => nomeRiga(a).localeCompare(nomeRiga(b), 'it'));
-    const tabella = el('table', { class: 'tabella' },
+    const tabella = el('table', { class: 'sost-tabella' },
       el('caption', {}, 'Ogni docente dell\'orario è collegato a una riga del foglio. Se è sbagliato o manca, sceglilo dall\'elenco.'),
       el('thead', {}, el('tr', {},
         el('th', { scope: 'col' }, 'Docente nell\'orario'),
@@ -298,9 +306,9 @@
         return el('tr', {},
           el('th', { scope: 'row' }, el('label', { for: idSelect }, t.nome)),
           el('td', {}, scelta),
-          el('td', { class: a.chiave || a.come === 'manuale' ? '' : 'attenzione' }, stati[a.come] || ''));
+          el('td', { class: a.chiave || a.come === 'manuale' ? '' : 'sost-attenzione' }, stati[a.come] || ''));
       })));
-    box.append(el('div', { class: 'scorrevole' }, tabella));
+    box.append(el('div', { class: 'tablewrap' }, tabella));
   }
 
   // ---------- Disegno della sezione 2: giorno e assenze ----------
@@ -325,14 +333,14 @@
     box.replaceChildren();
     const elenco = assenzeDel(dataScelta);
     if (!elenco.length) {
-      box.append(el('p', { class: 'nota' }, 'Nessuna assenza registrata in questo giorno.'));
+      box.append(el('p', { class: 'hint' }, 'Nessuna assenza registrata in questo giorno.'));
       return;
     }
-    box.append(el('h3', {}, 'Assenti'), el('ul', { class: 'elenco-assenze' }, elenco.map(a =>
+    box.append(el('h3', {}, 'Assenti'), el('ul', { class: 'sost-assenze' }, elenco.map(a =>
       el('li', {},
         el('span', {}, el('strong', {}, nomeDocente(a.docente)), ' – ', a.ore.map(n => n + 'ª').join(', '), ' ora'),
         el('button', {
-          type: 'button', class: 'pulsante piccolo',
+          type: 'button', class: 'btn ghost sm',
           'aria-label': 'Togli l\'assenza di ' + nomeDocente(a.docente),
           onclick: () => togliAssenza(a)
         }, 'Togli')))));
@@ -347,23 +355,23 @@
     if (!id || !giorno) return;
     const lezioni = lezioniDi(id, giorno);
     if (!lezioni.length) {
-      box.append(el('p', { class: 'nota' }, 'Questo docente non ha lezioni in questo giorno: non serve nessuna sostituzione.'));
+      box.append(el('p', { class: 'hint' }, 'Questo docente non ha lezioni in questo giorno: non serve nessuna sostituzione.'));
       return;
     }
     // Se il docente è già segnato assente, partiamo dalle sue ore; altrimenti tutte spuntate
     const gia = new Set((assenzeDel(dataScelta).find(a => a.docente === id) || { ore: [] }).ore);
-    box.append(el('fieldset', { class: 'ore-assenza' },
+    box.append(el('fieldset', { class: 'sost-ore' },
       el('legend', {}, 'Ore di assenza'),
-      lezioni.map(l => el('label', { class: 'casella' },
+      lezioni.map(l => el('label', { class: 'sost-casella' },
         el('input', { type: 'checkbox', name: 'ora', value: l.ora, checked: gia.size ? gia.has(l.ora) : true }),
-        ` ${testoOra(l.ora)} · ${Dati.nome('classe', l.classe)} ${l.materia}` + (l.aula ? ` · ${Dati.nome('aula', l.aula)}` : '')))));
+        ` ${testoOra(l.ora)} · ${nome('classe', l.classe)} ${l.materia}` + (l.aula ? ` · ${nome('aula', l.aula)}` : '')))));
   }
 
   function registraAssenza(evento) {
     evento.preventDefault();
     const id = $('docenteAssente').value;
     if (!id) { avvisa('Scegli il docente assente.'); $('docenteAssente').focus(); return; }
-    const oreScelte = [...document.querySelectorAll('#oreAssenza input[name="ora"]:checked')].map(c => Number(c.value));
+    const oreScelte = [...document.querySelectorAll('#sost-oreAssenza input[name="ora"]:checked')].map(c => Number(c.value));
     if (!oreScelte.length) { avvisa('Spunta almeno un\'ora di assenza.'); return; }
     // Se il docente era già assente quel giorno, aggiorniamo le sue ore
     const esistente = assenzeDel(dataScelta).find(a => a.docente === id);
@@ -395,7 +403,7 @@
     box.replaceChildren();
     const elenco = oreDaCoprire(dataScelta);
     if (!elenco.length) {
-      box.append(el('p', { class: 'nota' }, 'Nessuna ora da coprire in questo giorno.'));
+      box.append(el('p', { class: 'hint' }, 'Nessuna ora da coprire in questo giorno.'));
       disegnaStampa([]);
       return;
     }
@@ -406,23 +414,23 @@
   function schedaOra(l) {
     const chiave = [dataScelta, l.ora, l.classe, l.assente].join('|');
     const s = sostituzioneDi(dataScelta, l);
-    const titolo = el('h3', {}, `${testoOra(l.ora)} · ${Dati.nome('classe', l.classe)}`);
-    const dettagli = el('p', { class: 'dettagli-ora' },
-      [l.materia, l.aula ? Dati.nome('aula', l.aula) : '', 'assente: ' + nomeDocente(l.assente)].filter(Boolean).join(' · '));
+    const titolo = el('h3', {}, `${testoOra(l.ora)} · ${nome('classe', l.classe)}`);
+    const dettagli = el('p', { class: 'sost-dettagli' },
+      [l.materia, l.aula ? nome('aula', l.aula) : '', 'assente: ' + nomeDocente(l.assente)].filter(Boolean).join(' · '));
 
     // Compresenza: in classe c'è già un altro docente presente
     const altri = D.lezioni.filter(k => k.giorno === l.giorno && k.ora === l.ora && k.classe === l.classe &&
       k.docente !== l.assente && !assentiAllOra(dataScelta, l.ora).has(k.docente));
     const compresenza = altri.length
-      ? el('p', { class: 'nota' }, `ℹ️ In classe c'è anche ${altri.map(k => nomeDocente(k.docente)).join(', ')} (compresenza): forse la sostituzione non serve.`)
+      ? el('p', { class: 'hint' }, `ℹ️ In classe c'è anche ${altri.map(k => nomeDocente(k.docente)).join(', ')} (compresenza): forse la sostituzione non serve.`)
       : null;
 
     if (s) {
       const saldo = saldoDi(s.sostituto);
-      return el('article', { class: 'ora coperta' }, titolo, dettagli, compresenza,
-        el('p', { class: 'sostituto' }, '✔ Sostituisce ', el('strong', {}, nomeDocente(s.sostituto)), ' ', etichettaSaldo(saldo),
-          s.riportata ? el('span', { class: 'etichetta' }, 'già riportata nel foglio') : null),
-        el('button', { type: 'button', class: 'pulsante piccolo', onclick: () => annulla(s) }, 'Annulla la sostituzione'));
+      return el('article', { class: 'sost-ora coperta' }, titolo, dettagli, compresenza,
+        el('p', { class: 'sost-sostituto' }, '✔ Sostituisce ', el('strong', {}, nomeDocente(s.sostituto)), ' ', etichettaSaldo(saldo),
+          s.riportata ? el('span', { class: 'tag' }, 'già riportata nel foglio') : null),
+        el('button', { type: 'button', class: 'btn ghost sm', onclick: () => annulla(s) }, 'Annulla la sostituzione'));
     }
 
     const tutti = candidati(dataScelta, l);
@@ -431,36 +439,36 @@
     const aperta = aperte.has(chiave);
     const visibili = aperta ? aScuola : aScuola.slice(0, PROPOSTE_VISIBILI);
 
-    const voce = c => el('li', { class: 'candidato' },
-      el('div', { class: 'candidato-info' },
+    const voce = c => el('li', { class: 'sost-candidato' },
+      el('div', { class: 'sost-info' },
         el('strong', {}, nomeDocente(c.t.id)),
-        conSigla(c.t) ? el('span', { class: 'sigla' }, ` (${c.t.nome})`) : null,
-        el('span', { class: 'etichette' },
+        conSigla(c.t) ? el('span', { class: 'mini' }, ` (${c.t.nome})`) : null,
+        el('span', { class: 'sost-etichette' },
           etichettaSaldo(c.saldo),
-          el('span', { class: 'etichetta' }, TESTI_POSIZIONE[c.posizione]),
-          c.stessaClasse ? el('span', { class: 'etichetta' }, 'conosce la classe') : null)),
+          el('span', { class: 'tag' }, TESTI_POSIZIONE[c.posizione]),
+          c.stessaClasse ? el('span', { class: 'tag' }, 'conosce la classe') : null)),
       el('button', {
-        type: 'button', class: 'pulsante primario piccolo',
-        'aria-label': `Assegna la ${l.ora}ª ora in ${Dati.nome('classe', l.classe)} a ${nomeDocente(c.t.id)}`,
+        type: 'button', class: 'btn sm',
+        'aria-label': `Assegna la ${l.ora}ª ora in ${nome('classe', l.classe)} a ${nomeDocente(c.t.id)}`,
         onclick: () => assegna(dataScelta, l, c.t.id)
       }, 'Assegna'));
 
     const contenuto = [];
-    if (!tutti.length) contenuto.push(el('p', { class: 'attenzione' }, 'Nessun docente libero in quest\'ora.'));
-    if (visibili.length) contenuto.push(el('ol', { class: 'candidati' }, visibili.map(voce)));
-    else if (tutti.length) contenuto.push(el('p', { class: 'nota' }, 'Nessun docente già a scuola è libero in quest\'ora.'));
+    if (!tutti.length) contenuto.push(el('p', { class: 'sost-attenzione' }, 'Nessun docente libero in quest\'ora.'));
+    if (visibili.length) contenuto.push(el('ol', { class: 'sost-candidati' }, visibili.map(voce)));
+    else if (tutti.length) contenuto.push(el('p', { class: 'hint' }, 'Nessun docente già a scuola è libero in quest\'ora.'));
     if (aperta && aCasa.length) {
       contenuto.push(el('h4', {}, 'Senza lezioni in questo giorno (dovrebbero venire apposta)'),
-        el('ol', { class: 'candidati' }, aCasa.map(voce)));
+        el('ol', { class: 'sost-candidati' }, aCasa.map(voce)));
     }
     const nascosti = aScuola.length - visibili.length + (aperta ? 0 : aCasa.length);
     if (nascosti > 0 || aperta) {
       contenuto.push(el('button', {
-        type: 'button', class: 'pulsante piccolo', 'aria-expanded': String(aperta),
+        type: 'button', class: 'btn ghost sm', 'aria-expanded': String(aperta),
         onclick: () => { aperta ? aperte.delete(chiave) : aperte.add(chiave); disegnaCoprire(); }
       }, aperta ? 'Mostra meno' : `Mostra tutti i docenti liberi (${tutti.length})`));
     }
-    return el('article', { class: 'ora' }, titolo, dettagli, compresenza, contenuto);
+    return el('article', { class: 'sost-ora' }, titolo, dettagli, compresenza, contenuto);
   }
 
   // Tabella riassuntiva del giorno (è anche quella che si stampa)
@@ -468,7 +476,7 @@
     const box = $('stampaGiorno');
     box.replaceChildren();
     if (!elenco.length) return;
-    box.append(el('div', { class: 'scorrevole' }, el('table', { class: 'tabella' },
+    box.append(el('div', { class: 'tablewrap' }, el('table', { class: 'sost-tabella' },
       el('caption', {}, 'Sostituzioni di ' + dataLunga(dataScelta)),
       el('thead', {}, el('tr', {}, ['Ora', 'Classe', 'Aula', 'Materia', 'Assente', 'Sostituto']
         .map(t => el('th', { scope: 'col' }, t)))),
@@ -476,11 +484,11 @@
         const s = sostituzioneDi(dataScelta, l);
         return el('tr', {},
           el('th', { scope: 'row' }, testoOra(l.ora)),
-          el('td', {}, Dati.nome('classe', l.classe)),
-          el('td', {}, l.aula ? Dati.nome('aula', l.aula) : ''),
+          el('td', {}, nome('classe', l.classe)),
+          el('td', {}, l.aula ? nome('aula', l.aula) : ''),
           el('td', {}, l.materia),
           el('td', {}, nomeDocente(l.assente)),
-          el('td', { class: s ? '' : 'attenzione' }, s ? nomeDocente(s.sostituto) : 'DA COPRIRE'));
+          el('td', { class: s ? '' : 'sost-attenzione' }, s ? nomeDocente(s.sostituto) : 'DA COPRIRE'));
       })))));
   }
 
@@ -489,7 +497,7 @@
     const box = $('saldi');
     box.replaceChildren();
     if (!foglio) {
-      box.append(el('p', { class: 'nota' }, 'Carica il foglio del conteggio ore per vedere il saldo di ogni docente.'));
+      box.append(el('p', { class: 'hint' }, 'Carica il foglio del conteggio ore per vedere il saldo di ogni docente.'));
       return;
     }
     const collegate = new Set([...abbinati.values()].map(a => a.chiave).filter(Boolean));
@@ -498,7 +506,7 @@
       return { r, extra, attuale: r.totale + extra };
     }).sort((a, b) => a.attuale - b.attuale || nomeRiga(a.r).localeCompare(nomeRiga(b.r), 'it'));
 
-    box.append(el('div', { class: 'scorrevole' }, el('table', { class: 'tabella saldi' },
+    box.append(el('div', { class: 'tablewrap' }, el('table', { class: 'sost-tabella' },
       el('caption', {}, 'Dal più alto debito al più alto credito. Negativo = ore a debito, positivo = ore a credito.'),
       el('thead', {}, el('tr', {},
         el('th', { scope: 'col' }, 'Docente'),
@@ -507,10 +515,10 @@
         el('th', { scope: 'col' }, 'Saldo attuale'))),
       el('tbody', {}, righe.map(x => el('tr', {},
         el('th', { scope: 'row' }, nomeRiga(x.r) || x.r.cognome,
-          collegate.has(x.r.chiave) ? null : el('span', { class: 'sigla' }, ' (non nell\'orario)')),
-        el('td', { class: 'numero' }, conSegno(x.r.totale)),
-        el('td', { class: 'numero' }, x.extra ? '+' + x.extra : ''),
-        el('td', { class: 'numero' }, etichettaSaldo({ attuale: x.attuale }))))))));
+          collegate.has(x.r.chiave) ? null : el('span', { class: 'mini' }, ' (non nell\'orario)')),
+        el('td', { class: 'num' }, conSegno(x.r.totale)),
+        el('td', { class: 'num' }, x.extra ? '+' + x.extra : ''),
+        el('td', { class: 'num' }, etichettaSaldo({ attuale: x.attuale }))))))));
   }
 
   // ---------- Disegno della sezione 5: da riportare nel foglio ----------
@@ -532,22 +540,22 @@
     box.replaceChildren();
     const gruppi = riepilogoDaRiportare();
     if (!gruppi.length) {
-      box.append(el('p', { class: 'nota' }, 'Nessuna ora da riportare nel foglio.'));
+      box.append(el('p', { class: 'hint' }, 'Nessuna ora da riportare nel foglio.'));
       return;
     }
     box.append(
       el('p', {}, 'Da aggiungere nel foglio, nella colonna della settimana (ogni ora di sostituzione vale +1):'),
-      el('div', { class: 'scorrevole' }, el('table', { class: 'tabella' },
+      el('div', { class: 'tablewrap' }, el('table', { class: 'sost-tabella' },
         el('caption', {}, 'Ore di sostituzione non ancora riportate nel foglio'),
         el('thead', {}, el('tr', {},
           el('th', { scope: 'col' }, 'Settimana'),
           el('th', { scope: 'col' }, 'Docente'),
           el('th', { scope: 'col' }, 'Ore da aggiungere'))),
         el('tbody', {}, gruppi.map(g => el('tr', {},
-          el('td', { class: 'numero' }, g.settimana),
+          el('td', { class: 'num' }, g.settimana),
           el('th', { scope: 'row' }, g.riga ? nomeRiga(g.riga) : nomeDocente(g.id) + ' (non nel foglio)'),
-          el('td', { class: 'numero' }, '+' + g.ore)))))),
-      el('p', { class: 'nota' }, 'Dopo aver aggiornato il foglio premi "Segna come già riportate": così le ore non vengono contate due volte quando ricarichi il foglio.'));
+          el('td', { class: 'num' }, '+' + g.ore)))))),
+      el('p', { class: 'hint' }, 'Dopo aver aggiornato il foglio premi "Segna come già riportate": così le ore non vengono contate due volte quando ricarichi il foglio.'));
   }
 
   function disegnaTutto() {
@@ -565,8 +573,8 @@
       const s = String(v === undefined || v === null ? '' : v);
       return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
     };
-    // Il carattere ﻿ all'inizio fa riconoscere a Excel le lettere accentate
-    const testo = '﻿' + righe.map(r => r.map(cella).join(';')).join('\r\n');
+    // Il carattere speciale BOM (codice FEFF) all'inizio fa riconoscere a Excel le lettere accentate
+    const testo = String.fromCharCode(0xFEFF) + righe.map(r => r.map(cella).join(';')).join('\r\n');
     const link = el('a', { href: URL.createObjectURL(new Blob([testo], { type: 'text/csv;charset=utf-8' })), download: nomeFile });
     document.body.append(link);
     link.click();
@@ -579,8 +587,8 @@
     const ordinato = registro.slice().sort((a, b) => a.data.localeCompare(b.data) || a.ora - b.ora);
     scaricaCsv(`sostituzioni-registro-${isoLocale(new Date())}.csv`, [
       ['Data', 'Settimana', 'Ora', 'Classe', 'Aula', 'Materia', 'Docente assente', 'Sostituto', 'Riportata nel foglio'],
-      ...ordinato.map(x => [dataBreve(x.data), x.settimana, x.ora, Dati.nome('classe', x.classe),
-        x.aula ? Dati.nome('aula', x.aula) : '', x.materia, nomeDocente(x.assente), nomeDocente(x.sostituto), x.riportata ? 'sì' : 'no'])
+      ...ordinato.map(x => [dataBreve(x.data), x.settimana, x.ora, nome('classe', x.classe),
+        x.aula ? nome('aula', x.aula) : '', x.materia, nomeDocente(x.assente), nomeDocente(x.sostituto), x.riportata ? 'sì' : 'no'])
     ]);
   }
 
@@ -633,56 +641,140 @@
     }
   }
 
-  // ---------- Avvio ----------
-  async function caricaOrario() {
-    try {
-      D = await Dati.carica();
-    } catch (errore) {
-      console.error(errore);
-      $('statoOrario').textContent = 'Non riesco a caricare l\'orario: ' + errore.message +
-        ' (per provarla sul PC serve un piccolo server, vedi LEGGIMI.md).';
-      return;
-    }
-    aggiornaAbbinamenti();
-    // La prima volta, se ci sono abbinamenti da controllare, apriamo il riquadro
-    if (foglio && D.docente.some(t => !(abbinati.get(t.id) || {}).chiave)) $('boxAbbinamenti').open = true;
-    disegnaTutto();
+  // ---------- La struttura della scheda (disegnata una volta sola) ----------
+  const STRUTTURA = `
+    <div class="card">
+      <h3>Foglio del conteggio ore</h3>
+      <p id="sost-statoFoglio"></p>
+      <div class="row">
+        <label class="btn sost-scegli-file">Carica il foglio (.ods, .xlsx o .csv)
+          <input type="file" id="sost-fileFoglio" accept=".ods,.xlsx,.csv" class="sost-solo-lettori">
+        </label>
+      </div>
+      <p class="hint" style="margin-top:8px">🔒 Il file viene letto <b>solo su questo computer</b>: non viene inviato a nessuno
+        e non finisce su GitHub. Per fare una prova:
+        <a href="${CARTELLA_ESEMPI}conteggio-ore-esempio.ods" download>facsimile .ods</a> ·
+        <a href="${CARTELLA_ESEMPI}conteggio-ore-esempio.xlsx" download>facsimile .xlsx</a> (nomi inventati).</p>
+      <p class="hint" id="sost-statoOrario"></p>
+      <details id="sost-boxAbbinamenti" class="sost-abbinamenti">
+        <summary id="sost-riassuntoAbbinamenti">Abbinamenti tra orario e foglio</summary>
+        <div id="sost-abbinamenti"></div>
+      </details>
+    </div>
+
+    <div class="card">
+      <h3>Assenze del giorno</h3>
+      <div class="row">
+        <button type="button" id="sost-giornoPrima" class="btn ghost" aria-label="Giorno precedente">‹</button>
+        <label for="sost-data" class="sost-solo-lettori">Giorno</label>
+        <input type="date" id="sost-data" required>
+        <button type="button" id="sost-giornoDopo" class="btn ghost" aria-label="Giorno successivo">›</button>
+        <button type="button" id="sost-oggi" class="btn ghost">Oggi</button>
+      </div>
+      <p id="sost-descrizioneGiorno" class="sost-giorno"></p>
+      <form id="sost-moduloAssenza" class="sost-modulo">
+        <label class="fl" for="sost-docenteAssente">Docente assente</label>
+        <select id="sost-docenteAssente"></select>
+        <div id="sost-oreAssenza"></div>
+        <button type="submit" class="btn">Registra l'assenza</button>
+      </form>
+      <div id="sost-elencoAssenze"></div>
+    </div>
+
+    <div class="card">
+      <h3 id="sost-titoloCoprire">Ore da coprire</h3>
+      <p class="hint">Per ogni ora vengono proposti prima i docenti <b>già a scuola</b> quel giorno e liberi in quell'ora,
+        dal più <b>alto debito di ore</b> in giù. A parità di debito vengono prima chi ha un'ora buca e chi conosce già la classe.</p>
+      <div id="sost-oreDaCoprire"></div>
+      <div id="sost-stampaGiorno" class="sost-stampabile"></div>
+    </div>
+
+    <div class="card">
+      <h3>Saldo ore dei docenti</h3>
+      <div id="sost-saldi"></div>
+    </div>
+
+    <div class="card">
+      <h3>Riportare nel foglio ed esportare</h3>
+      <div id="sost-daRiportare"></div>
+      <div class="row" style="margin-top:12px">
+        <button type="button" id="sost-stampa" class="btn ghost">🖨️ Stampa le sostituzioni del giorno</button>
+        <button type="button" id="sost-scaricaRiepilogo" class="btn ghost">Scarica le ore da riportare (CSV)</button>
+        <button type="button" id="sost-scaricaRegistro" class="btn ghost">Scarica il registro completo (CSV)</button>
+        <button type="button" id="sost-segnaRiportate" class="btn ghost">✔ Segna come già riportate nel foglio</button>
+        <button type="button" id="sost-cancellaTutto" class="btn danger">Cancella i dati delle sostituzioni da questo dispositivo</button>
+      </div>
+    </div>`;
+
+  // Stampa solo la tabella del giorno: durante la stampa il resto della pagina viene nascosto
+  function stampa() {
+    if (!oreDaCoprire(dataScelta).length) { avvisa('Nessuna sostituzione da stampare in questo giorno.'); return; }
+    document.body.classList.add('sost-in-stampa');
+    window.addEventListener('afterprint', () => document.body.classList.remove('sost-in-stampa'), { once: true });
+    window.print();
   }
 
   function collegaPulsanti() {
     $('fileFoglio').addEventListener('change', caricaFoglio);
-    $('sceltaFonte').addEventListener('change', e => { Dati.impostaFonte(e.target.value); caricaOrario(); });
     $('data').addEventListener('change', e => { if (e.target.value) { dataScelta = e.target.value; aperte.clear(); disegnaTutto(); } });
     $('giornoPrima').addEventListener('click', () => { dataScelta = spostaGiorni(dataScelta, -1); aperte.clear(); disegnaTutto(); });
     $('giornoDopo').addEventListener('click', () => { dataScelta = spostaGiorni(dataScelta, 1); aperte.clear(); disegnaTutto(); });
     $('oggi').addEventListener('click', () => { dataScelta = giornoPredefinito(); aperte.clear(); disegnaTutto(); });
     $('docenteAssente').addEventListener('change', disegnaOreAssenza);
     $('moduloAssenza').addEventListener('submit', registraAssenza);
-    $('stampa').addEventListener('click', () => {
-      if (!oreDaCoprire(dataScelta).length) { avvisa('Nessuna sostituzione da stampare in questo giorno.'); return; }
-      window.print();
-    });
+    $('stampa').addEventListener('click', stampa);
     $('scaricaRegistro').addEventListener('click', scaricaRegistro);
     $('scaricaRiepilogo').addEventListener('click', scaricaRiepilogo);
     $('segnaRiportate').addEventListener('click', segnaRiportate);
     $('cancellaTutto').addEventListener('click', cancellaTutto);
 
-    // Se i dati cambiano in un'altra scheda (o Orario Facile modifica la bozza) ci aggiorniamo
+    // Se i dati delle sostituzioni cambiano in un'altra scheda del browser, ci aggiorniamo
     window.addEventListener('storage', e => {
-      if (Archivio.eNostra(e.key)) {
-        foglio = Archivio.leggi('foglio', null);
-        assenze = Archivio.leggi('assenze', []);
-        registro = Archivio.leggi('registro', []);
-        manuali = Archivio.leggi('abbinamenti', {});
-        aggiornaAbbinamenti();
-        disegnaTutto();
-      } else if (e.key === Dati.CHIAVE_BOZZA) {
-        caricaOrario();
-      }
+      if (!Archivio.eNostra(e.key)) return;
+      foglio = Archivio.leggi('foglio', null);
+      assenze = Archivio.leggi('assenze', []);
+      registro = Archivio.leggi('registro', []);
+      manuali = Archivio.leggi('abbinamenti', {});
+      aggiorna();
     });
   }
 
-  dataScelta = giornoPredefinito();
-  collegaPulsanti();
-  caricaOrario();
+  // Rilegge l'orario e ridisegna tutto
+  function aggiorna() {
+    if (!contenitore || !contenitore.isConnected) return;
+    try {
+      D = leggiOrario();
+    } catch (errore) {
+      console.error(errore);
+      $('statoOrario').textContent = 'Non riesco a leggere l\'orario: ' + errore.message;
+      return;
+    }
+    aggiornaAbbinamenti();
+    disegnaTutto();
+  }
+
+  /*
+    Punto d'ingresso, usato da Orario Facile:
+    - dove: l'elemento in cui disegnare la scheda
+    - funzioneOrario: una funzione che restituisce l'orario (formato di Dati.normalizza)
+  */
+  function monta(dove, funzioneOrario) {
+    leggiOrario = funzioneOrario;
+    if (contenitore !== dove) {
+      // Prima volta: disegniamo la struttura e colleghiamo i pulsanti
+      contenitore = dove;
+      contenitore.classList.add('sost');
+      contenitore.innerHTML = STRUTTURA;
+      document.body.append(el('div', { id: 'sost-avviso', class: 'sost-avviso', role: 'status', 'aria-live': 'polite' }));
+      dataScelta = giornoPredefinito();
+      collegaPulsanti();
+      aggiorna();
+      // Se ci sono abbinamenti da controllare, apriamo il riquadro
+      if (foglio && D && D.docente.some(t => !(abbinati.get(t.id) || {}).chiave)) $('boxAbbinamenti').open = true;
+      return;
+    }
+    aggiorna();
+  }
+
+  return { monta };
 })();
