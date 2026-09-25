@@ -16,7 +16,7 @@
 }
 /* Il tondo del profilo è già blu: il cerchio si vede solo se c'è un filo del colore di fondo in mezzo */
 .azioni-barra .pulsante-utente[aria-expanded="true"] {
-  box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--primario);
+  box-shadow: 0 0 0 2px var(--superficie), 0 0 0 3px var(--primario);   /* filo bianco di 2px, poi cerchio blu di 1px */
 }
 
 /* Tutti i tasti della barra hanno la stessa forma tondeggiante (a pillola), come «In breve» */
