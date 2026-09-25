@@ -151,6 +151,8 @@ Quando l'orario pubblicato cambia (per esempio un'aula spostata o una sostituzio
 - al **docente** le modifiche che lo riguardano compaiono per prime, con "ti riguarda"; sul **monitor di un'aula** si vedono
   solo quelle di quell'aula; sullo schermo all'ingresso tutte;
 - **Segna tutte come viste** ingrigisce i cerchi; il riquadro resta, più discreto, per tutta la giornata;
+- **Per provarle** senza cambiare l'orario vero: aprire `.../app/?provastorie`. Compaiono tre modifiche **finte**
+  (segnate "🧪 Prova"), solo su quel dispositivo; riaprendo l'app normalmente (o con "Esci dalla prova") spariscono;
 - con **🔔 Avvisami anche con una notifica** (solo sui dispositivi personali) arriva anche la notifica del telefono o del PC:
   toccandola si apre l'app direttamente sulle storie.
 

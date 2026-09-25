@@ -376,6 +376,12 @@ body.modalita-monitor .modifiche, body.modalita-ingresso .modifiche { font-size:
 .modifiche.tutte-viste { background: var(--superficie); border-color: var(--bordo); }
 .modifiche.tutte-viste h2 { font-size: 1rem; color: var(--testo-tenue); }
 .modifiche-dettagli summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
+/* Modalità prova (?provastorie): avviso ben visibile che le modifiche sono finte */
+.modifiche-prova { margin: 0 0 8px; padding: 6px 10px; border-radius: 8px; background: var(--superficie); font-size: .9rem; }
+.storia-prova {
+  margin: 0; padding: 4px 12px; border-radius: 999px; background: rgba(255, 255, 255, .2);
+  font-weight: 700; font-size: .9rem;
+}
 
 /* ---------- Modifiche in stile storie (vedi js/storie.js) ---------- */
 /* Fila di cerchi: scorre di lato se sono tanti */

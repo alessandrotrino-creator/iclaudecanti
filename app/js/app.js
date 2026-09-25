@@ -256,9 +256,16 @@
 
   /* ---------- modifiche dell'ultimo minuto (vedi modifiche.js) ---------- */
   let modifiche = null;   // { giorno, elenco, nuove, daVedere }
+  let provaStorie = false; // true con .../app/?provastorie: modifiche finte per provare le storie
 
   // Confronta l'orario appena caricato con l'ultimo visto; se "avvisa" è vero, manda anche la notifica
   function controllaModifiche(avvisa) {
+    // Con .../app/?provastorie si vedono tre modifiche FINTE, solo su questo dispositivo (vedi modifiche.js)
+    if (provaStorie) {
+      modifiche = Modifiche.prova(D, giornoIniziale().giorno);
+      stato.modificate = Modifiche.caselle(modifiche);
+      return;
+    }
     modifiche = Modifiche.controlla(D, giornoIniziale().giorno);
     stato.modificate = Modifiche.caselle(modifiche);   // per evidenziare le celle nella tabella
     const mie = modificheDaMostrare();
@@ -292,7 +299,8 @@
     const dopo = x.dopo.length
       ? `<div class="storia-dopo"><span class="storia-etichetta">${x.prima.length ? 'Adesso' : 'Nuova lezione'}</span>${x.dopo.map(blocco).join('')}</div>`
       : '<div class="storia-dopo"><strong class="storia-materia">Lezione tolta</strong></div>';
-    return `<p class="storia-quando">${x.ora}ª ora${o ? ` · ${Viste.esc(o.inizio)}–${Viste.esc(o.fine)}` : ''}</p>` +
+    return (x.prova ? '<p class="storia-prova">🧪 Prova · modifica finta</p>' : '') +
+      `<p class="storia-quando">${x.ora}ª ora${o ? ` · ${Viste.esc(o.inizio)}–${Viste.esc(o.fine)}` : ''}</p>` +
       `<p class="storia-classe">${Viste.esc(Dati.nome('classe', x.classe))}</p>` +
       prima + (prima ? '<p class="storia-freccia" aria-hidden="true">↓</p>' : '') + dopo +
       (x.tua ? '<p class="storia-riguarda">Ti riguarda</p>' : '');
@@ -339,9 +347,12 @@
         `${x.tua ? ' <span class="mod-tipo mod-riguarda">ti riguarda</span>' : ''}</li>`;
     }).join('');
     // La notifica si propone solo sui dispositivi personali, e solo se non è già stata decisa
-    const proponiNotifica = 'Notification' in window && Notification.permission === 'default' && !aulaMonitor && !secondiIngresso;
+    const proponiNotifica = 'Notification' in window && Notification.permission === 'default' && !aulaMonitor && !secondiIngresso && !modifiche.prova;
     box.classList.toggle('tutte-viste', !daVedere && !schermoPubblico);
+    box.classList.toggle('in-prova', !!modifiche.prova);
     box.innerHTML =
+      (modifiche.prova ? '<p class="modifiche-prova">🧪 <strong>Prova:</strong> queste modifiche sono finte e le vedi solo tu. ' +
+        '<a href="./">Esci dalla prova</a></p>' : '') +
       `<div class="modifiche-testa"><h2 id="titoloModifiche">${daVedere ? '⚠️ ' : ''}Modifiche all'orario ${quando}</h2>` +
       (daVedere && !schermoPubblico ? '<button type="button" id="btnModificheViste" class="pulsante leggero">Segna tutte come viste</button>' : '') +
       '</div>' +
@@ -620,6 +631,7 @@
     secondiIngresso = !aulaMonitor && leggi(CHIAVE_INGRESSO) ? secondiValidi(leggi(CHIAVE_INGRESSO)) : 0;
     // LIM: lo script di Windows apre l'app all'intervallo con ?intervallo (vedi app/lim/)
     apertaPerIntervallo = parametri.has('intervallo');
+    provaStorie = parametri.has('provastorie');
     controllaModifiche(false);   // modifiche arrivate mentre l'app era chiusa: riquadro sì, notifica no
     const conStorie = parametri.has('storie');   // aperta toccando la notifica: mostra subito le storie
 

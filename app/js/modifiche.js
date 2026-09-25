@@ -95,8 +95,35 @@ const Modifiche = (() => {
   // Identifica una modifica: casella + come è diventata
   const idModifica = x => x.chiave + '=' + firma(x.dopo);
 
+  /* ---------- Modalità prova (indirizzo .../app/?provastorie) ----------
+     Crea tre modifiche FINTE sulle lezioni del giorno, per provare i cerchi e le storie senza
+     cambiare l'orario vero. Restano solo in memoria su questo dispositivo: riaprendo l'app
+     senza ?provastorie spariscono. Il "dopo" è la lezione vera, il "prima" è inventato. */
+  let inProva = false;
+  const visteProva = new Set();
+
+  function prova(D, giorno) {
+    inProva = true;
+    const lezioni = D.lezioni.filter(l => l.giorno === giorno).map(compatta)
+      .sort((a, b) => a.o - b.o || String(a.c).localeCompare(String(b.c), 'it', { numeric: true }));
+    const altra = (campo, diversa) => (lezioni.find(l => l[campo] && l[campo] !== diversa) || {})[campo] || '';
+    const scelte = [lezioni[0], lezioni[Math.floor(lezioni.length / 2)], lezioni[lezioni.length - 1]].filter(Boolean);
+    const elenco = scelte.map((l, k) => {
+      let prima;
+      if (k === 0) prima = [Object.assign({}, l, { a: altra('a', l.a) })];                        // cambio d'aula
+      else if (k === 1) prima = [Object.assign({}, l, { m: altra('m', l.m), d: altra('d', l.d) })]; // cambio di materia e docente
+      else prima = [];                                                                            // lezione aggiunta
+      const x = { chiave: casella(l), giorno, ora: l.o, classe: l.c, prima, dopo: [l], prova: true };
+      x.id = idModifica(x);
+      x.vista = visteProva.has('*') || visteProva.has(x.id);   // '*' = "Segna tutte come viste"
+      return x;
+    });
+    return { giorno, elenco, nuove: 0, daVedere: elenco.some(x => !x.vista), prova: true };
+  }
+
   // Una storia è stata guardata (id) oppure, senza id, "Segna tutte come viste"
   function segnaVista(id) {
+    if (inProva) { if (id) visteProva.add(id); else visteProva.add('*'); return; }
     const salvate = leggi(CHIAVE_ELENCO);
     if (!salvate) return;
     if (!Array.isArray(salvate.viste)) salvate.viste = [];
@@ -108,5 +135,5 @@ const Modifiche = (() => {
   // Le caselle modificate, per evidenziarle nella tabella ("giorno|ora|classe")
   const caselle = risultato => new Set((risultato ? risultato.elenco : []).map(x => x.chiave));
 
-  return { controlla, segnaVista, caselle };
+  return { controlla, segnaVista, caselle, prova };
 })();
