@@ -69,6 +69,30 @@ Per rifare la configurazione da zero (per esempio con un nuovo progetto Google),
 
 > **Attenzione – limite di GitHub Pages.** L'accesso impedisce di usare l'app a chi non è della scuola, ma il file `dati/orario.json` resta scaricabile da chi conosce l'indirizzo esatto, perché GitHub Pages pubblica tutto. Un orario scolastico di solito non contiene dati riservati. Se però si vuole proteggerlo davvero, bisogna servire i dati da un servizio con controllo di accesso (per esempio un Google Apps Script limitato al dominio della scuola) e indicarne l'indirizzo in `urlDati`.
 
+## Chi può modificare l'orario
+
+Ci sono due tipi di utenti, tutti con l'account della scuola:
+
+| Ruolo | Cosa può fare |
+|---|---|
+| **Fruitore** (tutti) | consultare l'orario nell'app Orario DADA |
+| **Modificatore** | in più, usare **Orario Facile** (preparare l'orario, sostituzioni); nel menu dell'app vede "Modifica in Orario Facile" |
+
+- Chi apre Orario Facile deve accedere con l'account della scuola (se è già entrato nell'app non lo richiede).
+  Se non è un modificatore vede "Solo consultazione", il link all'orario e il suo **codice**.
+- L'elenco dei modificatori è in `js/config.js`, campo **`editori`**: un codice di 16 caratteri per persona.
+  Il repository è pubblico, quindi **non si scrivono le email**: il codice si ricava dall'email con un calcolo
+  a senso unico (vedi `js/ruoli.js`) e non permette di risalire all'indirizzo.
+- **Per abilitare una persona**: le si chiede di aprire Orario Facile; nella schermata "Solo consultazione" trova
+  il codice (con il tasto *Copia*). Lo si aggiunge a `editori`, per esempio `editori: ['3f9a0c1d2e4b5a6f', '0b1c2d3e4f5a6b7c'],`.
+  Per toglierla basta cancellare il suo codice.
+- **Finché `editori` è vuoto, chiunque della scuola può modificare** (come prima).
+
+> **Limite di GitHub Pages.** Il sito è fatto di file pubblici e il controllo avviene nel browser: separa i ruoli
+> nell'uso normale, ma una persona esperta potrebbe aggirarlo *sul proprio computer*. Non potrebbe comunque
+> cambiare l'orario di tutti: le modifiche di Orario Facile restano nel browser di chi le fa, e l'orario pubblicato
+> (`dati/orario.json`) cambia solo con un caricamento su GitHub, che richiede di essere collaboratori del repository.
+
 ## Monitor interattivi di classe
 
 1. Sul monitor aprire l'indirizzo dell'app con il nome dell'aula, per esempio
@@ -156,6 +180,7 @@ app/
   icone/qr-app.svg      QR code con l'indirizzo dell'app
   js/dati.js            lettura dell'orario (anche dal backup di Orario Facile)
   js/accesso.js         accesso con Google
+  js/ruoli.js           chi può modificare l'orario (modificatori) e chi può solo consultarlo
   js/viste.js           disegno della tabella
   js/brief.js           vista "In breve" (la giornata a schede)
   js/ingresso.js        schermo all'ingresso: viste a rotazione

@@ -4,6 +4,16 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**25/09/2026 – Modificatori e fruitori** (Chiara)
+
+Non tutti possono modificare l'orario: ora ci sono due ruoli.
+
+- **Fruitori** (tutti gli account della scuola): consultano l'orario nell'app Orario DADA;
+- **Modificatori**: possono usare Orario Facile (orario e sostituzioni). Chi apre Orario Facile deve accedere con
+  l'account della scuola; se non è abilitato vede "Solo consultazione" e il suo codice da mandare a chi gestisce l'app;
+- l'elenco è in `app/js/config.js` (`editori`), con **codici** al posto delle email (il repo è pubblico);
+  finché è vuoto, possono modificare tutti. Istruzioni in [app/LEGGIMI.md](app/LEGGIMI.md#chi-può-modificare-lorario).
+
 **25/09/2026 – Schermo all'ingresso con le viste a rotazione** (Chiara)
 
 Nuova modalità dell'app Orario DADA per il televisore o il proiettore all'ingresso:

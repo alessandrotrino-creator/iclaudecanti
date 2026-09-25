@@ -27,6 +27,11 @@ Le parti del progetto:
   (DOC01, DOC02…, assegnati in ordine casuale: niente iniziali, niente ordine alfabetico). La corrispondenza codice → nome
   sta in un Foglio Google ad accesso limitato (copia locale in `privato/`); non pubblicare mai nomi completi,
   iniziali, PDF o fogli con i nomi dei docenti.
+- **Ruoli**: *modificatori* (possono usare Orario Facile) e *fruitori* (solo l'app). `app/js/ruoli.js` +
+  `CONFIG.editori` in `app/js/config.js` (codici SHA-256 di 16 caratteri, **mai email in chiaro**: repo pubblico;
+  lista vuota = tutti modificatori). Orario Facile è protetto da `orario-facile/porta.js`/`porta.css`, che riusano
+  `app/js/accesso.js` (stessa sessione `orariodada.sessione`). È un controllo lato browser: la vera protezione
+  dell'orario pubblicato sono i permessi del repo GitHub.
 - **Sostituzioni docenti**: è la scheda 9 di Orario Facile (`#p-sostituzioni`, `renderSostituzioni()`), ma il suo codice
   sta in file separati in `sostituzioni/` (css/, js/) per non gonfiare `orario-facile/index.html` e ridurre i conflitti.
   Orario Facile li carica con `<script src="../sostituzioni/js/...">` insieme a `../app/js/dati.js` e chiama
