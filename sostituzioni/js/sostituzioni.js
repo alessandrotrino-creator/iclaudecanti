@@ -267,7 +267,113 @@ const Sostituzioni = (() => {
     }
   }
 
+  // ---------- Abilitazioni e registro nel Foglio Google delle sostituzioni (js/registro-drive.js) ----------
+  // Chi può fare le sostituzioni è scritto nel foglio «Abilitazioni»; le sostituzioni assegnate
+  // vengono scritte nel foglio «Sostituzioni». Se in config.js manca "fileSostituzioni" tutto funziona come prima.
+  const conRegistro = () => typeof RegistroDrive !== 'undefined' && RegistroDrive.configurato();
+  // stato: 'da-verificare' | 'verifica' | 'si' | 'no' | 'errore'
+  let abilitazione = { stato: 'da-verificare', nome: '', messaggio: '' };
+  const puoFare = () => !conRegistro() || abilitazione.stato === 'si';
+
+  async function verificaAbilitazione() {
+    if (!conRegistro() || abilitazione.stato === 'verifica') return;
+    abilitazione = { stato: 'verifica', nome: '', messaggio: '' };
+    disegnaAbilitazione();
+    try {
+      const r = await RegistroDrive.abilitazione(emailUtente());
+      abilitazione = { stato: r.abilitato ? 'si' : 'no', nome: r.nome || '', messaggio: r.motivo || '' };
+    } catch (errore) {
+      console.error(errore);
+      abilitazione = { stato: 'errore', nome: '', messaggio: errore.message };
+    }
+    disegnaAbilitazione();
+  }
+
+  function disegnaAbilitazione() {
+    const box = $('boxAbilitazione');
+    box.hidden = !conRegistro();
+    if (box.hidden) return;
+    const email = emailUtente();
+    const tuo = email ? ` (${email})` : '';
+    const testi = {
+      'da-verificare': `Solo chi è nel foglio «Abilitazioni» può registrare assenze e assegnare sostituzioni. Premi il pulsante per controllare il tuo account${tuo}.`,
+      verifica: 'Controllo in corso…',
+      si: `✅ Sei abilitato${abilitazione.nome ? ': ' + abilitazione.nome : ''}. Le sostituzioni che assegni vengono scritte anche nel foglio «Sostituzioni».`,
+      no: `⛔ Il tuo account${tuo} non è nel foglio «Abilitazioni»${abilitazione.messaggio ? ' (' + abilitazione.messaggio + ')' : ''}. ` +
+        'Puoi consultare, ma non registrare assenze né assegnare sostituzioni: chiedi a chi gestisce il foglio di aggiungerti.',
+      errore: `⚠️ Non riesco a controllare l'abilitazione: ${abilitazione.messaggio}.`
+    };
+    $('statoAbilitazione').textContent = testi[abilitazione.stato];
+    box.dataset.stato = abilitazione.stato;
+    $('verifica').hidden = abilitazione.stato === 'si' || abilitazione.stato === 'verifica';
+    $('verifica').textContent = abilitazione.stato === 'da-verificare' ? '🔐 Verifica la mia abilitazione' : '↻ Riprova';
+    contenitore.classList.toggle('sost-non-abilitato', !puoFare());
+  }
+
+  // Prima di registrare o assegnare: se non si è abilitati avvisa e restituisce false
+  function controllaPermesso() {
+    if (puoFare()) return true;
+    avvisa(abilitazione.stato === 'no'
+      ? 'Il tuo account non è abilitato alle sostituzioni (foglio «Abilitazioni»).'
+      : 'Prima verifica la tua abilitazione: pulsante in cima alla scheda.');
+    $('boxAbilitazione').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return false;
+  }
+
+  // Nel foglio su Drive vanno i NOMI VERI dei docenti (su GitHub e sul dispositivo restano i codici DOC01…).
+  // Li prendiamo dal file riservato dei nomi (app/js/nomi.js): restano SOLO IN MEMORIA, mai salvati.
+  let nomiVeri = null;   // Map "DOC07" -> { cognome, nome }
+  async function preparaNomiVeri() {
+    if (nomiVeri || typeof NomiDocenti === 'undefined' || !CONFIG.fileNomiDocenti) return;
+    try { nomiVeri = await NomiDocenti.carica(emailUtente(), RegistroDrive.permessi()); }
+    catch (errore) { console.error(errore); nomiVeri = new Map(); }   // non riprovare a ogni sostituzione
+  }
+  function nomeVero(id) {
+    const t = D && D.mappa.docente.get(id);
+    const codice = t ? String(t.codice || t.nome || '').toUpperCase() : '';
+    const n = nomiVeri && nomiVeri.get(codice);
+    if (n) return (n.cognome + ' ' + n.nome).trim();
+    if (rigaDi(id)) return nomeRiga(rigaDi(id));   // nome completo dal foglio del conteggio ore
+    if (t && t.codice) return t.nome;              // con «👁 Nomi» attivo t.nome è già il nome vero
+    return nomeDocente(id);                        // ultima possibilità: il codice
+  }
+
+  // Scrive la sostituzione come nuova riga del foglio «Sostituzioni»; restituisce true se ci è riuscito
+  async function scriviNelRegistro(s) {
+    if (!conRegistro()) return false;
+    try {
+      await preparaNomiVeri();
+      await RegistroDrive.aggiungi({
+        'Data': dataBreve(s.data), 'Giorno': giornoOrario(s.data) || '', 'Ora': testoOra(s.ora),
+        'Classe': nome('classe', s.classe), 'Aula': nome('aula', s.aula), 'Materia': s.materia || '',
+        'Docente assente': nomeVero(s.assente), 'Docente sostituto': nomeVero(s.sostituto),
+        'Inserita da': abilitazione.nome || emailUtente(), 'Inserita il': new Date().toLocaleString('it-IT'),
+        'ID': s.id
+      }, emailUtente());
+      return true;
+    } catch (errore) {
+      console.error(errore);
+      avvisa('La sostituzione è assegnata, ma non ho potuto scriverla nel foglio «Sostituzioni»: ' + errore.message + '.');
+      return false;
+    }
+  }
+
+  // Toglie dal foglio «Sostituzioni» le righe di queste sostituzioni (se c'erano); restituisce true se è andato tutto bene
+  async function togliDalRegistro(elenco) {
+    const daTogliere = elenco.filter(s => s.nelRegistro);
+    if (!daTogliere.length || !conRegistro()) return true;
+    try {
+      for (const s of daTogliere) await RegistroDrive.togli(s.id, emailUtente());
+      return true;
+    } catch (errore) {
+      console.error(errore);
+      avvisa('Non ho potuto togliere la sostituzione dal foglio «Sostituzioni»: ' + errore.message + '. Correggi il foglio a mano.');
+      return false;
+    }
+  }
+
   async function assegna(iso, l, idSostituto) {
+    if (!controllaPermesso()) return;
     const s = {
       id: nuovoId(), data: iso, settimana: settimanaDi(iso), ora: l.ora,
       classe: l.classe, aula: l.aula, materia: l.materia,
@@ -279,15 +385,27 @@ const Sostituzioni = (() => {
     avvisa(testo);
     disegnaTutto();
     // foglio del conteggio su Google Drive: +1 nella settimana del docente che sostituisce
+    const fatto = [];
     if (await segnaNelFoglio(s, 1)) {
       s.riportata = true; s.nelFoglio = true;
+      fatto.push(`segnata nel foglio del conteggio (settimana ${s.settimana})`);
+    }
+    // Foglio Google delle sostituzioni: una riga nel foglio «Sostituzioni»
+    if (await scriviNelRegistro(s)) {
+      s.nelRegistro = true;
+      fatto.push('scritta nel foglio «Sostituzioni»');
+    }
+    if (fatto.length) {
       salva('registro', registro);
-      avvisa(testo + ` Segnata nel foglio del conteggio (settimana ${s.settimana}).`);
+      avvisa(testo + ' ' + fatto.join(' e ').replace(/^./, c => c.toUpperCase()) + '.');
       disegnaTutto();
     }
   }
 
   async function annulla(s) {
+    if (!controllaPermesso()) return;
+    if (s.nelRegistro && !(await togliDalRegistro([s])) &&
+      !confirm('Non riesco a togliere la sostituzione dal foglio «Sostituzioni». Annullarla comunque? Poi correggi il foglio a mano.')) return;
     if (s.nelFoglio) {
       // segnata in automatico nel foglio su Drive: si toglie da lì
       if (!(await segnaNelFoglio(s, -1)) &&
@@ -435,6 +553,7 @@ const Sostituzioni = (() => {
 
   function registraAssenza(evento) {
     evento.preventDefault();
+    if (!controllaPermesso()) return;
     const id = $('docenteAssente').value;
     if (!id) { avvisa('Scegli il docente assente.'); $('docenteAssente').focus(); return; }
     const oreScelte = [...document.querySelectorAll('#sost-oreAssenza input[name="ora"]:checked')].map(c => Number(c.value));
@@ -443,8 +562,10 @@ const Sostituzioni = (() => {
     const esistente = assenzeDel(dataScelta).find(a => a.docente === id);
     if (esistente) esistente.ore = oreScelte.sort((a, b) => a - b);
     else assenze.push({ id: nuovoId(), data: dataScelta, docente: id, ore: oreScelte.sort((a, b) => a - b) });
-    // Le sostituzioni già assegnate per ore tolte non servono più
-    registro = registro.filter(x => !(x.data === dataScelta && x.assente === id && !oreScelte.includes(x.ora) && !x.riportata));
+    // Le sostituzioni già assegnate per ore tolte non servono più (anche nel foglio «Sostituzioni»)
+    const superate = registro.filter(x => x.data === dataScelta && x.assente === id && !oreScelte.includes(x.ora) && !x.riportata);
+    togliDalRegistro(superate);
+    registro = registro.filter(x => !superate.includes(x));
     salva('assenze', assenze);
     salva('registro', registro);
     avvisa(`Assenza registrata: ${nomeDocente(id)}, ${ore(oreScelte.length)}.`);
@@ -454,8 +575,10 @@ const Sostituzioni = (() => {
   }
 
   function togliAssenza(a) {
+    if (!controllaPermesso()) return;
     const collegate = registro.filter(x => x.data === a.data && x.assente === a.docente);
     if (collegate.length && !confirm(`Togliendo l'assenza vengono annullate anche ${collegate.length} sostituzioni già assegnate. Continuare?`)) return;
+    togliDalRegistro(collegate);
     assenze = assenze.filter(x => x.id !== a.id);
     registro = registro.filter(x => !collegate.includes(x));
     salva('assenze', assenze);
@@ -709,6 +832,12 @@ const Sostituzioni = (() => {
 
   // ---------- La struttura della scheda (disegnata una volta sola) ----------
   const STRUTTURA = `
+    <div class="card sost-abilitazione" id="sost-boxAbilitazione" hidden>
+      <h3>Abilitazione alle sostituzioni</h3>
+      <p id="sost-statoAbilitazione" role="status"></p>
+      <button type="button" id="sost-verifica" class="btn">🔐 Verifica la mia abilitazione</button>
+    </div>
+
     <div class="card">
       <h3>Foglio del conteggio ore</h3>
       <p id="sost-statoFoglio"></p>
@@ -784,6 +913,7 @@ const Sostituzioni = (() => {
   function collegaPulsanti() {
     $('fileFoglio').addEventListener('change', caricaFoglio);
     $('caricaDrive').addEventListener('click', () => caricaDaDrive(true));
+    $('verifica').addEventListener('click', verificaAbilitazione);
     $('data').addEventListener('change', e => { if (e.target.value) { dataScelta = e.target.value; aperte.clear(); disegnaTutto(); } });
     $('giornoPrima').addEventListener('click', () => { dataScelta = spostaGiorni(dataScelta, -1); aperte.clear(); disegnaTutto(); });
     $('giornoDopo').addEventListener('click', () => { dataScelta = spostaGiorni(dataScelta, 1); aperte.clear(); disegnaTutto(); });
@@ -819,6 +949,9 @@ const Sostituzioni = (() => {
     }
     aggiornaAbbinamenti();
     disegnaTutto();
+    disegnaAbilitazione();
+    // Abilitazione: si controlla da sola se il permesso di Google c'è già, altrimenti c'è il pulsante
+    if (conRegistro() && abilitazione.stato === 'da-verificare' && RegistroDrive.pronto()) verificaAbilitazione();
     // Foglio del conteggio su Drive: lo rileggiamo da solo, una volta, se il permesso di Google c'è già
     // (per esempio dopo «👁 Nomi»); altrimenti c'è il pulsante «Carica dal Drive»
     if (suDrive() && !driveLetto && FoglioDrive.pronto() && (!foglio || foglio.driveId)) caricaDaDrive(false);

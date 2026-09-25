@@ -25,6 +25,26 @@ Il foglio del conteggio ore contiene i nomi completi dei docenti, quindi **non v
 - Se tenete una copia del foglio vero dentro la cartella del repo, mettetela in `privato/`:
   quella cartella è esclusa da git (vedi `.gitignore`).
 
+## Chi può fare le sostituzioni e dove vengono scritte
+
+Il Foglio Google **delle sostituzioni** (ID in `app/js/config.js`, campo `fileSostituzioni`) ha due fogli:
+
+- **«Abilitazioni»**: nomi ed **email** di chi può fare le sostituzioni. In cima alla scheda il riquadro
+  **"Abilitazione alle sostituzioni"** controlla l'email di chi è entrato (pulsante *🔐 Verifica la mia abilitazione*;
+  si controlla da solo se il permesso di Google c'è già, per esempio dopo «👁 Nomi»).
+  Chi non è nell'elenco, o non può aprire il file, può **consultare** ma non registrare assenze né assegnare sostituzioni.
+  Per abilitare qualcuno basta aggiungere una riga nel foglio (la colonna con "Email" nell'intestazione).
+- **«Sostituzioni»**: ogni sostituzione assegnata diventa una **riga** (Data, Giorno, Ora, Classe, Aula, Materia,
+  Docente assente, Docente sostituto, Inserita da, Inserita il, ID); annullandola la riga viene cancellata.
+  Se il foglio è vuoto l'app scrive prima l'intestazione; se ci sono già delle colonne, riempie quelle con lo stesso nome.
+
+**Nomi veri solo su Drive.** Nel foglio «Sostituzioni» i docenti compaiono con il **nome vero**, preso dal file
+riservato dei nomi (`fileNomiDocenti`) e tenuto **solo in memoria**. Su GitHub e nella memoria del dispositivo
+restano i codici DOC01, DOC02…: non scrivere mai nomi veri nei file del repository.
+
+Serve la Google Sheets API attiva e, per chi assegna, il permesso di **modifica** sul foglio delle sostituzioni:
+è Google stesso a impedire di scrivere a chi non ce l'ha. Codice: `js/registro-drive.js`.
+
 ## Come si usa
 
 1. **Carica il foglio** del conteggio ore (.ods, .xlsx oppure .csv, anche scaricato da Fogli Google).
@@ -82,6 +102,8 @@ sostituzioni/
   js/foglio.js            lettura del foglio .ods / .xlsx / .csv (senza librerie esterne)
   js/archivio.js          salvataggio nella memoria del browser (chiavi "sostituzioni.")
   js/abbinamenti.js       collegamento tra docenti dell'orario e righe del foglio
+  js/drive.js             foglio del conteggio ore su Google Drive (+1 / -1 al sostituto)
+  js/registro-drive.js    Foglio Google delle sostituzioni: foglio «Abilitazioni» e registro «Sostituzioni»
   js/sostituzioni.js      la scheda: assenze, proposte, saldi, esportazioni (Sostituzioni.monta)
   esempio/                facsimili del foglio con nomi inventati
 ```

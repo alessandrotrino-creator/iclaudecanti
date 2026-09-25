@@ -24,6 +24,16 @@
 .sost h4 { margin: 12px 0 4px; font-size: 13px; color: var(--text-2); }
 .sost-attenzione { color: var(--warn); font-weight: 600; }
 
+/* ---------- Abilitazione (foglio «Abilitazioni» su Drive, vedi js/registro-drive.js) ---------- */
+.sost-abilitazione p { margin: 0 0 10px; }
+.sost-abilitazione[data-stato="si"] { border-color: color-mix(in srgb, var(--ok) 45%, transparent); background: var(--ok-soft); }
+.sost-abilitazione[data-stato="si"] p { margin: 0; }
+.sost-abilitazione[data-stato="no"],
+.sost-abilitazione[data-stato="errore"] { border-color: var(--warn); }
+/* Chi non è abilitato vede tutto, ma i pulsanti per registrare e assegnare sono spenti */
+.sost-non-abilitato .sost-modulo button[type="submit"],
+.sost-non-abilitato .sost-ora .btn { opacity: .45; }
+
 /* ---------- Giorno e assenze ---------- */
 .sost-giorno { font-weight: 600; margin: 10px 0; }
 .sost-giorno::first-letter { text-transform: uppercase; }
