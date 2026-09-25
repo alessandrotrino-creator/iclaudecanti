@@ -27,6 +27,9 @@ Le parti del progetto:
   (DOC01, DOC02…, assegnati in ordine casuale: niente iniziali, niente ordine alfabetico). La corrispondenza codice → nome
   sta in un Foglio Google ad accesso limitato (copia locale in `privato/`); non pubblicare mai nomi completi,
   iniziali, PDF o fogli con i nomi dei docenti.
+  Per vedere i nomi: `app/js/nomi.js` (`NomiDocenti.carica(email)`) legge da Drive il file indicato in
+  `CONFIG.fileNomiDocenti` con il permesso dell'utente e restituisce una Map codice → {cognome, nome}; i nomi stanno
+  solo in memoria (in Orario Facile: pulsante «👁 Nomi», `NOMI`, `nomeDoc()`), mai in localStorage, backup o CSV.
 - **Ruoli**: *modificatori* (possono usare Orario Facile) e *fruitori* (solo l'app). `app/js/ruoli.js` +
   `CONFIG.editori` in `app/js/config.js` (codici SHA-256 di 16 caratteri, **mai email in chiaro**: repo pubblico;
   lista vuota = tutti modificatori). Orario Facile è protetto da `orario-facile/porta.js`/`porta.css`, che riusano

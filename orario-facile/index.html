@@ -21,6 +21,7 @@ img{max-width:100%}
 <script src="../app/js/config.js"></script>
 <script src="../app/js/accesso.js"></script>
 <script src="../app/js/ruoli.js"></script>
+<script src="../app/js/nomi.js"></script>
 <script src="porta.js"></script>
 <style>
 :root{
@@ -232,6 +233,7 @@ td input[type=number]{width:64px}
     <!-- apre l'app di visualizzazione: legge questo orario dal browser e si aggiorna in tempo reale -->
     <a class="btn ghost sm" href="../app/" target="orariodada" style="text-decoration:none">📱 Vedi nell'app</a>
     <button class="btn ghost sm" id="btnTema" title="Chiaro / scuro">◐ Tema</button>
+    <button class="btn ghost sm" id="btnNomi" title="Mostra i nomi veri dei docenti al posto dei codici (serve il permesso sul file riservato in Google Drive)">👁 Nomi</button>
     <button class="btn ghost sm" id="btnScuola" title="Docenti, classi e cattedre 2026/27 (docenti anonimi: DOC01, DOC02…)">Dati scuola 2026/27</button>
     <button class="btn ghost sm" id="btnEsempio">Dati di esempio</button>
     <button class="btn ghost sm" id="btnAzzera">Azzera tutto</button>
@@ -512,8 +514,14 @@ const $ = (s,r) => (r||document).querySelector(s);
 const $$ = (s,r) => Array.from((r||document).querySelectorAll(s));
 const clamp = (n,a,b) => Math.max(a, Math.min(b, n));
 const num = (v,d) => { const n = parseInt(v,10); return isNaN(n) ? (d||0) : n; };
+// nomi veri dei docenti: nei dati ci sono solo codici (DOC01…); con «👁 Nomi» chi ha accesso al file riservato
+// su Drive li vede per esteso. NOMI resta solo in memoria: mai salvato, mai nei backup o nei CSV
+let NOMI = null;   // Map "DOC01" → { cognome, nome, completo, breve }
+const nomeVero = n => NOMI && NOMI.get(String(n||'').trim().toUpperCase());
+const nomeDoc = n => nomeVero(n) ? nomeVero(n).completo : n;
 // nomi scritti con le iniziali ("F. A.", "Mi. Bo."): si mostrano interi, non solo l'ultima iniziale
-const cognome = n => { const s = String(n||'').trim(); if(/^(\p{L}{1,2}\.\s*)+$/u.test(s)) return s; const p = s.split(/\s+/); return p.length>1 ? p[p.length-1] : (p[0]||''); };
+const cognome = n => { if(nomeVero(n)) return nomeVero(n).breve;
+  const s = String(n||'').trim(); if(/^(\p{L}{1,2}\.\s*)+$/u.test(s)) return s; const p = s.split(/\s+/); return p.length>1 ? p[p.length-1] : (p[0]||''); };
 // confronto tra nomi senza maiuscole, accenti e spazi doppi
 const norma = s => String(s==null?'':s).normalize('NFD').replace(/\p{M}/gu,'').trim().toLowerCase().replace(/\s+/g,' ');
 
@@ -1689,7 +1697,7 @@ function renderDocenti(){
     const nInd = Object.values(t.indisp||{}).reduce((s,a) => s + a.length, 0);
     return `<details class="card" data-i="${i}" style="padding:0"${APERTI.has(i)?' open':''}>
       <summary style="cursor:pointer;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <b style="font-family:var(--font-c);font-size:15px">${esc(t.nome)}</b>
+        <b style="font-family:var(--font-c);font-size:15px">${esc(nomeDoc(t.nome))}</b>
         <span class="tag acc">${ore} ore</span>
         <span class="tag">${t.cattedre.length} cattedre</span>
         ${aule.length ? `<span class="tag">${esc(aule.map(a=>a.nome).join(' · '))}</span>` : `<span class="tag warn">nessuna aula</span>`}
@@ -1816,7 +1824,7 @@ function analizza(){
     });
     Object.keys(perDoc).forEach(d => { if(perDoc[d].length>1){
       perDoc[d].forEach(c => clash.add(c.id+'|'+g+'|'+s));
-      errori.push(`${doc(d)?doc(d).nome:'?'} — ${g} ${slotLabel(s)}: in ${perDoc[d].length} classi contemporaneamente (${perDoc[d].map(c=>c.nome).join(', ')})`);
+      errori.push(`${doc(d)?nomeDoc(doc(d).nome):'?'} — ${g} ${slotLabel(s)}: in ${perDoc[d].length} classi contemporaneamente (${perDoc[d].map(c=>c.nome).join(', ')})`);
     }});
     Object.keys(perAula).forEach(a => { if(perAula[a].length>1 && !(aula(a) && aula(a).contemporanea)){
       perAula[a].forEach(c => clash.add(c.id+'|'+g+'|'+s));
@@ -1886,7 +1894,7 @@ function analizza(){
       perGiorno[g] = occ;
       if(!occ.length) return;
       const lim = t.maxGiorno>0 ? t.maxGiorno : S.vincoli.maxOreGiorno;
-      if(lim>0 && occ.length>lim) avvisi.push(`${t.nome} — ${g}: ${occ.length} ore (limite ${lim})`);
+      if(lim>0 && occ.length>lim) avvisi.push(`${nomeDoc(t.nome)} — ${g}: ${occ.length} ore (limite ${lim})`);
       const limC = t.maxConsec>0 ? t.maxConsec : S.vincoli.maxConsecDoc;
       if(limC>0){
         let run = 1, max = 1;
@@ -1894,20 +1902,20 @@ function analizza(){
           if(occ[i]===occ[i-1]+1 && isPom(occ[i])===isPom(occ[i-1])) run++; else run = 1;
           max = Math.max(max, run);
         }
-        if(max>limC) avvisi.push(`${t.nome} — ${g}: ${max} ore consecutive (limite ${limC})`);
+        if(max>limC) avvisi.push(`${nomeDoc(t.nome)} — ${g}: ${max} ore consecutive (limite ${limC})`);
       }
       [[0,S.oreM-1],[S.oreM,T-1]].forEach(([a,b]) => {
         const seg = occ.filter(s => s>=a && s<=b);
         if(seg.length>1) buchi += (seg[seg.length-1]-seg[0]+1) - seg.length;
       });
       const ind = (t.indisp||{})[g]||[];
-      occ.forEach(s => { if(ind.includes(s)) errori.push(`${t.nome} — ${g} ${slotLabel(s)}: ora segnata come non disponibile`); });
+      occ.forEach(s => { if(ind.includes(s)) errori.push(`${nomeDoc(t.nome)} — ${g} ${slotLabel(s)}: ora segnata come non disponibile`); });
       if(S.vincoli.giornoLibero && t.giornoLibero && t.giornoLibero!=='auto' && t.giornoLibero===g)
-        errori.push(`${t.nome}: ha lezione nel suo giorno libero (${g})`);
+        errori.push(`${nomeDoc(t.nome)}: ha lezione nel suo giorno libero (${g})`);
     });
     t.cattedre.forEach(k => {
       const n = piazzate[t.id + '|' + k.cl + '|' + k.di] || 0;
-      if(n < k.ore && cls(k.cl)) avvisi.push(`${t.nome} — ${cls(k.cl).nome} ${disc(k.di)?disc(k.di).sigla:''}: ${n} ore su ${k.ore} collocate`);
+      if(n < k.ore && cls(k.cl)) avvisi.push(`${nomeDoc(t.nome)} — ${cls(k.cl).nome} ${disc(k.di)?disc(k.di).sigla:''}: ${n} ore su ${k.ore} collocate`);
     });
   });
   // aule sufficienti? (un'aula «più classi insieme» basta da sola a ospitare l'ora di punta)
@@ -1986,23 +1994,23 @@ function fattibilita(){
     if(mcd < 99) motivi.push('massimo ' + ore(mcd) + ' di fila');
     const perche = motivi.length ? ' (' + motivi.join(', ') + ')' : '';
     if(H > cap){
-      impossibili.push(`${t.nome}: ${H} ore da collocare${oreCo[t.id] ? ` (di cui ${oreCo[t.id]} in compresenza)` : ''}, ma al massimo ${cap} possibili${perche}: togli qualche indisponibilità, alza i limiti nella scheda del docente o sposta una cattedra.`);
+      impossibili.push(`${nomeDoc(t.nome)}: ${H} ore da collocare${oreCo[t.id] ? ` (di cui ${oreCo[t.id]} in compresenza)` : ''}, ma al massimo ${cap} possibili${perche}: togli qualche indisponibilità, alza i limiti nella scheda del docente o sposta una cattedra.`);
       return;
     }
-    if(H >= cap - 1) difficili.push(`${t.nome}: ${H} ore su ${cap} collocabili${perche}: quasi nessun margine, il generatore avrà poche alternative.`);
+    if(H >= cap - 1) difficili.push(`${nomeDoc(t.nome)}: ${H} ore su ${cap} collocabili${perche}: quasi nessun margine, il generatore avrà poche alternative.`);
     // stesso docente nella stessa classe: ore consecutive e ore della stessa disciplina al giorno
     classi.forEach(c => {
       const Htc = t.cattedre.filter(k => k.cl === c.id).reduce((a,k) => a + (k.ore||0), 0);
       const perG = g => Math.min(lim, capGiorno(s => disponibile(t,g,s) && attivo(c,g,s), Math.min(maxC, mcd)));
       const capTc = capSettimana(t, perG);
       if(Htc > capTc){
-        impossibili.push(`${t.nome} in ${c.nome}: ${Htc} ore, ma al massimo ${capTc} collocabili${maxC < 99 ? ` con al più ${ore(maxC)} di fila nella stessa classe` : ''}${perche}: alza i limiti o dividi la cattedra con un altro docente.`);
+        impossibili.push(`${nomeDoc(t.nome)} in ${c.nome}: ${Htc} ore, ma al massimo ${capTc} collocabili${maxC < 99 ? ` con al più ${ore(maxC)} di fila nella stessa classe` : ''}${perche}: alza i limiti o dividi la cattedra con un altro docente.`);
         return;
       }
       t.cattedre.filter(k => k.cl === c.id).forEach(k => {
         if(segnalate.has(c.id + '|' + k.di)) return;
         const capK = capSettimana(t, g => Math.min(maxD, perG(g)));
-        if(k.ore > capK) impossibili.push(`${t.nome} — ${c.nome} ${nomeD(k.di)}: ${ore(k.ore)}, ma con al massimo ${ore(maxD)} della stessa disciplina al giorno ne entrano solo ${capK} nei giorni in cui il docente è disponibile: alza il limite nella scheda Vincoli o togli qualche indisponibilità.`);
+        if(k.ore > capK) impossibili.push(`${nomeDoc(t.nome)} — ${c.nome} ${nomeD(k.di)}: ${ore(k.ore)}, ma con al massimo ${ore(maxD)} della stessa disciplina al giorno ne entrano solo ${capK} nei giorni in cui il docente è disponibile: alza il limite nella scheda Vincoli o togli qualche indisponibilità.`);
       });
     });
   });
@@ -2099,7 +2107,7 @@ function renderSoggetti(){
   const v = S.ui.vista, sel = $('#selSoggetto');
   let opts = [];
   if(v==='classe') opts = S.classi.map(c => [c.id, 'Classe ' + c.nome]);
-  else if(v==='docente') opts = S.docenti.map(t => [t.id, t.nome]);
+  else if(v==='docente') opts = S.docenti.map(t => [t.id, nomeDoc(t.nome)]);
   else if(v==='aula') opts = S.aule.map(a => [a.id, a.nome]);
   else opts = S.giorni.map(g => [g, g]);
   if(!opts.some(o => o[0]===S.ui.soggetto)) S.ui.soggetto = opts.length ? opts[0][0] : '';
@@ -2189,7 +2197,7 @@ function renderVista(){
     const t = doc(k); if(!t){ box.innerHTML = '<p class="hint">Nessun docente.</p>'; return; }
     let nCo = 0;
     S.classi.forEach(c => S.giorni.forEach(g => (S.orario[c.id]?.[g]||[]).forEach(v => { if(compresenti(v).some(x => x.doc===t.id)) nCo++; })));
-    titolo = t.nome + ' · ' + oreDocente(t) + ' ore' + (nCo ? ` + ${nCo} in compresenza` : '');
+    titolo = nomeDoc(t.nome) + ' · ' + oreDocente(t) + ' ore' + (nCo ? ` + ${nCo} in compresenza` : '');
     corpo = grigliaFiltro(x => inCella(x, t.id), 'docente', t.id);
   } else if(v==='aula'){
     const a = aula(k); if(!a){ box.innerHTML = '<p class="hint">Nessuna aula.</p>'; return; }
@@ -2221,7 +2229,7 @@ function modalCella(key){
   const cand = [];
   S.docenti.forEach(t => t.cattedre.forEach(k => { if(k.cl===cid){
     const p = orePiazzate(t.id,cid,k.di);
-    cand.push({ v:t.id+'|'+k.di, l:`${disc(k.di)?disc(k.di).nome:'?'} — ${t.nome} (${p}/${k.ore} ore)`, over:p>=k.ore });
+    cand.push({ v:t.id+'|'+k.di, l:`${disc(k.di)?disc(k.di).nome:'?'} — ${nomeDoc(t.nome)} (${p}/${k.ore} ore)`, over:p>=k.ore });
   }}));
   const cur = v ? v.doc+'|'+v.dis : '';
   apriModal(`<h3>${esc(c.nome)} · ${esc(g)} · ${slotLabel(s)}</h3>
@@ -2256,11 +2264,11 @@ function modalCella(key){
     const impegno = id => { for(const c2 of S.classi){ if(c2.id === cid) continue; if(inCella(cella(c2.id,g,s), id)) return c2.nome; } return ''; };
     const disegnaCo = () => {
       const tit = ($('#mSel',box).value||'').split('|')[0];
-      $('#mCoLista',box).innerHTML = co.length ? co.map((x,i) => `<span class="chip" style="cursor:default">${esc(doc(x.doc)?doc(x.doc).nome:'?')}${x.att?' · '+esc(x.att):''}
+      $('#mCoLista',box).innerHTML = co.length ? co.map((x,i) => `<span class="chip" style="cursor:default">${esc(doc(x.doc)?nomeDoc(doc(x.doc).nome):'?')}${x.att?' · '+esc(x.att):''}
         <button class="linkish" data-rmco="${i}" title="Togli">✕</button></span>`).join('') : '<span class="mini">nessuna compresenza</span>';
       $('#mCoDoc',box).innerHTML = '<option value="">— scegli il docente —</option>' + S.docenti
         .filter(t => t.id !== tit && !co.some(x => x.doc === t.id))
-        .map(t => { const o = impegno(t.id); return `<option value="${t.id}">${esc(t.nome)}${o ? ' · occupato in ' + esc(o) : ''}</option>`; }).join('');
+        .map(t => { const o = impegno(t.id); return `<option value="${t.id}">${esc(nomeDoc(t.nome))}${o ? ' · occupato in ' + esc(o) : ''}</option>`; }).join('');
     };
     disegnaCo();
     $('#mCoLista',box).addEventListener('click', e => { const i = e.target.dataset.rmco; if(i !== undefined){ co.splice(+i,1); disegnaCo(); } });
@@ -2306,7 +2314,7 @@ function modalFissa(){
     const agg = () => {
       const cid = $('#fCl',box).value, o = [];
       S.docenti.forEach(t => t.cattedre.forEach(k => { if(k.cl===cid)
-        o.push(`<option value="${t.id}|${k.di}">${esc(disc(k.di)?disc(k.di).nome:'?')} — ${esc(t.nome)}</option>`); }));
+        o.push(`<option value="${t.id}|${k.di}">${esc(disc(k.di)?disc(k.di).nome:'?')} — ${esc(nomeDoc(t.nome))}</option>`); }));
       $('#fD',box).innerHTML = o.join('') || '<option value="">nessuna cattedra in questa classe</option>';
     };
     $('#fCl',box).addEventListener('change', agg); agg();
@@ -2560,12 +2568,12 @@ function confrontaConOrario(D){
   const diff = [];
   O.docenti.forEach(t => {
     const c = D.docenti.get(norma(t.nome));
-    if(t.controllo === 'no') diff.push(`${t.nome}: nel foglio orario ha ${t.tot} ore assegnate su ${t.previste} previste.`);
-    if(!c){ diff.push(`${t.nome}: presente nel foglio orario ma non nelle cattedre.`); return; }
+    if(t.controllo === 'no') diff.push(`${nomeDoc(t.nome)}: nel foglio orario ha ${t.tot} ore assegnate su ${t.previste} previste.`);
+    if(!c){ diff.push(`${nomeDoc(t.nome)}: presente nel foglio orario ma non nelle cattedre.`); return; }
     const somma = {};
     c.cattedre.forEach(k => { const cl = nomeClasse(k.classe); somma[cl] = (somma[cl]||0) + k.ore; });
     new Set(Object.keys(t.ore).concat(Object.keys(somma))).forEach(cl => {
-      if((somma[cl]||0) !== (t.ore[cl]||0)) diff.push(`${t.nome} ${cl}: ${somma[cl]||0} ore nelle cattedre contro ${t.ore[cl]||0} nel foglio orario.`);
+      if((somma[cl]||0) !== (t.ore[cl]||0)) diff.push(`${nomeDoc(t.nome)} ${cl}: ${somma[cl]||0} ore nelle cattedre contro ${t.ore[cl]||0} nel foglio orario.`);
     });
   });
   D.confronto = { fonte:O.fonte, diff };
@@ -2797,6 +2805,14 @@ function compatibile(t, nomeFoglio){
   const f = norma(nomeFoglio).replace(/[^a-z ]/g, '').split(' ').filter(Boolean);
   const cogn = f.find(x => x.length > 1), iniz = f.find(x => x.length === 1);
   if(!cogn) return 0;
+  // docente con il codice (DOC01…) e nomi caricati da Drive: si confronta il cognome vero
+  const v = nomeVero(t.nome);
+  if(v){
+    const sole = x => norma(x).replace(/[^a-z ]/g, '');
+    const cognomeF = f.filter(x => x.length > 1).join(' ');
+    if(cognomeF !== sole(v.cognome) && cognomeF !== sole(v.cognome + ' ' + v.nome)) return 0;
+    return !iniz || sole(v.nome).startsWith(iniz) ? 3 : 0;
+  }
   const parti = norma(t.nome).replace(/[^a-z. ]/g, '').split(' ').filter(Boolean);
   if(parti.length && parti.every(p => /^[a-z]{1,2}\.$/.test(p))){
     const ic = parti[parti.length-1].replace('.', ''), in0 = parti[0].replace('.', '');
@@ -2868,7 +2884,7 @@ function assegnaMaterie(t, celle, diFisso, scoperte, nuove){
     if(daScoperte) Object.keys(inizio).forEach(d => {
       const n = inizio[d] - resto[d]; if(n <= 0) return;
       t.cattedre.push({ cl:cid, di:d, ore:n }); scoperte[cid][d] -= n;
-      if(nuove) nuove.push(`${t.nome}: ${cls(cid).nome} ${disc(d).nome} ${n} ore`);
+      if(nuove) nuove.push(`${nomeDoc(t.nome)}: ${cls(cid).nome} ${disc(d).nome} ${n} ore`);
     });
   });
   return out;
@@ -2928,7 +2944,7 @@ async function importaOrarioCompilato(f){
   if(!O){ avvisa('Nel file non trovo un orario compilato: serve una riga di intestazione con «Docente» e i giorni (LUNEDÌ, MARTEDÌ…) e sotto i numeri delle ore.'); return; }
   const scelta = abbinaDocenti(O);
   const elencoOre = r => { const o = oreDelFoglio(r); return S.classi.filter(c => o[c.id]).map(c => c.nome + ' ' + o[c.id]).join(' · '); };
-  const opzDoc = S.docenti.map(t => `<option value="${t.id}">${esc(t.nome)}</option>`).join('');
+  const opzDoc = S.docenti.map(t => `<option value="${t.id}">${esc(nomeDoc(t.nome))}</option>`).join('');
   const opzDisc = S.discipline.map(d => `<option value="${d.id}">${esc(d.nome)}</option>`).join('');
   const stato = (r, v) => {
     if(!v) return '<span class="mini">non importato</span>';
@@ -2965,7 +2981,7 @@ async function importaOrarioCompilato(f){
           const v = $(`[data-oc="${i}"]`, box).value;
           return !v ? null : v === '+' ? { nuovo:true, di:$(`[data-ocd="${i}"]`, box).value } : doc(v);
         });
-        const doppi = S.docenti.filter(t => sc.filter(x => x === t).length > 1).map(t => t.nome);
+        const doppi = S.docenti.filter(t => sc.filter(x => x === t).length > 1).map(t => nomeDoc(t.nome));
         if(doppi.length){ $('#ocErr', box).innerHTML = `<div class="msg bad">Lo stesso docente è scelto per più righe del foglio: ${esc(doppi.join(', '))}.</div>`; return; }
         const E = applicaOrarioCompilato(O, sc, $('#ocBlocca', box).checked);
         chiudiModal(); vai('orario');
@@ -3000,6 +3016,31 @@ $('#btnTema').addEventListener('click', () => {
   applicaTema(t);
   $('#btnTema').textContent = t==='auto' ? '◐ Tema' : t==='light' ? '☀ Chiaro' : '☾ Scuro';
 });
+// «👁 Nomi»: mostra o nasconde i nomi veri, letti dal file riservato su Drive e tenuti solo in memoria
+$('#btnNomi').addEventListener('click', async () => {
+  const b = $('#btnNomi');
+  if(NOMI){ NOMI = null; b.textContent = '👁 Nomi'; render(); return; }
+  b.disabled = true; b.textContent = 'Carico i nomi…';
+  try{
+    const s = typeof Accesso !== 'undefined' && Accesso.sessione ? Accesso.sessione() : null;
+    const m = await NomiDocenti.carica(s && s.email);
+    // nella griglia basta il cognome, con l'iniziale del nome se due docenti hanno lo stesso cognome
+    const conta = {};
+    m.forEach(v => conta[norma(v.cognome)] = (conta[norma(v.cognome)]||0) + 1);
+    m.forEach(v => {
+      v.completo = (v.cognome + ' ' + v.nome).trim();
+      v.breve = v.cognome + (conta[norma(v.cognome)] > 1 && v.nome ? ' ' + v.nome.charAt(0) + '.' : '');
+    });
+    NOMI = m;
+    b.textContent = '🙈 Codici'; b.title = 'Torna a mostrare i codici (DOC01…)';
+    render();
+    const senza = S.docenti.filter(t => !nomeVero(t.nome)).length;
+    if(senza) avvisa(`Nomi caricati. ${senza} docenti non sono nel file dei nomi e restano con il codice.`);
+  }catch(err){ b.textContent = '👁 Nomi'; avvisa('Non riesco a mostrare i nomi: ' + (err.message||err) + '.'); }
+  finally{ b.disabled = false; }
+});
+// i file esportati (CSV) contengono sempre i codici, anche quando a schermo si vedono i nomi
+const conCodici = f => { const n = NOMI; NOMI = null; try{ return f(); } finally{ NOMI = n; } };
 $('#btnScuola').addEventListener('click', () => {
   chiedi('Sostituisco i dati attuali con quelli della scuola 2026/27: 15 classi, 43 docenti (anonimi: DOC01, DOC02…), 21 aule e l\'orario già compilato.', () => {
     datiScuola(); save(true); vai('orario');
@@ -3238,7 +3279,7 @@ $('#listaDocenti').addEventListener('click', e => {
   else if(b.dataset.addc){ t.cattedre.push({ cl:(S.classi[0]||{}).id, di:(S.discipline[0]||{}).id, ore:1 }); save(); renderDocenti(); }
   else if(b.dataset.deldoc){
     e.preventDefault();
-    chiedi('Elimino il docente ' + t.nome + ' con tutte le sue cattedre e le sue ore in orario?', () => {
+    chiedi('Elimino il docente ' + nomeDoc(t.nome) + ' con tutte le sue cattedre e le sue ore in orario?', () => {
       S.docenti.splice(+i,1); APERTI.clear(); normalizza(); save(); renderDocenti();
     }, 'Elimina docente', true);
   }
@@ -3391,7 +3432,7 @@ function verificaPool(p, g, s, aulaId){
   if(!c || !t) return { errore:'Quest\'ora non corrisponde più a una classe o a un docente esistente.' };
   if(!attivo(c,g,s)) return { errore:`La classe ${c.nome} non ha lezione ${g} alla ${slotLabel(s)}.` };
   const altrove = S.classi.find(x => x.id !== c.id && inCella(cella(x.id,g,s), t.id));
-  if(altrove) return { errore:`${t.nome} ${g} alla ${slotLabel(s)} è già in ${altrove.nome}.` };
+  if(altrove) return { errore:`${nomeDoc(t.nome)} ${g} alla ${slotLabel(s)} è già in ${altrove.nome}.` };
   if(aulaId){
     const a = aula(aulaId);
     const occ = a && !a.contemporanea && S.classi.find(x => x.id !== c.id && cella(x.id,g,s) && cella(x.id,g,s).aula === aulaId);
@@ -3410,12 +3451,12 @@ function provaPool(idx, g, s){
   const vi = S.ui.vista;
   if(vi === 'docente' && p.doc !== S.ui.soggetto){
     POOL_SEL = null; renderOrario();
-    return avvisa(`Quest'ora è di ${doc(p.doc)?doc(p.doc).nome:'?'}: collocala dalla sua vista docente, dalla vista Aula o dalla classe ${cls(p.cl)?cls(p.cl).nome:''}.`);
+    return avvisa(`Quest'ora è di ${doc(p.doc)?nomeDoc(doc(p.doc).nome):'?'}: collocala dalla sua vista docente, dalla vista Aula o dalla classe ${cls(p.cl)?cls(p.cl).nome:''}.`);
   }
   const aulaId = vi === 'aula' ? S.ui.soggetto : '';
   const r = verificaPool(p, g, s, aulaId);
   if(r.errore){ POOL_SEL = null; renderOrario(); return avvisa(r.errore); }
-  const testo = `${cls(p.cl).nome} · ${disc(p.di)?disc(p.di).nome:'?'} · ${doc(p.doc).nome} → ${g} ${slotLabel(s)}${aulaId ? ' in ' + aula(aulaId).nome : ''}.`;
+  const testo = `${cls(p.cl).nome} · ${disc(p.di)?disc(p.di).nome:'?'} · ${nomeDoc(doc(p.doc).nome)} → ${g} ${slotLabel(s)}${aulaId ? ' in ' + aula(aulaId).nome : ''}.`;
   // in vista Aula si conferma sempre (classe e aula scelte qui); altrove solo se c'è qualcosa da segnalare
   if(r.conferme.length || aulaId) chiedi(testo + (r.conferme.length ? ' ' + r.conferme.join(' ') : '') + ' Procedo?', () => collocaDaPool(idx, g, s, aulaId), 'Colloca');
   else collocaDaPool(idx, g, s, aulaId);
@@ -3429,7 +3470,7 @@ function modalPoolSlot(g, s){
     <p>Quale ora non collocata metto qui?</p>
     <div class="stack" style="gap:6px">${voci.map(({p,i}) => { const r = verificaPool(p, g, s, aulaId);
       return `<button class="btn ghost" style="justify-content:flex-start;text-align:left" data-pi="${i}" ${r.errore ? 'disabled' : ''}>
-        ${esc(cls(p.cl)?cls(p.cl).nome:'?')} · ${esc(disc(p.di)?disc(p.di).nome:'?')} · ${esc(doc(p.doc)?doc(p.doc).nome:'?')}${p.ore>1?' ('+p.ore+'h)':''}
+        ${esc(cls(p.cl)?cls(p.cl).nome:'?')} · ${esc(disc(p.di)?disc(p.di).nome:'?')} · ${esc(doc(p.doc)?nomeDoc(doc(p.doc).nome):'?')}${p.ore>1?' ('+p.ore+'h)':''}
         ${r.errore ? `<span class="mini"> — ${esc(r.errore)}</span>` : ''}</button>`; }).join('')}</div>
     <div class="foot"><button class="btn ghost" data-close="1">Annulla</button></div>`,
     box => box.addEventListener('click', e => { const b = e.target.closest('[data-pi]'); if(b){ chiudiModal(); provaPool(+b.dataset.pi, g, s); } }));
@@ -3557,9 +3598,9 @@ $('#fileOrarioXlsm').addEventListener('change', async e => {
 });
 $('#btnModDocenti').addEventListener('click', () => mostraTesto('Modello docenti', modelloDocenti(), 'modello-docenti.csv', 'text/csv'));
 $('#btnModClassi').addEventListener('click', () => mostraTesto('Modello classi', modelloClassi(), 'modello-classi.csv', 'text/csv'));
-$('#btnCsvClassi').addEventListener('click', () => mostraTesto('Orario delle classi', csvClassi(), nomeFile('_classi.csv'), 'text/csv'));
-$('#btnCsvDocenti').addEventListener('click', () => mostraTesto('Orario dei docenti', csvDocenti(), nomeFile('_docenti.csv'), 'text/csv'));
-$('#btnCsvCattedre').addEventListener('click', () => mostraTesto('Elenco cattedre', csvCattedre(), nomeFile('_cattedre.csv'), 'text/csv'));
+$('#btnCsvClassi').addEventListener('click', () => mostraTesto('Orario delle classi', conCodici(csvClassi), nomeFile('_classi.csv'), 'text/csv'));
+$('#btnCsvDocenti').addEventListener('click', () => mostraTesto('Orario dei docenti', conCodici(csvDocenti), nomeFile('_docenti.csv'), 'text/csv'));
+$('#btnCsvCattedre').addEventListener('click', () => mostraTesto('Elenco cattedre', conCodici(csvCattedre), nomeFile('_cattedre.csv'), 'text/csv'));
 
 /* ---- modale ---- */
 $('#overlay').addEventListener('mousedown', e => { if(e.target.id==='overlay') chiudiModal(); });

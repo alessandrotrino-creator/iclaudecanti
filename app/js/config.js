@@ -20,6 +20,11 @@ window.CONFIG = {
   // Se si svuota ('') l'app torna in "modalità dimostrativa": chiede solo l'email, SENZA verificarla.
   googleClientId: '709643540266-2kcc07obqusacsm3qlu8trkc2gb4cjh1.apps.googleusercontent.com',
 
+  // File riservato su Google Drive con la corrispondenza codice → nome dei docenti (Codice;Cognome;Nome).
+  // Nel repository i docenti sono solo codici (DOC01, DOC02…): i nomi li vede solo chi ha accesso al file.
+  // L'ID è la parte del link tra /d/ e /view. Non è segreto: senza il permesso su Drive il file non si apre.
+  fileNomiDocenti: '1ow18da2cOdM8uiVxi8p5F9JEguAZRrso',
+
   // Dove si trova il file con l'orario (formato dell'app oppure backup di Orario Facile)
   urlDati: '../dati/orario.json',
 
