@@ -423,8 +423,18 @@ const Sostituzioni = (() => {
     a.permessoSegnate = quante ore sono già state tolte nel foglio per questa assenza:
     si corregge solo la differenza (per esempio se si cambiano le ore o si toglie il permesso).
   */
-  async function aggiornaPermesso(a, oreGiuste) {
-    const differenza = oreGiuste - (a.permessoSegnate || 0);
+  // Le correzioni del permesso di una stessa assenza si fanno una alla volta, in fila: così due modifiche
+  // ravvicinate non leggono lo stesso valore e non tolgono le ore due volte
+  const filaPermessi = new Map();   // id dell'assenza -> ultima correzione in corso
+  function aggiornaPermesso(a, oreGiuste) {
+    const prima = filaPermessi.get(a.id) || Promise.resolve();
+    const questa = prima.then(() => correggiPermesso(a, oreGiuste));
+    filaPermessi.set(a.id, questa);
+    return questa;
+  }
+
+  async function correggiPermesso(a, oreGiuste) {
+    const differenza = oreGiuste - (a.permessoSegnate || 0);   // calcolata quando tocca a lei, non prima
     if (!differenza) return;
     const sett = settimanaDi(a.data);
     try {
@@ -447,8 +457,13 @@ const Sostituzioni = (() => {
     }
   }
 
+  // Sostituzioni con un'operazione in corso sul foglio (assegnazione o annullamento): finché non finisce,
+  // un secondo tocco sullo stesso pulsante viene ignorato (altrimenti l'ora verrebbe tolta o aggiunta due volte)
+  const inCorso = new Set();
+
   async function assegna(iso, l, idSostituto) {
     if (!controllaPermesso()) return;
+    if (sostituzioneDi(iso, l)) return;   // quest'ora è già assegnata (per esempio doppio tocco su «Assegna»)
     const s = {
       id: nuovoId(), data: iso, settimana: settimanaDi(iso), ora: l.ora,
       classe: l.classe, aula: l.aula, materia: l.materia,
@@ -456,41 +471,57 @@ const Sostituzioni = (() => {
     };
     registro.push(s);
     salva('registro', registro);
+    inCorso.add(s.id);   // finché il +1 non è scritto, questa sostituzione non si può annullare
     const testo = `${testoOra(l.ora)} in ${nome('classe', l.classe)}: sostituisce ${nomeDocente(idSostituto)}.`;
     avvisa(testo);
     disegnaTutto();
-    // foglio del conteggio su Google Drive: +1 nella settimana del docente che sostituisce
-    const fatto = [];
-    const esito = await segnaNelFoglio(s, 1);
-    if (esito.ok) {
-      s.riportata = true; s.nelFoglio = true;
-      fatto.push(`segnata nel foglio del conteggio (settimana ${s.settimana}${esito.cella ? ', cella ' + esito.cella : ''}: ora ${esito.nuovo})`);
+    try {
+      // foglio del conteggio su Google Drive: +1 nella settimana del docente che sostituisce
+      const fatto = [];
+      const esito = await segnaNelFoglio(s, 1);
+      if (esito.ok) {
+        s.riportata = true; s.nelFoglio = true;
+        fatto.push(`segnata nel foglio del conteggio (settimana ${s.settimana}${esito.cella ? ', cella ' + esito.cella : ''}: ora ${esito.nuovo})`);
+      }
+      // Foglio Google delle sostituzioni: una riga nel foglio «Sostituzioni»
+      if (await scriviNelRegistro(s)) {
+        s.nelRegistro = true;
+        fatto.push('scritta nel foglio «Sostituzioni»');
+      }
+      if (fatto.length) salva('registro', registro);
+      // Se il +1 non è stato scritto lo diciamo sempre, con il motivo: l'ora resta tra quelle da riportare
+      const mancato = esito.ok ? '' : ` ⚠️ Non segnata nel foglio del conteggio: ${esito.motivo}. Resta tra le ore da riportare.`;
+      avvisa(testo + (fatto.length ? ' ' + fatto.join(' e ').replace(/^./, c => c.toUpperCase()) + '.' : '') + mancato);
+    } finally {
+      inCorso.delete(s.id);
+      disegnaTutto();
     }
-    // Foglio Google delle sostituzioni: una riga nel foglio «Sostituzioni»
-    if (await scriviNelRegistro(s)) {
-      s.nelRegistro = true;
-      fatto.push('scritta nel foglio «Sostituzioni»');
-    }
-    if (fatto.length) salva('registro', registro);
-    // Se il +1 non è stato scritto lo diciamo sempre, con il motivo: l'ora resta tra quelle da riportare
-    const mancato = esito.ok ? '' : ` ⚠️ Non segnata nel foglio del conteggio: ${esito.motivo}. Resta tra le ore da riportare.`;
-    avvisa(testo + (fatto.length ? ' ' + fatto.join(' e ').replace(/^./, c => c.toUpperCase()) + '.' : '') + mancato);
-    disegnaTutto();
   }
 
   async function annulla(s) {
     if (!controllaPermesso()) return;
-    if (s.nelRegistro && !(await togliDalRegistro([s])) &&
-      !confirm('Non riesco a togliere la sostituzione dal foglio «Sostituzioni». Annullarla comunque? Poi correggi il foglio a mano.')) return;
-    if (s.nelFoglio) {
-      // segnata in automatico nel foglio su Drive: si toglie da lì
-      if (!(await segnaNelFoglio(s, -1)).ok &&
-        !confirm('Non riesco a togliere l\'ora dal foglio del conteggio su Drive. Annullare comunque la sostituzione? Poi correggi il foglio a mano.')) return;
-    } else if (s.riportata && !confirm('Questa sostituzione è già stata riportata nel foglio. Annullarla comunque? Ricordati di correggere anche il foglio.')) return;
-    registro = registro.filter(x => x.id !== s.id);
-    salva('registro', registro);
-    avvisa('Sostituzione annullata.');
-    disegnaTutto();
+    if (inCorso.has(s.id)) return;   // c'è già un'operazione in corso su questa sostituzione (doppio tocco)
+    inCorso.add(s.id);
+    disegnaTutto();                  // il pulsante diventa «Annullo…» e non si può ripremere
+    try {
+      if (s.nelRegistro && !(await togliDalRegistro([s])) &&
+        !confirm('Non riesco a togliere la sostituzione dal foglio «Sostituzioni». Annullarla comunque? Poi correggi il foglio a mano.')) return;
+      let dove = '';
+      if (s.nelFoglio) {
+        // segnata in automatico nel foglio su Drive: si toglie da lì (una sola volta)
+        const esito = await segnaNelFoglio(s, -1);
+        if (esito.ok) {
+          s.nelFoglio = false;   // già tolta: se qualcosa va storto dopo, non si toglie una seconda volta
+          dove = ` Tolta 1 ora a ${nomeDocente(s.sostituto)} nel foglio del conteggio (settimana ${s.settimana}${esito.cella ? ', cella ' + esito.cella : ''}: ora ${esito.nuovo}).`;
+        } else if (!confirm(`Non riesco a togliere l'ora dal foglio del conteggio (${esito.motivo}). Annullare comunque la sostituzione? Poi correggi il foglio a mano.`)) return;
+      } else if (s.riportata && !confirm('Questa sostituzione è già stata riportata nel foglio. Annullarla comunque? Ricordati di correggere anche il foglio.')) return;
+      registro = registro.filter(x => x.id !== s.id);
+      salva('registro', registro);
+      avvisa('Sostituzione annullata.' + dove);
+    } finally {
+      inCorso.delete(s.id);
+      disegnaTutto();
+    }
   }
 
   // ---------- Disegno della sezione 1: dati ----------
@@ -703,7 +734,9 @@ const Sostituzioni = (() => {
       return el('article', { class: 'sost-ora coperta' }, titolo, dettagli, compresenza,
         el('p', { class: 'sost-sostituto' }, '✔ Sostituisce ', el('strong', {}, nomeDocente(s.sostituto)), ' ', etichettaSaldo(saldo),
           s.riportata ? el('span', { class: 'tag' }, 'già riportata nel foglio') : null),
-        el('button', { type: 'button', class: 'btn ghost sm', onclick: () => annulla(s) }, 'Annulla la sostituzione'));
+        // mentre il foglio viene aggiornato il pulsante è spento, così non si preme due volte
+        el('button', { type: 'button', class: 'btn ghost sm', disabled: inCorso.has(s.id), onclick: () => annulla(s) },
+          inCorso.has(s.id) ? 'Aggiorno il foglio…' : 'Annulla la sostituzione'));
     }
 
     const tutti = candidati(dataScelta, l);
