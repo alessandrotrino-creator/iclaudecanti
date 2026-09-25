@@ -343,6 +343,31 @@ body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario thead th.angolo {
 @keyframes riempi-barra { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @media (prefers-reduced-motion: reduce) { .ingresso-barra { display: none; } }
 
+/* ---------- Modifiche dell'ultimo minuto (vedi js/modifiche.js) ---------- */
+.modifiche {
+  margin: 10px 16px 0; padding: 12px 16px; border-radius: 12px;
+  background: var(--evidenza); border: 2px solid var(--evidenza-bordo); color: var(--testo);
+}
+.modifiche-testa { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.modifiche-testa h2 { margin: 0; font-size: 1.15rem; }
+.modifiche-elenco { margin: 8px 0; padding-left: 20px; display: grid; gap: 6px; }
+.mod-dove { font-weight: 700; }
+.mod-prima { color: var(--testo-tenue); }
+.mod-tipo {
+  display: inline-block; font-size: .75rem; font-weight: 700; padding: 1px 8px; border-radius: 999px;
+  background: var(--superficie); border: 1px solid var(--evidenza-bordo);
+}
+.mod-riguarda { background: var(--evidenza-bordo); color: #1a1f2b; }
+.mod-tua { font-weight: 600; }
+/* Nella tabella: la lezione cambiata ha un bordo evidente e l'etichetta "Cambiata" */
+.lezione-modificata { outline: 3px solid var(--evidenza-bordo); outline-offset: -1px; }
+.etichetta-modificata {
+  justify-self: start; font-size: .68rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  padding: 0 6px; border-radius: 4px; background: var(--evidenza-bordo); color: #1a1f2b;
+}
+body.modalita-monitor .modifiche, body.modalita-ingresso .modifiche { font-size: 1.1em; }
+@media (min-width: 700px) { .modifiche { margin: 12px 16px 0; } }
+
 /* ---------- LIM: schermata dell'intervallo (vedi js/intervallo.js) ---------- */
 .schermata-intervallo {
   position: fixed; inset: 0; z-index: 50; overflow: auto;

@@ -50,7 +50,8 @@ window.CONFIG = {
   secondiRotazioneIngresso: 20,
 
   // Ogni quanti minuti si ricontrolla se l'orario è stato aggiornato
-  minutiAggiornamentoDati: 15,
+  // (basso, così le modifiche dell'ultimo minuto arrivano presto: il file è piccolo)
+  minutiAggiornamentoDati: 5,
 
   // Tema "secondo l'ora": scuro da oraInizioScuro fino a oraFineScuro (ore intere, 0-23)
   oraInizioScuro: 19,

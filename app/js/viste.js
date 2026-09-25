@@ -57,7 +57,11 @@ const Viste = (() => {
         .filter(k => k !== stato.colonne && !stato.filtri[k])
         .map(k => `<span class="dato dato-${k}"><span class="solo-lettori">${DIMENSIONI[k].singolare}: </span>${esc(Dati.nome(k, l[k]))}</span>`)
         .join('');
-      return `<div class="lezione" style="--tinta:${tinta(D, l.materia)}"><strong class="materia">${esc(l.materia || '—')}</strong>${righe}</div>`;
+      // Lezione cambiata all'ultimo minuto (vedi modifiche.js): bordo evidenziato ed etichetta
+      const cambiata = stato.modificate && stato.modificate.has(l.giorno + '|' + l.ora + '|' + l.classe);
+      return `<div class="lezione${cambiata ? ' lezione-modificata' : ''}" style="--tinta:${tinta(D, l.materia)}">` +
+        (cambiata ? '<span class="etichetta-modificata">Cambiata</span>' : '') +
+        `<strong class="materia">${esc(l.materia || '—')}</strong>${righe}</div>`;
     }).join('');
   }
 

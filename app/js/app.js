@@ -27,7 +27,8 @@
   let timerInattivita = null;
   let breveAperta = false;  // true quando si vede la vista "In breve" al posto della tabella
   // pagina: solo per lo schermo all'ingresso, quali colonne mostrare (null = tutte)
-  const stato = { colonne: 'classe', giorno: '', filtri: { classe: '', docente: '', aula: '' }, pagina: null };
+  // modificate: caselle cambiate all'ultimo minuto, da evidenziare (vedi modifiche.js)
+  const stato = { colonne: 'classe', giorno: '', filtri: { classe: '', docente: '', aula: '' }, pagina: null, modificate: null };
 
   const leggi = k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
   const scrivi = (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch (e) { /* ignorato */ } };
@@ -231,6 +232,77 @@
     ].filter(Boolean).join(' · ');
     if (breveAperta) disegnaBreve();
     aggiornaIntervallo();
+    disegnaModifiche();
+  }
+
+  /* ---------- modifiche dell'ultimo minuto (vedi modifiche.js) ---------- */
+  let modifiche = null;   // { giorno, elenco, nuove, daVedere }
+
+  // Confronta l'orario appena caricato con l'ultimo visto; se "avvisa" è vero, manda anche la notifica
+  function controllaModifiche(avvisa) {
+    modifiche = Modifiche.controlla(D, giornoIniziale().giorno);
+    stato.modificate = Modifiche.caselle(modifiche);   // per evidenziare le celle nella tabella
+    const mie = modificheDaMostrare();
+    if (avvisa && modifiche.nuove && modifiche.daVedere && mie.length) notificaModifiche(mie);
+  }
+
+  // Le modifiche che interessano questo dispositivo: sul monitor di un'aula solo quelle di quell'aula;
+  // al docente per prime quelle che lo riguardano
+  function modificheDaMostrare() {
+    if (!modifiche) return [];
+    const coinvolge = (x, campo, id) => [...x.prima, ...x.dopo].some(l => l[campo] === id);
+    let elenco = modifiche.elenco;
+    if (aulaMonitor) elenco = elenco.filter(x => coinvolge(x, 'a', aulaMonitor));
+    if (mioDocente) elenco = elenco.map(x => Object.assign({ tua: coinvolge(x, 'd', mioDocente.id) }, x)).sort((a, b) => b.tua - a.tua);
+    return elenco;
+  }
+
+  // "Matematica · DOC03 · 📍 110ITA4" (più lezioni nella stessa casella separate da +)
+  const descriviLezioni = elenco => elenco.map(l =>
+    [l.m || '—', l.d ? Dati.nome('docente', l.d) : '', l.a ? '📍 ' + Dati.nome('aula', l.a) : '']
+      .filter(Boolean).map(Viste.esc).join(' · ')).join(' + ');
+
+  // Il riquadro in alto con l'elenco delle modifiche
+  function disegnaModifiche() {
+    const box = $('#modifiche');
+    const elenco = modificheDaMostrare();
+    if (!modifiche || !modifiche.daVedere || !elenco.length) { box.hidden = true; box.innerHTML = ''; return; }
+    const quando = modifiche.giorno === adesso().giorno ? 'di oggi' : 'di ' + modifiche.giorno.toLowerCase();
+    const righe = elenco.map(x => {
+      const prima = descriviLezioni(x.prima), dopo = descriviLezioni(x.dopo);
+      const cosa = !x.prima.length ? `<strong class="mod-dopo">${dopo}</strong> <span class="mod-tipo">lezione aggiunta</span>`
+        : !x.dopo.length ? `<del class="mod-prima">${prima}</del> <span class="mod-tipo">lezione tolta</span>`
+        : `<del class="mod-prima">${prima}</del> <span aria-hidden="true">→</span><span class="solo-lettori"> diventa </span> <strong class="mod-dopo">${dopo}</strong>`;
+      return `<li${x.tua ? ' class="mod-tua"' : ''}><span class="mod-dove">${x.ora}ª ora · ${Viste.esc(Dati.nome('classe', x.classe))}:</span> ${cosa}` +
+        `${x.tua ? ' <span class="mod-tipo mod-riguarda">ti riguarda</span>' : ''}</li>`;
+    }).join('');
+    // La notifica si propone solo sui dispositivi personali, e solo se non è già stata decisa
+    const proponiNotifica = 'Notification' in window && Notification.permission === 'default' && !aulaMonitor && !secondiIngresso;
+    box.innerHTML =
+      `<div class="modifiche-testa"><h2 id="titoloModifiche">⚠️ Modifiche all'orario ${quando}</h2>` +
+      `<button type="button" id="btnModificheViste" class="pulsante">Ho visto</button></div>` +
+      `<ul class="modifiche-elenco">${righe}</ul>` +
+      (proponiNotifica ? '<button type="button" id="btnModificheNotifiche" class="pulsante leggero">🔔 Avvisami anche con una notifica</button>' : '');
+    box.hidden = false;
+  }
+
+  // Notifica del telefono/PC (arriva solo mentre l'app è aperta, anche in secondo piano)
+  function notificaModifiche(elenco) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    // Il docente viene avvisato solo per le modifiche che lo riguardano
+    if (mioDocente && !elenco.some(x => x.tua)) return;
+    const n = elenco.length;
+    const opzioni = {
+      body: `${n} ${n === 1 ? 'modifica' : 'modifiche'} all'orario: ` +
+        elenco.slice(0, 3).map(x => `${x.ora}ª ora ${Dati.nome('classe', x.classe)}`).join(', ') + (n > 3 ? '…' : ''),
+      icon: 'icone/icona-192.png', tag: 'orario-modifiche'
+    };
+    // Sui telefoni Android le notifiche passano dal service worker
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.ready.then(r => r.showNotification('Orario cambiato', opzioni)).catch(() => {});
+    } else {
+      try { new Notification('Orario cambiato', opzioni); } catch (e) { /* non supportato */ }
+    }
   }
 
   /* ---------- LIM: schermata dell'intervallo (vedi intervallo.js) ---------- */
@@ -373,6 +445,16 @@
     // Quando Orario Facile (aperto in un'altra scheda) salva, l'app si aggiorna subito
     window.addEventListener('storage', e => { if (e.key === Dati.CHIAVE_BOZZA) ricaricaDati(false); });
     $('#btnEsci').addEventListener('click', () => Accesso.esci());
+    // Riquadro delle modifiche: "Ho visto" lo nasconde (le celle restano evidenziate), "Avvisami" chiede il permesso
+    $('#modifiche').addEventListener('click', e => {
+      if (e.target.closest('#btnModificheViste')) {
+        Modifiche.segnaViste();
+        modifiche.daVedere = false;
+        disegnaModifiche();
+      } else if (e.target.closest('#btnModificheNotifiche')) {
+        Notification.requestPermission().then(disegnaModifiche, disegnaModifiche);
+      }
+    });
     // "Chiudi" nella schermata dell'intervallo: non ricompare fino al prossimo intervallo
     $('#schermataIntervallo').addEventListener('click', e => {
       if (!e.target.closest('#chiudiIntervallo')) return;
@@ -394,6 +476,7 @@
       mioDocente = Dati.docentePerEmail(utente.email);
       preparaControlli();
       if (aulaMonitor && !D.mappa.aula.has(aulaMonitor)) aulaMonitor = '';
+      controllaModifiche(true);
       $('#sceltaMonitor').value = valoreUso();
       // Cambiata la fonte (bozza <-> pubblicato): classi, docenti e aule sono diversi, si riparte
       if (D.fonte !== fontePrima) { schermataIniziale(); return; }
@@ -450,6 +533,7 @@
     secondiIngresso = !aulaMonitor && leggi(CHIAVE_INGRESSO) ? secondiValidi(leggi(CHIAVE_INGRESSO)) : 0;
     // LIM: lo script di Windows apre l'app all'intervallo con ?intervallo (vedi app/lim/)
     apertaPerIntervallo = parametri.has('intervallo');
+    controllaModifiche(false);   // modifiche arrivate mentre l'app era chiusa: riquadro sì, notifica no
 
     preparaControlli();
     $('#sceltaMonitor').value = valoreUso();
