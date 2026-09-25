@@ -215,6 +215,9 @@ main#contenuto { padding: 10px 16px 16px; outline: none; }
 
 /* ---------- Tabella dell'orario ---------- */
 .contenitore-tabella {
+  /* position: relative tiene dentro il riquadro anche i testi nascosti per i lettori di schermo
+     (.solo-lettori): senza, "scappavano" e allargavano la pagina, che sui telefoni si rimpiccioliva */
+  position: relative;
   overflow: auto; max-height: calc(100vh - 150px); max-height: calc(100dvh - 150px);
   background: var(--superficie); border: 1px solid var(--bordo); border-radius: 12px;
   -webkit-overflow-scrolling: touch;
