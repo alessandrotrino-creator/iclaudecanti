@@ -33,7 +33,8 @@
   let dataBreve = '';       // data scelta nella tendina "Giorno" di "In breve" ('' = oggi o il prossimo giorno di scuola)
   // pagina: solo per lo schermo all'ingresso, quali colonne mostrare (null = tutte)
   // modificate: caselle cambiate all'ultimo minuto, da evidenziare (vedi modifiche.js)
-  const stato = { colonne: 'classe', giorno: '', filtri: { classe: '', docente: '', aula: '' }, pagina: null, modificate: null };
+  // sostituzioni: assenze e sostituzioni della settimana, da evidenziare (vedi supplenze.js)
+  const stato = { colonne: 'classe', giorno: '', filtri: { classe: '', docente: '', aula: '' }, pagina: null, modificate: null, sostituzioni: null };
 
   const leggi = k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
   const scrivi = (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch (e) { /* ignorato */ } };
@@ -277,6 +278,13 @@
     if (settimanaSenzaFiltro) avvisi.push('Per vedere la settimana scegli una classe, un docente o un\'aula.');
     else if (avvisoGiorno && stato.colonne !== 'giorno' && stato.giorno === avvisoGiorno.giorno) avvisi.push(avvisoGiorno.testo);
 
+    // Assenze e sostituzioni della settimana registrate su questo dispositivo (Sostituzioni o Sostituzioni smart)
+    stato.sostituzioni = Supplenze.settimana(D);
+    if (stato.sostituzioni.segnate.size && !settimanaSenzaFiltro) {
+      avvisi.push('🔄 Questa settimana ci sono sostituzioni: le lezioni con la cornice arancione hanno un sostituto, ' +
+        'quelle con la cornice rossa tratteggiata aspettano ancora il sostituto.');
+    }
+
     const adessoTabella = { giorno: a.giorno, ora: a.ora };
     let n = 0;
     if (!settimanaSenzaFiltro) n = Viste.disegna($('#tabella'), D, stato, adessoTabella);
@@ -489,7 +497,7 @@
     document.body.classList.toggle('smart-aperta', smartAperta);
     $('#vistaSmart').hidden = !smartAperta;
     aggiornaMioOrario();   // con la pagina aperta «Oggi» non è cerchiato
-    if (!smartAperta) return;
+    if (!smartAperta) { aggiorna(); return; }   // la tabella mostra subito le sostituzioni appena fatte
     window.scrollTo(0, 0);
     $('#vistaSmart').focus({ preventScroll: true });
     Smart.apri($('#vistaSmart'), { orario: () => D, chiudi: () => { apriSmart(false); $('#btnUtente').focus(); }, email: utente.email });
@@ -627,6 +635,8 @@
     $('#sceltaFonte').addEventListener('change', e => { Dati.impostaFonte(e.target.value); chiudiMenu(); ricaricaDati(true); });
     // Quando Orario Facile (aperto in un'altra scheda) salva, l'app si aggiorna subito
     window.addEventListener('storage', e => { if (e.key === Dati.CHIAVE_BOZZA) ricaricaDati(false); });
+    // Quando si assegna una sostituzione (in Orario Facile o in un'altra scheda) la tabella si aggiorna subito
+    window.addEventListener('storage', e => { if (Supplenze.CHIAVI.includes(e.key)) aggiorna(); });
     $('#btnEsci').addEventListener('click', () => Accesso.esci());
     // Riquadro delle modifiche: un cerchio apre le storie, "Segna tutte come viste" ingrigisce i cerchi
     // (le celle restano evidenziate), "Avvisami" chiede il permesso per le notifiche

@@ -29,9 +29,13 @@ const Viste = (() => {
     return tinte.get(D).get(materia) || 0;
   }
 
-  // Lezioni che rispettano giorno (se serve) e filtri attivi
+  // Lezioni che rispettano giorno (se serve) e filtri attivi.
+  // Le ore di sostituzione (supplenze.js) si aggiungono all'orario del docente che sostituisce solo quando
+  // i docenti si vedono uno per uno (colonne "Docenti" o filtro su un docente): altrimenti comparirebbero due volte
   function lezioniFiltrate(D, stato) {
-    return D.lezioni.filter(l =>
+    const perDocente = stato.colonne === 'docente' || !!stato.filtri.docente;
+    const tutte = stato.sostituzioni && perDocente ? D.lezioni.concat(stato.sostituzioni.extra) : D.lezioni;
+    return tutte.filter(l =>
       (stato.colonne === 'giorno' || l.giorno === stato.giorno) &&
       FILTRI.every(k => !stato.filtri[k] || l[k] === stato.filtri[k]));
   }
@@ -59,9 +63,25 @@ const Viste = (() => {
         .join('');
       // Lezione cambiata all'ultimo minuto (vedi modifiche.js): bordo evidenziato ed etichetta
       const cambiata = stato.modificate && stato.modificate.has(l.giorno + '|' + l.ora + '|' + l.classe);
-      return `<div class="lezione${cambiata ? ' lezione-modificata' : ''}" style="--tinta:${tinta(D, l.materia)}">` +
-        (cambiata ? '<span class="etichetta-modificata">Cambiata</span>' : '') +
-        `<strong class="materia">${esc(l.materia || '—')}</strong>${righe}</div>`;
+      // Docente assente o sostituito questa settimana (vedi supplenze.js): cornice colorata, etichetta e nomi
+      const sost = Supplenze.di(stato.sostituzioni, l);
+      let classeSost = '', etichettaSost = '', rigaSost = '';
+      if (sost && sost.copia) {
+        classeSost = ' lezione-supplenza lezione-copia';
+        etichettaSost = '<span class="etichetta-sost">🔄 Sostituzione</span>';
+        rigaSost = `<span class="dato-sost">al posto di ${esc(Dati.nome('docente', sost.assente))}</span>`;
+      } else if (sost && sost.sostituto) {
+        classeSost = ' lezione-supplenza';
+        etichettaSost = '<span class="etichetta-sost">🔄 Sostituzione</span>';
+        rigaSost = `<span class="dato-sost">${esc(Dati.nome('docente', sost.assente))} assente → <b>${esc(Dati.nome('docente', sost.sostituto))}</b></span>`;
+      } else if (sost) {
+        classeSost = ' lezione-scoperta';
+        etichettaSost = '<span class="etichetta-sost">⚠ Docente assente</span>';
+        rigaSost = `<span class="dato-sost">${esc(Dati.nome('docente', sost.assente))} · sostituto da trovare</span>`;
+      }
+      return `<div class="lezione${cambiata ? ' lezione-modificata' : ''}${classeSost}" style="--tinta:${tinta(D, l.materia)}">` +
+        (cambiata ? '<span class="etichetta-modificata">Cambiata</span>' : '') + etichettaSost +
+        `<strong class="materia">${esc(l.materia || '—')}</strong>${righe}${rigaSost}</div>`;
     }).join('');
   }
 

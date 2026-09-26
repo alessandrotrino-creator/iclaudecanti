@@ -16,6 +16,8 @@
   --evidenza-bordo: #d9a300;
   --avviso: #eef3fd;
   --errore: #b3261e;
+  --sost-bordo: #c2410c;      /* sostituzioni: arancione scuro, il testo bianco si legge bene */
+  --su-errore: #fff;          /* testo sopra il rosso di --errore */
   --lezione-l: 94%;   /* luminosità dello sfondo delle lezioni */
   --lezione-s: 70%;
   --lezione-bordo-l: 42%;
@@ -38,6 +40,7 @@
     --evidenza-bordo: #e6b422;
     --avviso: #1d2738;
     --errore: #ff8a80;
+    --su-errore: #1a1f2b;
     --lezione-l: 20%;
     --lezione-s: 40%;
     --lezione-bordo-l: 62%;
@@ -57,6 +60,7 @@
   --evidenza-bordo: #e6b422;
   --avviso: #1d2738;
   --errore: #ff8a80;
+  --su-errore: #1a1f2b;
   --lezione-l: 20%;
   --lezione-s: 40%;
   --lezione-bordo-l: 62%;
@@ -409,6 +413,18 @@ body.modalita-ingresso:not(.ingresso-in-pausa) .tabella-orario thead th.angolo {
   padding: 0 6px; border-radius: 4px; background: var(--evidenza-bordo); color: #1a1f2b;
 }
 body.modalita-monitor .modifiche, body.modalita-ingresso .modifiche { font-size: 1.1em; }
+/* Sostituzioni della settimana (js/supplenze.js): cornice spessa ed etichetta ben visibili.
+   Arancione = il docente assente è sostituito; rosso = manca ancora il sostituto */
+.lezione-supplenza { outline: 3px solid var(--sost-bordo); outline-offset: -1px; }
+.lezione-scoperta { outline: 3px dashed var(--errore); outline-offset: -1px; }
+.etichetta-sost {
+  justify-self: start; font-size: .68rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  padding: 0 6px; border-radius: 4px; background: var(--sost-bordo); color: #fff;
+}
+.lezione-scoperta .etichetta-sost { background: var(--errore); color: var(--su-errore); }
+.dato-sost { font-size: .8rem; line-height: 1.25; font-weight: 600; }
+/* Il nome del docente assente, nella riga del docente, viene barrato */
+.lezione-supplenza:not(.lezione-copia) .dato-docente, .lezione-scoperta .dato-docente { text-decoration: line-through; }
 /* Quando tutte le storie sono state viste il riquadro diventa discreto (restano i cerchi grigi) */
 .modifiche.tutte-viste { background: var(--superficie); border-color: var(--bordo); }
 .modifiche.tutte-viste h2 { font-size: 1rem; color: var(--testo-tenue); }
