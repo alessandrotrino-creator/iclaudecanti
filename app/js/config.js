@@ -60,7 +60,7 @@ window.CONFIG = {
   // Vuoto per scelta: l'app legge l'orario da GitHub (urlDati). Per tornare a leggerlo da Drive rimettere
   // l'ID del file orario-pubblicato.json sul Drive della scuola: '18OB3AMivfH-T9-tXU3v2za2Ladzd3-fo'.
   fileOrarioPubblicato: '',
-  fileSostituzioniPubblicate: '',
+  fileSostituzioniPubblicate: '1EPjN8fG3ZNjiN60ytACbtykzUxiXyEx3',
   // - googleApiKey: "chiave API" di Google (non segreta, limitata al sito github.io e alla Google Drive API).
   //   Permetterebbe anche alle LIM di leggere i due file senza accedere a Google, ma solo se sono condivisi con
   //   «Chiunque abbia il link», cosa che la nostra scuola blocca. Per questo resta vuota: l'app legge i file con
