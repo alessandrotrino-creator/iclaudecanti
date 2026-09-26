@@ -335,7 +335,7 @@
       // versione dell'app: serve a capire se il dispositivo ha l'ultima (vedi versioneApp in config.js)
       CONFIG.versioneApp ? 'Versione app ' + Viste.esc(CONFIG.versioneApp) : '',
       // copyright e licenza (vedi LICENZA.md nella radice del sito)
-      '© 2026 Gruppo iclaudecanti – <a href="https://www.comprensivoalmese.it" target="_blank" rel="noopener">IC Almese</a>' +
+      '© 2026 Gruppo Wolf – <a href="https://www.comprensivoalmese.it" target="_blank" rel="noopener">IC Almese</a>' +
         ' · <a href="https://github.com/alessandrotrino-creator/iclaudecanti/blob/main/LICENZA.md" target="_blank" rel="noopener">CC BY 4.0</a>'
     ].filter(Boolean).join(' · ');
     if (breveAperta) disegnaBreve();

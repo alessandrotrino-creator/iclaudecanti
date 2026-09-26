@@ -1,6 +1,6 @@
 # Licenza e condizioni d'uso
 
-© 2026 **Gruppo iclaudecanti – Istituto Comprensivo di Almese**
+© 2026 **Gruppo Wolf – Istituto Comprensivo di Almese**
 ([www.comprensivoalmese.it](https://www.comprensivoalmese.it))
 
 Il codice e la documentazione di questo progetto (Orario DADA, Orario Facile, Sostituzioni docenti e tutti gli altri
@@ -14,7 +14,7 @@ file del repository, salvo quanto indicato più sotto) sono distribuiti con la l
 Puoi **usare, copiare, modificare e ridistribuire** il codice o parti di esso, anche in altri progetti,
 **a condizione di citarne la provenienza**:
 
-1. indica l'autore: *Gruppo iclaudecanti – Istituto Comprensivo di Almese*;
+1. indica l'autore: *Gruppo Wolf – Istituto Comprensivo di Almese*;
 2. indica il sito della scuola: *www.comprensivoalmese.it*;
 3. indica la licenza, con il link: *CC BY 4.0*;
 4. se hai modificato il codice, **dillo** (es. «modificato da …»).
@@ -27,13 +27,13 @@ lavoro, né togliere questo avviso dalle copie.
 
 In una pagina web o in un documento:
 
-> Basato su «Orario DADA» del Gruppo iclaudecanti – Istituto Comprensivo di Almese (www.comprensivoalmese.it),
+> Basato su «Orario DADA» del Gruppo Wolf – Istituto Comprensivo di Almese (www.comprensivoalmese.it),
 > licenza CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/deed.it). Modificato da …
 
 In cima a un file di codice:
 
 ```js
-/* Parti di questo file derivano da «Orario DADA» – Gruppo iclaudecanti, Istituto Comprensivo di Almese
+/* Parti di questo file derivano da «Orario DADA» – Gruppo Wolf, Istituto Comprensivo di Almese
    (www.comprensivoalmese.it) – licenza CC BY 4.0: https://creativecommons.org/licenses/by/4.0/deed.it
    Modificato da … */
 ```

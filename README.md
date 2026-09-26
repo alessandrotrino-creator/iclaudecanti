@@ -2,7 +2,7 @@
 
 Repo collaborativo del gruppo **iclaudecanti**.
 
-© 2026 Gruppo iclaudecanti – Istituto Comprensivo di Almese ([www.comprensivoalmese.it](https://www.comprensivoalmese.it)).
+© 2026 Gruppo Wolf – Istituto Comprensivo di Almese ([www.comprensivoalmese.it](https://www.comprensivoalmese.it)).
 Il codice si può riutilizzare, anche in parte, **citandone la provenienza**: licenza CC BY 4.0, condizioni e testo
 pronto da copiare in [LICENZA.md](LICENZA.md). I dati della scuola (orari, codici dei docenti) non sono coperti dalla licenza.
 
@@ -11,7 +11,7 @@ pronto da copiare in [LICENZA.md](LICENZA.md). I dati della scuola (orari, codic
 **26/09/2026 – Copyright e condizioni d'uso**
 
 - nuovo file [LICENZA.md](LICENZA.md) (e `LICENSE`, letto da GitHub): licenza **CC BY 4.0**, cioè chi riusa il codice
-  deve citare il gruppo iclaudecanti, l'Istituto Comprensivo di Almese e il sito www.comprensivoalmese.it;
+  deve citare il gruppo Wolf, l'Istituto Comprensivo di Almese e il sito www.comprensivoalmese.it;
 - l'avviso compare anche in fondo alla pagina iniziale, all'app Orario DADA e a Orario Facile.
 
 **26/09/2026 – Sostituzioni ben visibili nella tabella e assenze per tutta la settimana** (Chiara)
