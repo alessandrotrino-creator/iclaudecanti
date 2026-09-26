@@ -317,10 +317,26 @@ Le due app stanno sullo stesso sito, quindi **sullo stesso dispositivo condivido
 
 - **Anteprima in tempo reale**: sul computer dove si prepara l'orario con Orario Facile, l'app Orario DADA mostra direttamente quell'orario (la "bozza") e **si aggiorna da sola** mentre lo si modifica in un'altra scheda. In Orario Facile il pulsante **📱 Vedi nell'app** apre l'app; nell'app il menu → **Modifica in Orario Facile** fa il percorso inverso.
 - Dal menu dell'app, **"Orario da mostrare"** permette di passare dalla bozza all'orario pubblicato e viceversa.
-- **Pubblicare per tutti** (telefoni dei docenti, monitor di classe):
-  1. Orario Facile → scheda **Esporta** → **Scarica orario.json**
-  2. aprire la [cartella dati su GitHub](https://github.com/alessandrotrino-creator/iclaudecanti/upload/main/dati), trascinare il file (sostituisce quello vecchio) e premere **Commit changes**
-  3. dopo un paio di minuti tutti i dispositivi vedono il nuovo orario (si aggiornano da soli ogni 15 minuti)
+- **Pubblicare per tutti** (telefoni dei docenti, monitor di classe): Orario Facile → scheda **Orario** → **📤 Pubblica orario**.
+  L'orario va su Google Drive (vedi «Orario pubblicato su Google Drive» qui sotto) e tutti i dispositivi lo vedono entro pochi minuti.
+  Allo stesso modo **📤 Pubblica sostituzioni** (scheda Sostituzioni) fa vedere a tutti le assenze e le sostituzioni nella tabella.
+
+## Orario pubblicato su Google Drive
+
+Impostazioni in `js/config.js`:
+- `cartellaPubblicazione`: la cartella di Drive dove Orario Facile salva `orario-pubblicato.json`, `sostituzioni-pubblicate.json`
+  e la cartella «backup orario» (un backup completo per giorno, `backup orario GG-MM-AAAA.json`); codice in `js/pubblica-drive.js`
+  e `orario-facile/pubblica.js`. Serve il permesso Google `drive` (lo chiede Orario Facile la prima volta).
+- `fileOrarioPubblicato`, `fileSostituzioniPubblicate`: gli ID dei due file che l'app legge (li mostra Orario Facile dopo la prima pubblicazione).
+- `googleApiKey`: una **chiave API** di Google (non segreta) per leggere i due file senza accesso, anche sulle LIM. Si crea nel progetto
+  Google Cloud dell'accesso: API e servizi → Credenziali → Crea credenziali → Chiave API; limitazioni: referrer HTTP
+  `alessandrotrino-creator.github.io/*` e solo «Google Drive API».
+- I due file vanno condivisi con **«Chiunque abbia il link – Visualizzatore»** (Orario Facile ci prova da solo). Contengono solo i
+  codici dei docenti, come prima `dati/orario.json`. I backup restano privati.
+
+Finché ID o chiave mancano, l'app legge `dati/orario.json` da GitHub come prima. Con Drive configurato: se Drive non risponde
+usa l'ultima copia salvata sul dispositivo e, solo se non c'è, `dati/orario.json`. Le sostituzioni: se sul dispositivo ce ne sono
+registrate per la settimana (chi le inserisce) si mostrano quelle, altrimenti quelle pubblicate (`js/supplenze.js`).
 
 ## Aggiornare l'orario
 

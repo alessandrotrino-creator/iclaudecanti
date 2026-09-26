@@ -20,7 +20,13 @@ Le parti del progetto:
 - **Integrazione**: sullo stesso dispositivo l'app legge direttamente la bozza di Orario Facile dal
   `localStorage` (chiave `orariofacile.v2`) e si aggiorna con l'evento `storage`. Non cambiare quella chiave
   senza aggiornare `CHIAVE_BOZZA` in `app/js/dati.js`. Orario Facile ha il pulsante "Vedi nell'app" e, in Esporta,
-  "Scarica orario.json" per pubblicare (il file va caricato in `dati/`).
+  "Scarica orario.json" (vecchio metodo: il file va caricato in `dati/`, ora serve solo da riserva).
+- **Pubblicazione su Google Drive**: i tasti «📤 Pubblica orario» (scheda Orario) e «📤 Pubblica sostituzioni» (scheda
+  Sostituzioni) di Orario Facile (`orario-facile/pubblica.js` + `app/js/pubblica-drive.js`) salvano nella cartella
+  `CONFIG.cartellaPubblicazione` i file `orario-pubblicato.json`, `sostituzioni-pubblicate.json` e il backup del giorno
+  nella cartella «backup orario». L'app li legge con `CONFIG.fileOrarioPubblicato`/`fileSostituzioniPubblicate` +
+  `CONFIG.googleApiKey` (`Dati.urlDrive()` in dati.js, `Supplenze.scarica()`); se mancano, legge `dati/orario.json` come prima.
+  Nei file pubblicati solo codici DOC01…: mai nomi veri, mai il flag «permesso» delle assenze.
 - **Dati della scuola in Orario Facile**: `orario-facile/index.html` contiene i dati 2026/27
   (`CSV_SCUOLA_CLASSI`, `CSV_SCUOLA_DOCENTI` e `datiScuola()`), caricati alla prima apertura e con il pulsante
   "Dati scuola 2026/27". **Privacy**: il repo è pubblico, quindi i docenti compaiono solo con un codice

@@ -14,10 +14,11 @@ Sostituzioni: scheda 9 di Orario Facile
    mandalo a chi gestisce le abilitazioni.
 2. Una volta abilitato, lavora sulle schede: **Impostazioni** → **Discipline** → **Aule** → **Quadro orario** →
    **Docenti e cattedre** → **Criteri** → **Orario** (genera e correggi a mano) → **Salvataggio**.
-3. Per pubblicare per tutti: scheda **Salvataggio** → **Scarica orario.json** → carica il file nella cartella
-   `dati/` del repository su GitHub → **Commit changes**.
+3. Per pubblicare per tutti: scheda **Orario** → tasto **📤 Pubblica orario** (salva l'orario su Google Drive e il
+   backup del giorno nella cartella «backup orario»).
 4. Per le sostituzioni: scheda **Sostituzioni** → carica il foglio del conteggio ore (o collegalo da Drive) → segna
    il docente assente → assegna i sostituti proposti.
+   Per farle vedere a tutti nell'app: tasto **📤 Pubblica sostituzioni** in cima alla scheda.
 5. Per registrare le sostituzioni sul Foglio Google condiviso serve essere nell'elenco **Abilitazioni** di quel
    foglio (email, non codice).
 
@@ -78,10 +79,24 @@ vedere a tutti deve passare il file a chi ha accesso a GitHub (o farsi aggiunger
 
 Il lavoro si salva da solo nel browser. Per farlo vedere a **tutti**:
 
-1. Scheda **Salvataggio ed esportazione** → pulsante **Scarica orario.json**.
-2. Apri la cartella `dati` del repository su GitHub.
-3. Trascina il file scaricato (sostituisce quello vecchio) e premi **Commit changes**.
-4. Dopo un paio di minuti tutti i dispositivi vedono il nuovo orario (si aggiorna ogni 15 minuti).
+1. Scheda **Orario** → tasto grande **📤 Pubblica orario** → **Pubblica**.
+2. La prima volta Google chiede il permesso di scrivere su Drive: scegli l'account della scuola e consenti.
+3. Orario Facile salva nella cartella di Drive dell'orario (`cartellaPubblicazione` in `app/js/config.js`):
+   - `orario-pubblicato.json`, l'orario che l'app mostra a tutti (è sempre lo stesso file, che viene aggiornato);
+   - nella cartella **backup orario** il backup completo del giorno, `backup orario GG-MM-AAAA.json`
+     (se pubblichi di nuovo lo stesso giorno, il backup di quel giorno viene sostituito).
+4. Entro pochi minuti tutti i dispositivi vedono il nuovo orario (l'app lo ricontrolla ogni 5 minuti).
+
+Per pubblicare serve il permesso di **modifica** sulla cartella di Drive: chiedilo a chi la possiede.
+Per ripristinare un backup: scaricalo da Drive e usa **Importa backup** nella scheda Salvataggio.
+
+**Sostituzioni per tutti.** Nella scheda **Sostituzioni** il tasto **📤 Pubblica sostituzioni** salva nella stessa
+cartella `sostituzioni-pubblicate.json`: l'app mostra quelle assenze e sostituzioni nella tabella dell'orario su tutti
+i dispositivi. Si pubblicano solo giorno, ore, classe e codici dei docenti (niente permessi, niente nomi veri).
+Ricordati di ripubblicare dopo ogni cambiamento.
+
+> Il vecchio metodo resta disponibile: **Scarica orario.json** e caricamento del file nella cartella `dati/` su GitHub.
+> Quel file ora serve solo di riserva, se Drive non risponde.
 
 > **Anteprima prima di pubblicare.** Sullo stesso computer, mentre lavori in Orario Facile, l'app Orario DADA (in
 > un'altra scheda del browser) mostra già la tua bozza e si aggiorna da sola: pulsante **📱 Vedi nell'app**.
@@ -167,6 +182,9 @@ Il gruppo lavora tutti insieme direttamente su `main`:
 
 **Ho aperto Orario Facile ma vedo "Solo consultazione".** Copia il codice mostrato e mandalo a chi gestisce le
 abilitazioni: verrà aggiunto all'elenco `editori`.
+
+**Ho premuto «Pubblica orario» ma l'app non lo mostra.** Aspetta 5 minuti o ricarica l'app; se Orario Facile ha scritto
+«L'app non legge ancora questo file», il codice del file va inserito in `app/js/config.js` (`fileOrarioPubblicato`).
 
 **Ho pubblicato l'orario.json ma l'app non lo mostra.** Aspetta qualche minuto (si aggiorna ogni 15 minuti);
 controlla di aver caricato il file nella cartella `dati/` giusta e premuto "Commit changes".
