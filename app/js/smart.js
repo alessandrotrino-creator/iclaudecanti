@@ -10,6 +10,9 @@
   da solo lo stesso motore della scheda (sostituzioni/js/sostituzioni.js, Sostituzioni.collega):
   stesse regole e stessi dati, quindi quello che si fa qui si vede anche in Orario Facile e viceversa.
 
+  La stessa pagina ha anche la modalità «Cambi d'aula» (voce di menu dedicata): lì c'è solo il modulo
+  dei cambi d'aula (sostituzioni/js/cambi-aula.js) con la sua stampa.
+
   La pagina si apre dal menu (voce «⚡ Sostituzioni smart») e funziona solo per chi è nel foglio
   «Autorizzazioni». I file del motore si caricano solo quando la si apre, per non appesantire l'app.
 */
@@ -26,6 +29,7 @@ const Smart = (() => {
   let box = null;             // l'elemento della pagina
   let contesto = null;        // { orario(), chiudi(), email }
   let caricamento = null;     // caricamento in corso dei file del motore
+  let modo = 'sostituzioni'; // 'sostituzioni' (Sostituzioni smart) oppure 'cambi' (pagina «Cambi d'aula»)
   let iso = '';               // il giorno mostrato ("2026-09-28")
   const aperte = new Set();   // ore per cui si vedono tutti i docenti proposti
   // modulo "Assenze del giorno": restano scelti anche quando la pagina si ridisegna
@@ -99,10 +103,13 @@ const Smart = (() => {
 
     // Ricordo il campo che aveva il focus, per rimetterlo dopo il nuovo disegno
     const focus = document.activeElement && box.contains(document.activeElement) ? document.activeElement.id : '';
-    zona.innerHTML = testataHtml(D, st) + `<div class="schede-breve">${schedaAssenze(D)}</div>` + oreHtml(D) +
-      '<h3 class="titoletto-breve">Cambi d\'aula</h3><div class="schede-breve" id="smartCambi"></div>' + stampaHtml(D);
-    // 3. Cambi d'aula: li disegna il modulo condiviso con Orario Facile (sostituzioni/js/cambi-aula.js)
-    if (typeof CambiAula !== 'undefined') CambiAula.disegna(zona.querySelector('#smartCambi'), iso, 'smart');
+    if (modo === 'cambi') {
+      // Pagina «Cambi d'aula»: il modulo condiviso con Orario Facile (sostituzioni/js/cambi-aula.js) e la sua stampa
+      zona.innerHTML = testataHtml(D, st) + '<div class="schede-breve" id="smartCambi"></div>' + stampaCambiHtml(D);
+      if (typeof CambiAula !== 'undefined') CambiAula.disegna(zona.querySelector('#smartCambi'), iso, 'smart');
+    } else {
+      zona.innerHTML = testataHtml(D, st) + `<div class="schede-breve">${schedaAssenze(D)}</div>` + oreHtml(D) + stampaHtml(D);
+    }
     if (focus && document.getElementById(focus)) document.getElementById(focus).focus();
   }
 
@@ -115,13 +122,13 @@ const Smart = (() => {
     const mom = Breve.momento(adesso.getHours() * 60 + adesso.getMinutes());
     const giorni = elenco.map(g => `<option value="${g.iso}"${g.iso === iso ? ' selected' : ''}>${esc(g.testo.charAt(0).toUpperCase() + g.testo.slice(1))}</option>`).join('');
     return `<div class="testata-breve" data-momento="${mom}">
-      <div class="riga-testata"><span class="marchio-breve">⚡ Sostituzioni smart</span>
+      <div class="riga-testata"><span class="marchio-breve">${modo === 'cambi' ? '⇄ Cambi d\'aula' : '⚡ Sostituzioni smart'}</span>
         <button type="button" id="smartChiudi" class="pulsante pulsante-tabella">Tabella</button></div>
-      <h2 id="titoloSmart">Sostituzioni</h2>
+      <h2 id="titoloSmart">${modo === 'cambi' ? 'Cambi d\'aula' : 'Sostituzioni'}</h2>
       <p class="data-breve">${esc(scelto ? scelto.testo : iso)}${st.abilitazione.nome ? ' · ' + esc(st.abilitazione.nome) : ''}</p>
       ${giorni ? `<div class="scelte-breve"><label class="scelta-breve" for="smartGiorno"><span>Giorno</span>
         <select id="smartGiorno">${giorni}</select></label></div>` : ''}
-      ${st.puoFare ? settimanaHtml(elenco) : ''}
+      ${st.puoFare && modo !== 'cambi' ? settimanaHtml(elenco) : ''}
     </div>`;
   }
 
@@ -246,8 +253,7 @@ const Smart = (() => {
   // 3. Stampa: la tabella del giorno (si vede solo in stampa) e il pulsante
   function stampaHtml(D) {
     const elenco = motore.oreDaCoprire(iso);
-    const cambi = typeof CambiAula !== 'undefined' ? CambiAula.tabellaStampa(iso) : '';
-    if (!elenco.length && !cambi) return '';
+    if (!elenco.length) return '';
     const righe = elenco.map(l => {
       const s = motore.sostituzioneDi(iso, l);
       return `<tr><th scope="row">${esc(motore.testoOra(l.ora))}</th><td>${esc(motore.nome('classe', l.classe))}</td>
@@ -255,11 +261,19 @@ const Smart = (() => {
         <td>${esc(motore.nomeDocente(l.assente))}</td><td>${s ? esc(motore.nomeDocente(s.sostituto)) : '—'}</td></tr>`;
     }).join('');
     const scelto = Breve.giorniDiScuola(D).find(g => g.iso === iso);
-    return `<div class="stampa-smart-pulsante"><button type="button" class="pulsante" data-azione="stampa">🖨️ Stampa le sostituzioni e i cambi d'aula del giorno</button></div>
+    return `<div class="stampa-smart-pulsante"><button type="button" class="pulsante" data-azione="stampa">🖨️ Stampa le sostituzioni del giorno</button></div>
       <div class="solo-stampa-smart"><h2>Sostituzioni · ${esc(scelto ? scelto.testo : iso)}</h2>
-        ${elenco.length ? `<table><thead><tr><th scope="col">Ora</th><th scope="col">Classe</th><th scope="col">Aula</th><th scope="col">Materia</th>
-          <th scope="col">Assente</th><th scope="col">Sostituisce</th></tr></thead><tbody>${righe}</tbody></table>` : ''}
-        ${cambi}</div>`;
+        <table><thead><tr><th scope="col">Ora</th><th scope="col">Classe</th><th scope="col">Aula</th><th scope="col">Materia</th>
+          <th scope="col">Assente</th><th scope="col">Sostituisce</th></tr></thead><tbody>${righe}</tbody></table></div>`;
+  }
+
+  // Stampa della pagina «Cambi d'aula»: solo la tabella dei cambi del giorno
+  function stampaCambiHtml(D) {
+    const cambi = typeof CambiAula !== 'undefined' ? CambiAula.tabellaStampa(iso) : '';
+    if (!cambi) return '';
+    const scelto = Breve.giorniDiScuola(D).find(g => g.iso === iso);
+    return `<div class="stampa-smart-pulsante"><button type="button" class="pulsante" data-azione="stampa">🖨️ Stampa i cambi d'aula del giorno</button></div>
+      <div class="solo-stampa-smart"><h2>Cambi d'aula · ${esc(scelto ? scelto.testo : iso)}</h2>${cambi}</div>`;
   }
 
   /* ---------- azioni ---------- */
@@ -328,6 +342,8 @@ const Smart = (() => {
   */
   async function apri(el, ctx) {
     contesto = ctx;
+    modo = ctx.modo === 'cambi' ? 'cambi' : 'sostituzioni';
+    const titolo = modo === 'cambi' ? 'Cambi d\'aula' : 'Sostituzioni';
     if (box !== el) {
       box = el;
       box.innerHTML = '<div id="smartContenuto"></div><p id="smartMessaggio" class="messaggio-smart" role="status" aria-live="polite" hidden></p>';
@@ -336,8 +352,8 @@ const Smart = (() => {
     }
     iso = '';
     aperte.clear();
-    box.querySelector('#smartContenuto').innerHTML = `<div class="testata-breve"><h2 id="titoloSmart">Sostituzioni</h2>
-      <p class="data-breve">Preparo le sostituzioni…</p></div>`;
+    box.querySelector('#smartContenuto').innerHTML = `<div class="testata-breve"><h2 id="titoloSmart">${titolo}</h2>
+      <p class="data-breve">Preparo la pagina…</p></div>`;
     // Il permesso di Google si chiede SUBITO, finché vale ancora il tocco sul menu
     // (altrimenti il browser bloccherebbe la finestra di Google)
     let permessoGoogle = Promise.resolve();
@@ -348,7 +364,7 @@ const Smart = (() => {
     try {
       await caricaMotore();
     } catch (errore) {
-      box.querySelector('#smartContenuto').innerHTML = `<div class="testata-breve"><h2 id="titoloSmart">Sostituzioni</h2>
+      box.querySelector('#smartContenuto').innerHTML = `<div class="testata-breve"><h2 id="titoloSmart">${titolo}</h2>
         <p class="data-breve">⚠️ ${esc(errore.message)}</p></div>`;
       return;
     }

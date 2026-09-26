@@ -235,10 +235,12 @@
     $('#linkOrarioFacile').hidden = true;
     $('#linkSostituzioni').hidden = true;
     $('#btnSostSmart').hidden = true;
+    $('#btnCambiAula').hidden = true;
     Ruoli.puoModificare(utente.email).then(puo => {
       $('#linkOrarioFacile').hidden = !puo; $('#linkSostituzioni').hidden = !puo;
       // «Sostituzioni smart»: sparisce anche per chi il foglio «Autorizzazioni» ha già rifiutato su questo dispositivo
       $('#btnSostSmart').hidden = !puo || Smart.negato(utente.email);
+      $('#btnCambiAula').hidden = $('#btnSostSmart').hidden;   // stessi autorizzati delle sostituzioni
     });
     $('#btnSchermoIntero').hidden = !document.fullscreenEnabled;
     // Tema: la voce "secondo l'ora" mostra gli orari impostati in config.js
@@ -492,8 +494,9 @@
   // Apre (true) o chiude (false) la vista "In breve"; sui monitor di classe non si apre.
   // mio = true: aperta con «Il mio orario», cioè con la giornata del docente che ha fatto l'accesso
   /* ---------- pagina "Sostituzioni smart" (js/smart.js) ---------- */
-  // Apre (true) o chiude (false) la pagina; sui monitor e sullo schermo all'ingresso non si apre
-  function apriSmart(apri) {
+  // Apre (true) o chiude (false) la pagina; sui monitor e sullo schermo all'ingresso non si apre.
+  // modo: 'sostituzioni' (Sostituzioni smart) oppure 'cambi' (pagina «Cambi d'aula», stessa vista)
+  function apriSmart(apri, modo) {
     if (apri) apriBreve(false);
     smartAperta = !!apri && !aulaMonitor && !secondiIngresso;
     document.body.classList.toggle('smart-aperta', smartAperta);
@@ -502,7 +505,7 @@
     if (!smartAperta) { aggiorna(); return; }   // la tabella mostra subito le sostituzioni appena fatte
     window.scrollTo(0, 0);
     $('#vistaSmart').focus({ preventScroll: true });
-    Smart.apri($('#vistaSmart'), { orario: () => D, chiudi: () => { apriSmart(false); $('#btnUtente').focus(); }, email: utente.email });
+    Smart.apri($('#vistaSmart'), { orario: () => D, chiudi: () => { apriSmart(false); $('#btnUtente').focus(); }, email: utente.email, modo: modo || 'sostituzioni' });
   }
 
   function apriBreve(apri, mio) {
@@ -597,7 +600,9 @@
       $('#sceltaBreve').focus();
     });
     // «Sostituzioni smart» nel menu: la pagina si apre subito (così Google può chiedere il permesso, se serve)
-    $('#btnSostSmart').addEventListener('click', () => { chiudiMenu(); apriSmart(true); });
+    $('#btnSostSmart').addEventListener('click', () => { chiudiMenu(); apriSmart(true, 'sostituzioni'); });
+    // «Cambi d'aula» nel menu: stessa pagina, solo il modulo dei cambi d'aula
+    $('#btnCambiAula').addEventListener('click', () => { chiudiMenu(); apriSmart(true, 'cambi'); });
     $('#btnOggi').addEventListener('click', () => { apriBreve(false); apriSmart(false); const gi = giornoIniziale(); stato.giorno = gi.giorno; if (stato.colonne === 'giorno') stato.colonne = 'classe'; aggiorna(); mostraOraCorrente(); });
     // «Il mio orario»: apre la vista a schede di "In breve" con la giornata del docente (di nuovo: chiude)
     $('#btnMioOrario').addEventListener('click', () => apriBreve(!(breveAperta && breveMio), true));

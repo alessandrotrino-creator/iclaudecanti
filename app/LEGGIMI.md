@@ -46,6 +46,10 @@ di Orario Facile in versione **semplice e rapida**, dentro l'app, con lo stile a
 - **Ore da coprire**: una scheda per ogni ora con i primi 3 docenti proposti (prima chi ha più ore a debito); si tocca il nome per assegnare, *Mostra tutti* per gli altri, *Annulla la sostituzione* per toglierla.
 - **🖨️ Stampa le sostituzioni del giorno**.
 
+**⇄ Cambi d'aula** ha una **voce di menu dedicata**, subito sotto: apre la stessa pagina a schede con solo il modulo dei
+cambi d'aula (classe, ore, aule libere, motivo, elenco dei cambi del giorno) e la stampa dei cambi. Stessi autorizzati
+delle sostituzioni; il modulo è `sostituzioni/js/cambi-aula.js`, lo stesso della scheda Sostituzioni di Orario Facile.
+
 Tutto il resto lo fa da solo lo **stesso motore** della scheda completa (`sostituzioni/js/sostituzioni.js`, `Sostituzioni.collega`):
 autorizzazione dal foglio «Autorizzazioni», lettura del foglio del conteggio da Drive, abbinamenti, +1 / −1, permesso e registro «Sostituzioni».
 I dati sono gli stessi (memoria del browser, chiavi `sostituzioni.`): quello che si fa qui si vede anche in Orario Facile.
