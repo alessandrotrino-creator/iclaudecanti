@@ -332,13 +332,19 @@ Impostazioni in `js/config.js`:
   e la cartella «backup orario» (un backup completo per giorno, `backup orario GG-MM-AAAA.json`); codice in `js/pubblica-drive.js`
   e `orario-facile/pubblica.js`. Serve il permesso Google `drive` (lo chiede Orario Facile la prima volta).
 - `fileOrarioPubblicato`, `fileSostituzioniPubblicate`: gli ID dei due file che l'app legge (li mostra Orario Facile dopo la prima pubblicazione).
-- `googleApiKey`: una **chiave API** di Google (non segreta) per leggere i due file senza accesso, anche sulle LIM. Si crea nel progetto
-  Google Cloud dell'accesso: API e servizi → Credenziali → Crea credenziali → Chiave API; limitazioni: referrer HTTP
-  `alessandrotrino-creator.github.io/*` e solo «Google Drive API».
-- I due file vanno condivisi con **«Chiunque abbia il link – Visualizzatore»** (Orario Facile ci prova da solo). Contengono solo i
-  codici dei docenti, come prima `dati/orario.json`. I backup restano privati.
+- **Come l'app legge i due file** (`leggiDrive()` in `js/dati.js`):
+  - **senza chiave (è il caso della nostra scuola)**: con il permesso Google di chi ha fatto l'accesso, lo stesso dei nomi veri.
+    Basta che i file siano condivisi con **l'Istituto** («Istituto Comprensivo di Almese», come sono già): la scuola **non permette**
+    la condivisione con «Chiunque abbia il link». Appena l'app ha il permesso di Google rilegge orario e sostituzioni da Drive;
+    il permesso dura un'ora, poi l'app usa l'ultima copia scaricata finché non lo riottiene.
+    **Limite:** monitor di classe e schermo all'ingresso non chiedono il permesso di Google (sono schermi senza nessuno davanti),
+    quindi mostrano l'ultima copia salvata o, se non c'è, `dati/orario.json` di GitHub: per loro conviene aggiornare anche quel file
+    («Scarica orario.json» e caricarlo in `dati/`).
+  - **con `googleApiKey`**: una chiave API di Google (non segreta) che legge i file anche senza accesso, sulle LIM. Funziona solo se i
+    file si possono condividere con «Chiunque abbia il link – Visualizzatore», cosa che la nostra scuola blocca.
+- I file contengono solo i codici dei docenti, come `dati/orario.json`. I backup restano privati.
 
-Finché ID o chiave mancano, l'app legge `dati/orario.json` da GitHub come prima. Con Drive configurato: se Drive non risponde
+Finché l'ID manca (o non si può leggere Drive), l'app legge `dati/orario.json` da GitHub come prima. Con Drive configurato: se Drive non risponde
 usa l'ultima copia salvata sul dispositivo e, solo se non c'è, `dati/orario.json`. Le sostituzioni: se sul dispositivo ce ne sono
 registrate per la settimana (chi le inserisce) si mostrano quelle, altrimenti quelle pubblicate (`js/supplenze.js`).
 

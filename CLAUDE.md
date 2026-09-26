@@ -25,7 +25,9 @@ Le parti del progetto:
   Sostituzioni) di Orario Facile (`orario-facile/pubblica.js` + `app/js/pubblica-drive.js`) salvano nella cartella
   `CONFIG.cartellaPubblicazione` i file `orario-pubblicato.json`, `sostituzioni-pubblicate.json` e il backup del giorno
   nella cartella «backup orario». L'app li legge con `CONFIG.fileOrarioPubblicato`/`fileSostituzioniPubblicate` +
-  `CONFIG.googleApiKey` (`Dati.urlDrive()` in dati.js, `Supplenze.scarica()`); se mancano, legge `dati/orario.json` come prima.
+  il permesso Google di chi ha fatto l'accesso (`Dati.leggiDrive()` in dati.js, `Supplenze.scarica()`): la scuola blocca la
+  condivisione «Chiunque abbia il link», quindi `CONFIG.googleApiKey` resta vuota e basta la condivisione con l'Istituto.
+  Se non si può leggere Drive, legge l'ultima copia salvata o `dati/orario.json` come prima.
   Nei file pubblicati solo codici DOC01…: mai nomi veri, mai il flag «permesso» delle assenze.
 - **Dati della scuola in Orario Facile**: `orario-facile/index.html` contiene i dati 2026/27
   (`CSV_SCUOLA_CLASSI`, `CSV_SCUOLA_DOCENTI` e `datiScuola()`), caricati alla prima apertura e con il pulsante
