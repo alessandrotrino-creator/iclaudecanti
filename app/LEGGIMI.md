@@ -195,6 +195,9 @@ Ci sono due tipi di utenti, tutti con l'account della scuola:
 4. Il monitor torna da solo all'orario dell'aula dopo 2 minuti senza tocchi e si aggiorna ogni 15 minuti.
 
 Su **iPhone/iPad** l'app si installa da Safari: *Condividi → Aggiungi alla schermata Home*.
+L'indirizzo **`.../app/?installa`** apre l'app con le **istruzioni di installazione già sullo schermo** (anche prima
+dell'accesso), adatte al dispositivo: è quello da mettere nel QR code "Installa l'app" per i tablet Apple.
+Dopo aver mostrato le istruzioni l'indirizzo torna quello normale, così l'icona sulla schermata Home apre l'app.
 
 ## Sostituzioni nella tabella
 

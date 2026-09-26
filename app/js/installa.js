@@ -29,10 +29,15 @@
     const ua = navigator.userAgent;
     const apple = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
     if (apple) {
+      // iPad (anche quelli che si presentano come "Macintosh" con lo schermo touch) o iPhone
+      const ipad = /iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
       return `<ol>
-        <li>Apri questa pagina con <strong>Safari</strong>.</li>
-        <li>Tocca il pulsante <strong>Condividi</strong> (il quadrato con la freccia verso l'alto).</li>
-        <li>Scegli <strong>Aggiungi alla schermata Home</strong> e poi <strong>Aggiungi</strong>.</li>
+        <li>Apri questa pagina con <strong>Safari</strong> (la fotocamera la apre già lì).</li>
+        <li>Tocca il pulsante <strong>Condividi</strong>, il quadrato con la freccia verso l'alto
+          (${ipad ? 'in alto a destra, accanto alla barra dell\'indirizzo' : 'in basso al centro'}).</li>
+        <li>Scorri l'elenco e scegli <strong>Aggiungi alla schermata Home</strong>, poi tocca <strong>Aggiungi</strong>.</li>
+        <li>Apri l'app dall'icona <strong>Orario</strong> sulla schermata Home ed entra con l'account della scuola
+          (la prima volta va fatto anche se eri già entrato in Safari).</li>
       </ol>`;
     }
     if (/Firefox/.test(ua) && !/Android/.test(ua)) {
@@ -67,4 +72,12 @@
   $('#btnInstalla').addEventListener('click', installa);
   $('#btnChiudiInstalla').addEventListener('click', () => $('#finestraInstalla').close());
   aggiornaPulsante();
+
+  // Indirizzo .../app/?installa (QR code "Installa l'app"): le istruzioni compaiono subito, anche prima
+  // dell'accesso. Poi togliamo "?installa" dall'indirizzo, così l'icona sulla schermata Home apre l'app normale.
+  if (new URLSearchParams(location.search).has('installa') && !installata()) {
+    history.replaceState(null, '', location.pathname);
+    $('#istruzioniInstalla').innerHTML = istruzioni();
+    $('#finestraInstalla').showModal();
+  }
 })();
