@@ -2,7 +2,8 @@
   smart.js – pagina «Sostituzioni smart» dell'app Orario DADA.
 
   È la scheda Sostituzioni di Orario Facile in versione semplice e rapida, con lo stile a schede di «In breve»:
-  - Assenze del giorno (docente, ore, permesso);
+  - Assenze del giorno (docente, ore, permesso), anche per più giorni della stessa settimana;
+  - pulsanti dei giorni della settimana, con quante ore restano da coprire;
   - Ore da coprire, con i docenti proposti già in ordine (prima chi ha più ore a debito);
   - Stampa delle sostituzioni del giorno.
   Tutto il resto (autorizzazione, foglio del conteggio, abbinamenti, +1 / -1, registro su Drive) lo fa
@@ -117,7 +118,24 @@ const Smart = (() => {
       <p class="data-breve">${esc(scelto ? scelto.testo : iso)}${st.abilitazione.nome ? ' · ' + esc(st.abilitazione.nome) : ''}</p>
       ${giorni ? `<div class="scelte-breve"><label class="scelta-breve" for="smartGiorno"><span>Giorno</span>
         <select id="smartGiorno">${giorni}</select></label></div>` : ''}
+      ${st.puoFare ? settimanaHtml(elenco) : ''}
     </div>`;
+  }
+
+  // Un pulsante per ogni giorno della settimana (da oggi in poi) con le ore ancora da coprire:
+  // si vede solo se in settimana c'è almeno un'assenza
+  function settimanaHtml(elenco) {
+    const giorni = motore.giorniSettimana(iso).filter(g => elenco.some(e => e.iso === g.iso));
+    const conti = giorni.map(g => motore.contaGiorno(g.iso));
+    if (!conti.some(c => c.totale)) return '';
+    return `<nav class="settimana-smart" aria-label="Giorni della settimana">` + giorni.map((g, i) => {
+      const c = conti[i];
+      const testo = c.mancano ? `${c.mancano} da coprire` : c.totale ? '✔ coperte' : 'nessuna';
+      const nome = motore.dataCorta(g.iso);
+      return `<button type="button" class="giorno-smart${g.iso === iso ? ' scelto' : ''}${c.mancano ? ' scoperto' : ''}"
+        data-azione="vai" data-iso="${g.iso}"${g.iso === iso ? ' aria-current="date"' : ''}>
+        <b>${esc(nome.charAt(0).toUpperCase() + nome.slice(1))}</b><span>${esc(testo)}</span></button>`;
+    }).join('') + '</nav>';
   }
 
   // Autorizzazione in corso, rifiutata o non riuscita: un solo messaggio semplice
@@ -151,6 +169,7 @@ const Smart = (() => {
         ? `<fieldset class="ore-smart"><legend>Ore di assenza</legend>` + lezioni.map(l =>
           `<label class="ora-smart"><input type="checkbox" data-ora="${l.ora}"${gia.size ? (gia.has(l.ora) ? ' checked' : '') : ' checked'}>
             <span><b>${l.ora}ª</b> ${esc(motore.nome('classe', l.classe))}</span></label>`).join('') + '</fieldset>' +
+          altriGiorniHtml() +
           `<label class="permesso-smart"><input type="checkbox" id="smartPermesso"${permesso ? ' checked' : ''}>
             <span><b>Permesso</b> · le ore sono a debito del docente</span></label>
           <button type="button" class="pulsante primario" data-azione="registra">Registra l'assenza</button>`
@@ -171,6 +190,18 @@ const Smart = (() => {
         : '<p class="vuoto-breve">In questo giorno non ci sono lezioni.</p>'}
       ${elenco}
     </article>`;
+  }
+
+  // Assente più giorni: gli altri giorni della settimana in cui il docente ha lezione (vale tutto il giorno)
+  function altriGiorniHtml() {
+    const altri = motore.altriGiorniDi(iso, docenteScelto);
+    if (!altri.length) return '';
+    return `<fieldset class="ore-smart"><legend>Assente anche in altri giorni della settimana? (tutte le ore)</legend>` +
+      altri.map(g => {
+        const gia = motore.assenzeDel(g.iso).some(a => a.docente === docenteScelto);
+        return `<label class="ora-smart"><input type="checkbox" data-giorno="${g.iso}">
+          <span><b>${esc(motore.dataCorta(g.iso))}</b> · ${ore(g.ore.length)}${gia ? ' · già assente' : ''}</span></label>`;
+      }).join('') + '</fieldset>';
   }
 
   // 2. Ore da coprire: una scheda grande per ogni ora, con i docenti proposti
@@ -240,9 +271,11 @@ const Smart = (() => {
       const oreScelte = [...box.querySelectorAll('input[data-ora]:checked')].map(c => Number(c.dataset.ora));
       if (!oreScelte.length) { avvisa('Spunta almeno un\'ora di assenza.'); return; }
       const cb = box.querySelector('#smartPermesso');
-      if (motore.registraAssenza(iso, docenteScelto, oreScelte, cb ? cb.checked : true)) { docenteScelto = ''; permesso = true; disegna(); }
+      const altriGiorni = [...box.querySelectorAll('input[data-giorno]:checked')].map(c => c.dataset.giorno);
+      if (motore.registraAssenza(iso, docenteScelto, oreScelte, cb ? cb.checked : true, altriGiorni)) { docenteScelto = ''; permesso = true; disegna(); }
       return;
     }
+    if (azione === 'vai') { iso = b.dataset.iso; aperte.clear(); docenteScelto = ''; disegna(); return; }
     if (azione === 'togli') {
       const a = motore.assenzeDel(iso).find(x => x.id === b.dataset.id);
       if (a) motore.togliAssenza(a);

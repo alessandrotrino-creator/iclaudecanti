@@ -49,6 +49,11 @@
 }
 .sost-assenze li:last-child { border-bottom: 0; }
 
+/* Pulsanti dei giorni della settimana in «Ore da coprire»: il bordo avverte se mancano sostituti */
+.sost-settimana { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 12px; }
+.sost-settimana .btn::first-letter { text-transform: uppercase; }
+.sost-settimana .sost-giorno-scoperto { border-color: var(--warn); }
+
 /* ---------- Ore da coprire ---------- */
 .sost-ora { border: 1px solid var(--line); border-radius: var(--r); padding: 12px; margin-top: 10px; background: var(--surface); }
 .sost-ora h3 { font-size: 15px; }

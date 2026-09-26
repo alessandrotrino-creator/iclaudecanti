@@ -37,6 +37,16 @@ body.smart-aperta .controlli, body.smart-aperta #contenuto { display: none; }
 .assenti-smart .pulsante { border-radius: 999px; min-height: 36px; padding: 4px 12px; }
 .tag-smart { font-size: .75rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--evidenza); }
 
+/* ---------- Giorni della settimana (con quante ore restano da coprire) ---------- */
+.settimana-smart { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.giorno-smart {
+  display: grid; gap: 0; text-align: left; padding: 6px 12px; min-height: 44px; border-radius: 14px; cursor: pointer;
+  border: 1px solid var(--bordo); background: var(--superficie); color: var(--testo); font: inherit; font-size: .85rem;
+}
+.giorno-smart span { font-size: .78rem; color: var(--testo-tenue); }
+.giorno-smart.scoperto { border: 2px solid var(--errore); }
+.giorno-smart.scelto { outline: 3px solid var(--primario); outline-offset: 1px; }
+
 /* ---------- Ore da coprire ---------- */
 .pill-coperta { background: color-mix(in srgb, var(--credito-smart) 18%, transparent) !important; color: var(--credito-smart) !important; }
 .coperta-smart { border: 2px solid color-mix(in srgb, var(--credito-smart) 45%, transparent); }

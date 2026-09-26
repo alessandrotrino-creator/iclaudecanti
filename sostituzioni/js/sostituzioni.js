@@ -17,7 +17,7 @@ const Sostituzioni = (() => {
   const PROPOSTE_VISIBILI = 4;
   // Versione della scheda, mostrata in cima: serve a capire se la pagina aperta è quella aggiornata
   // (va cambiata a ogni modifica importante del modo in cui la scheda scrive nei fogli)
-  const VERSIONE = '26/09/2026 · 4 (motore condiviso con «Sostituzioni smart»)';
+  const VERSIONE = '26/09/2026 · 5 (assenze per più giorni della settimana)';
   const NOMI_GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
   // Dove si trovano i facsimili del foglio, rispetto alla pagina di Orario Facile
   const CARTELLA_ESEMPI = '../sostituzioni/esempio/';
@@ -103,11 +103,31 @@ const Sostituzioni = (() => {
   }
   const dataLunga = iso => daIso(iso).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   const dataBreve = iso => daIso(iso).toLocaleDateString('it-IT');
+  const dataCorta = iso => daIso(iso).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'numeric' });
 
   // Il nome del giorno come è scritto nell'orario ("Lunedì"), oppure null se quel giorno non c'è lezione
   function giornoOrario(iso) {
     const nome = Foglio.semplifica(NOMI_GIORNI[daIso(iso).getDay()]);
     return D.giorni.find(g => Foglio.semplifica(g) === nome) || null;
+  }
+
+  // I giorni di scuola della settimana di una data, da lunedì a domenica: [{ iso, giorno }]
+  function giorniSettimana(iso) {
+    const lunedi = spostaGiorni(iso, -((daIso(iso).getDay() + 6) % 7));
+    const elenco = [];
+    for (let i = 0; i < 7; i++) {
+      const x = spostaGiorni(lunedi, i);
+      const giorno = giornoOrario(x);
+      if (giorno) elenco.push({ iso: x, giorno });
+    }
+    return elenco;
+  }
+
+  // Gli ALTRI giorni della stessa settimana in cui il docente ha lezione: [{ iso, giorno, ore: [1, 2…] }]
+  function altriGiorniDi(iso, idDocente) {
+    return giorniSettimana(iso).filter(g => g.iso !== iso)
+      .map(g => Object.assign(g, { ore: [...new Set(lezioniDi(idDocente, g.giorno).map(l => l.ora))] }))
+      .filter(g => g.ore.length);
   }
 
   // Numero della settimana di scuola (la colonna del foglio) per una data
@@ -435,13 +455,13 @@ const Sostituzioni = (() => {
     a.permessoSegnate = quante ore sono già state tolte nel foglio per questa assenza:
     si corregge solo la differenza (per esempio se si cambiano le ore o si toglie il permesso).
   */
-  // Le correzioni del permesso di una stessa assenza si fanno una alla volta, in fila: così due modifiche
-  // ravvicinate non leggono lo stesso valore e non tolgono le ore due volte
-  const filaPermessi = new Map();   // id dell'assenza -> ultima correzione in corso
+  // Le correzioni dei permessi si fanno una alla volta, in fila: così due modifiche ravvicinate (anche di giorni
+  // diversi della stessa settimana, che finiscono nella stessa cella) non leggono lo stesso valore
+  // e non tolgono le ore due volte
+  let filaPermessi = Promise.resolve();
   function aggiornaPermesso(a, oreGiuste) {
-    const prima = filaPermessi.get(a.id) || Promise.resolve();
-    const questa = prima.then(() => correggiPermesso(a, oreGiuste));
-    filaPermessi.set(a.id, questa);
+    const questa = filaPermessi.then(() => correggiPermesso(a, oreGiuste));
+    filaPermessi = questa.catch(() => {});   // se una correzione fallisce, le successive partono lo stesso
     return questa;
   }
 
@@ -669,14 +689,22 @@ const Sostituzioni = (() => {
       lezioni.map(l => el('label', { class: 'sost-casella' },
         el('input', { type: 'checkbox', name: 'ora', value: l.ora, checked: gia.size ? gia.has(l.ora) : true }),
         ` ${testoOra(l.ora)} · ${nome('classe', l.classe)} ${l.materia}` + (l.aula ? ` · ${nome('aula', l.aula)}` : '')))));
+    // Assente più giorni: gli altri giorni della settimana in cui ha lezione (tutte le ore)
+    const altri = altriGiorniDi(dataScelta, id);
+    if (altri.length) {
+      box.append(el('fieldset', { class: 'sost-ore' },
+        el('legend', {}, 'Assente anche in altri giorni di questa settimana? (tutte le ore di quel giorno)'),
+        altri.map(g => {
+          const gia = assenzeDel(g.iso).some(a => a.docente === id);
+          return el('label', { class: 'sost-casella' },
+            el('input', { type: 'checkbox', name: 'giorno', value: g.iso }),
+            ` ${dataCorta(g.iso)} · ${ore(g.ore.length)}` + (gia ? ' (già segnato assente)' : ''));
+        })));
+    }
   }
 
-  /*
-    Registra (o aggiorna) l'assenza di un docente in un giorno: la usano il modulo della scheda
-    e la pagina «Sostituzioni smart». Restituisce true se l'ha registrata.
-  */
-  function registraAssenzaDi(iso, id, oreScelte, permesso) {
-    if (!controllaPermesso()) return false;
+  // Segna (o aggiorna) l'assenza di un docente in UN giorno, senza messaggi né disegno; restituisce l'assenza
+  function segnaAssenza(iso, id, oreScelte, permesso) {
     // Se il docente era già assente quel giorno, aggiorniamo le sue ore
     let assenza = assenzeDel(iso).find(a => a.docente === id);
     if (assenza) assenza.ore = oreScelte.slice().sort((a, b) => a - b);
@@ -686,12 +714,30 @@ const Sostituzioni = (() => {
     const superate = registro.filter(x => x.data === iso && x.assente === id && !oreScelte.includes(x.ora) && !x.riportata);
     togliDalRegistro(superate);
     registro = registro.filter(x => !superate.includes(x));
+    return assenza;
+  }
+
+  /*
+    Registra (o aggiorna) l'assenza di un docente: la usano il modulo della scheda e la pagina «Sostituzioni smart».
+    - iso, oreScelte: il giorno scelto e le ore spuntate
+    - altriGiorni: altre date della stessa settimana ("2026-09-29"…) in cui il docente è assente TUTTO il giorno
+    Restituisce true se l'ha registrata.
+  */
+  function registraAssenzaDi(iso, id, oreScelte, permesso, altriGiorni) {
+    if (!controllaPermesso()) return false;
+    const giorni = [{ iso, ore: oreScelte }].concat(altriGiorniDi(iso, id)
+      .filter(g => (altriGiorni || []).includes(g.iso)).map(g => ({ iso: g.iso, ore: g.ore })));
+    const segnate = giorni.map(g => segnaAssenza(g.iso, id, g.ore, permesso));
     salva('assenze', assenze);
     salva('registro', registro);
-    avvisa(`Assenza registrata: ${nomeDocente(id)}, ${ore(oreScelte.length)}${permesso ? ' (permesso)' : ''}.`);
+    const totale = giorni.reduce((n, g) => n + g.ore.length, 0);
+    avvisa(giorni.length === 1
+      ? `Assenza registrata: ${nomeDocente(id)}, ${ore(totale)}${permesso ? ' (permesso)' : ''}.`
+      : `Assenza registrata: ${nomeDocente(id)} in ${giorni.length} giorni (${giorni.map(g => dataCorta(g.iso)).join(', ')}), ` +
+        `${ore(totale)} in tutto${permesso ? ' (permesso)' : ''}. Con i pulsanti dei giorni in «Ore da coprire» passi da un giorno all'altro.`);
     disegnaTutto();
     // Permesso: -1 per ogni ora nel foglio del conteggio (o si restituiscono le ore se il permesso è stato tolto)
-    aggiornaPermesso(assenza, permesso ? oreScelte.length : 0);
+    segnate.forEach(a => aggiornaPermesso(a, permesso ? a.ore.length : 0));
     return true;
   }
 
@@ -703,7 +749,8 @@ const Sostituzioni = (() => {
     if (!id) { avvisa('Scegli il docente assente.'); $('docenteAssente').focus(); return; }
     const oreScelte = [...document.querySelectorAll('#sost-oreAssenza input[name="ora"]:checked')].map(c => Number(c.value));
     if (!oreScelte.length) { avvisa('Spunta almeno un\'ora di assenza.'); return; }
-    if (!registraAssenzaDi(dataScelta, id, oreScelte, $('permesso').checked)) return;
+    const altriGiorni = [...document.querySelectorAll('#sost-oreAssenza input[name="giorno"]:checked')].map(c => c.value);
+    if (!registraAssenzaDi(dataScelta, id, oreScelte, $('permesso').checked, altriGiorni)) return;
     $('docenteAssente').value = '';
     $('permesso').checked = true;   // per la prossima assenza il permesso torna spuntato
     disegnaTutto();
@@ -724,8 +771,33 @@ const Sostituzioni = (() => {
     disegnaTutto();
   }
 
+  // Quante ore sono da coprire e quante già coperte in un giorno
+  function contaGiorno(iso) {
+    const elenco = oreDaCoprire(iso);
+    const coperte = elenco.filter(l => sostituzioneDi(iso, l)).length;
+    return { totale: elenco.length, coperte, mancano: elenco.length - coperte };
+  }
+
   // ---------- Disegno della sezione 3: ore da coprire ----------
+  // In cima, un pulsante per ogni giorno della settimana con le ore ancora da coprire: si passa da un giorno all'altro
+  function disegnaSettimana() {
+    const box = $('settimana');
+    box.replaceChildren();
+    const giorni = giorniSettimana(dataScelta);
+    if (!giorni.some(g => contaGiorno(g.iso).totale)) return;   // nessuna assenza in settimana: niente pulsanti
+    box.append(el('span', { class: 'hint' }, 'Settimana: '), ...giorni.map(g => {
+      const c = contaGiorno(g.iso);
+      const testo = c.mancano ? `${c.mancano} da coprire` : c.totale ? '✔ coperte' : 'nessuna';
+      return el('button', {
+        type: 'button', class: 'btn sm' + (g.iso === dataScelta ? '' : ' ghost') + (c.mancano ? ' sost-giorno-scoperto' : ''),
+        'aria-current': g.iso === dataScelta ? 'date' : null,
+        onclick: () => { dataScelta = g.iso; aperte.clear(); disegnaTutto(); }
+      }, `${dataCorta(g.iso)} · ${testo}`);
+    }));
+  }
+
   function disegnaCoprire() {
+    disegnaSettimana();
     const box = $('oreDaCoprire');
     box.replaceChildren();
     const elenco = oreDaCoprire(dataScelta);
@@ -1032,6 +1104,7 @@ const Sostituzioni = (() => {
       <h3 id="sost-titoloCoprire">Ore da coprire</h3>
       <p class="hint">Per ogni ora vengono proposti prima i docenti <b>già a scuola</b> quel giorno e liberi in quell'ora,
         dal più <b>alto debito di ore</b> in giù. A parità di debito vengono prima chi ha un'ora buca e chi conosce già la classe.</p>
+      <nav id="sost-settimana" class="sost-settimana" aria-label="Giorni della settimana"></nav>
       <div id="sost-oreDaCoprire"></div>
       <div id="sost-stampaGiorno" class="sost-stampabile"></div>
     </div>
@@ -1178,6 +1251,7 @@ const Sostituzioni = (() => {
     caricaDaDrive: () => caricaDaDrive(true),
     orario: () => D,
     nomeDocente, nome, testoOra, giornoOrario, lezioniDi, assenzeDel, giornoPredefinito,
+    giorniSettimana, altriGiorniDi, contaGiorno, dataCorta,
     oreDaCoprire, sostituzioneDi, candidati, saldoDi, TESTI_POSIZIONE,
     inCorso: id => inCorso.has(id),
     registraAssenza: registraAssenzaDi, togliAssenza, assegna, annulla
