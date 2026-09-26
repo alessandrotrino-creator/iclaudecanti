@@ -66,6 +66,12 @@ Le parti del progetto:
   controlla sia la scheda (`monta`) sia la pagina smart (`collega`); la costante `VERSIONE` in cima a sostituzioni.js
   si vede nella scheda e serve a capire se una pagina aperta è aggiornata.
 
+## Licenza
+© 2026 Gruppo iclaudecanti – Istituto Comprensivo di Almese (www.comprensivoalmese.it), licenza **CC BY 4.0**
+(`LICENZA.md` in italiano, `LICENSE` per GitHub). Non togliere gli avvisi nel piè di pagina (pagina iniziale, app in
+`$('#piede')` di app.js, Orario Facile) né i commenti in cima alle pagine HTML. I dati della scuola (`dati/`, nomi)
+sono esclusi dalla licenza. Se si aggiunge codice di altri, controllare che la sua licenza lo permetta e citarlo.
+
 ## Il gruppo
 - Gruppo **iclaudecanti**, studenti **principianti** in programmazione e git.
 - Tutti lavorano su tutto, direttamente su `main`.
