@@ -23,6 +23,9 @@ const PubblicaDrive = (() => {
   const NOMI = { orario: 'orario-pubblicato.json', sostituzioni: 'sostituzioni-pubblicate.json', backup: 'backup orario' };
 
   const cartella = () => (typeof CONFIG !== 'undefined' && CONFIG.cartellaPubblicazione) || '';
+  // L'orario (e la sua cartella «backup orario») può stare in un'altra cartella, per esempio su un Drive personale
+  // dove la condivisione con link è permessa: CONFIG.cartellaOrario. Se è vuota si usa cartellaPubblicazione.
+  const cartellaOrario = () => (typeof CONFIG !== 'undefined' && CONFIG.cartellaOrario) || cartella();
   const configurato = () => !!cartella() && typeof NomiDocenti !== 'undefined' && !!CONFIG.googleClientId;
 
   // Messaggi di errore di Google spiegati in italiano
@@ -127,9 +130,9 @@ const PubblicaDrive = (() => {
       un account della scuola che ha solo il permesso di modifica;
     - altrimenti lo cerca per nome nella cartella (o lo crea) e prova a condividerlo con link.
   */
-  async function pubblica(nome, testo, idInConfig, email) {
+  async function pubblica(nome, dentro, testo, idInConfig, email) {
     if (idInConfig) return aggiornaFile(idInConfig, testo, email);
-    const f = await scriviFile(nome, cartella(), testo, email);
+    const f = await scriviFile(nome, dentro, testo, email);
     f.condiviso = f.id === idInConfig ? true : await condividiConLink(f.id, email);
     f.collegato = f.id === idInConfig;   // false = l'app non legge ancora questo file: l'ID va scritto in config.js
     return f;
@@ -141,8 +144,8 @@ const PubblicaDrive = (() => {
   */
   async function pubblicaOrario(testoOrario, testoBackup, email) {
     if (!configurato()) throw new Error('in config.js manca la cartella di Drive (cartellaPubblicazione) o l\'ID client di Google');
-    const f = await pubblica(NOMI.orario, testoOrario, CONFIG.fileOrarioPubblicato, email);
-    const cartellaBackup = await cartellaDentro(NOMI.backup, cartella(), email);
+    const f = await pubblica(NOMI.orario, cartellaOrario(), testoOrario, CONFIG.fileOrarioPubblicato, email);
+    const cartellaBackup = await cartellaDentro(NOMI.backup, cartellaOrario(), email);
     f.backup = 'backup orario ' + dataOggi() + '.json';
     await scriviFile(f.backup, cartellaBackup, testoBackup, email);   // stesso giorno: sostituisce il backup
     return f;
@@ -151,7 +154,7 @@ const PubblicaDrive = (() => {
   // Pubblica le sostituzioni. Restituisce { id, nuovo, condiviso, collegato }.
   async function pubblicaSostituzioni(testo, email) {
     if (!configurato()) throw new Error('in config.js manca la cartella di Drive (cartellaPubblicazione) o l\'ID client di Google');
-    return pubblica(NOMI.sostituzioni, testo, CONFIG.fileSostituzioniPubblicate, email);
+    return pubblica(NOMI.sostituzioni, cartella(), testo, CONFIG.fileSostituzioniPubblicate, email);
   }
 
   return { configurato, pubblicaOrario, pubblicaSostituzioni, NOMI };

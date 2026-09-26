@@ -145,13 +145,22 @@ const Dati = (() => {
   }
   // Vero se in questo momento si può leggere il file da Drive (con la chiave o con il permesso dell'utente)
   const driveLeggibile = idFile => !!idFile && typeof CONFIG !== 'undefined' && !!(CONFIG.googleApiKey || gettoneDrive());
-  // Scarica il testo di un file pubblicato su Drive; lancia un errore se non ci riesce
+  /*
+    Scarica il testo di un file pubblicato su Drive; lancia un errore se non ci riesce.
+    Prima prova con la chiave API (file condivisi con «Chiunque abbia il link», come l'orario sul Drive personale);
+    se non va (per esempio le sostituzioni, condivise solo con la scuola) riprova con il permesso di chi ha fatto l'accesso.
+  */
   async function leggiDrive(idFile) {
     const url = urlDrive(idFile);
-    const gettone = url ? null : gettoneDrive();
-    if (!url && !gettone) throw new Error('Drive non raggiungibile: manca il permesso di Google');
-    const r = await fetch(url || API_FILE(idFile),
-      Object.assign({ cache: 'no-cache' }, gettone ? { headers: { Authorization: 'Bearer ' + gettone } } : {}));
+    if (url) {
+      try {
+        const r = await fetch(url, { cache: 'no-cache' });
+        if (r.ok) return r.text();
+      } catch (e) { /* senza rete: si prova comunque la seconda strada */ }
+    }
+    const gettone = gettoneDrive();
+    if (!gettone) throw new Error('Drive non raggiungibile: manca il permesso di Google');
+    const r = await fetch(API_FILE(idFile), { cache: 'no-cache', headers: { Authorization: 'Bearer ' + gettone } });
     if (!r.ok) throw new Error('Errore ' + r.status);
     return r.text();
   }

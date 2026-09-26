@@ -51,6 +51,10 @@ window.CONFIG = {
   // - cartellaPubblicazione: la cartella di Drive dove Orario Facile salva i file (la parte del link dopo /folders/).
   //   Dentro c'è anche la cartella «backup orario», con un backup per ogni giorno in cui si pubblica.
   cartellaPubblicazione: '1x3BIvxl3dGcqtGUTr56aCa9xhaSpbSot',
+  // - cartellaOrario: se non è vuota, l'orario pubblicato e la cartella «backup orario» stanno qui invece che in
+  //   cartellaPubblicazione (le sostituzioni restano in cartellaPubblicazione). Serve per tenere l'orario su un Drive
+  //   personale, dove si può condividere con «Chiunque abbia il link»; chi pubblica deve esserne Editor.
+  cartellaOrario: '',
   // - fileOrarioPubblicato / fileSostituzioniPubblicate: ID dei file che l'app legge. Li mostra Orario Facile
   //   dopo la prima pubblicazione. Finché sono vuoti l'app continua a leggere urlDati da GitHub.
   fileOrarioPubblicato: '18OB3AMivfH-T9-tXU3v2za2Ladzd3-fo',
