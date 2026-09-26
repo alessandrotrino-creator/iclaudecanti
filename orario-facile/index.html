@@ -117,6 +117,10 @@ input[type=color]{width:38px;height:30px;padding:0;border:1px solid var(--line);
 .btn.sm{padding:4px 9px;font-size:12.5px}
 .btn.danger{background:var(--bad);color:#fff}
 .btn:disabled{opacity:.5;cursor:not-allowed}
+/* tasti «Pubblica orario» e «Pubblica sostituzioni» (vedi pubblica.js): grandi e ben visibili */
+.pubblica-barra{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 14px}
+.btn.pubblica{font-size:16px;padding:11px 20px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.pubblica-barra .hint{flex:1 1 260px}
 .linkish{background:none;border:0;color:var(--accent);cursor:pointer;padding:2px 4px;font-weight:500}
 .iconbtn{background:none;border:1px solid var(--line);border-radius:var(--r-sm);color:var(--text-2);cursor:pointer;
   width:26px;height:26px;display:grid;place-items:center;line-height:1}
@@ -374,6 +378,11 @@ td input[type=number]{width:64px}
       <h2>Orario</h2>
       <p>Genera una proposta, poi correggila a mano: trascina una lezione in un'altra casella per spostarla o scambiarla, oppure clicca una casella per assegnarla. Il lucchetto protegge una casella dalle rigenerazioni.</p>
     </div>
+    <!-- Pubblicazione su Google Drive: l'app Orario DADA legge questo orario (vedi pubblica.js) -->
+    <div class="pubblica-barra no-print">
+      <button class="btn pubblica" id="btnPubblicaOrario">📤 Pubblica orario</button>
+      <span class="hint" id="statoPubblicaOrario">Salva l'orario su Google Drive: l'app Orario DADA lo mostra a tutti entro pochi minuti. Viene salvato anche il backup del giorno nella cartella «backup orario».</span>
+    </div>
     <div class="card no-print">
       <div class="toolbar">
         <button class="btn" id="btnGenera">Genera orario</button>
@@ -430,6 +439,8 @@ td input[type=number]{width:64px}
     </div>
     <div class="card">
       <h3>Pubblica nell'app Orario DADA</h3>
+      <p class="hint"><b>Metodo consigliato:</b> nella scheda <b>Orario</b> premi «📤 Pubblica orario»: l'orario va su Google Drive e l'app lo legge da lì.
+        Il metodo qui sotto (file su GitHub) resta come riserva.</p>
       <p class="hint">Su questo dispositivo l'app <a href="../app/" target="orariodada">Orario DADA</a> mostra già questo orario e si aggiorna mentre lo modifichi.
         Per farlo vedere a <b>tutti</b> (telefoni, tablet, monitor di classe):</p>
       <ol class="hint">
@@ -486,6 +497,11 @@ td input[type=number]{width:64px}
       <h2>Sostituzioni docenti</h2>
       <p>Segna i docenti assenti di un giorno: per ogni ora scoperta vengono proposti i docenti liberi,
         a partire da chi ha più ore a debito nel foglio del conteggio ore.</p>
+    </div>
+    <!-- Pubblicazione su Google Drive: l'app Orario DADA mostra a tutti queste sostituzioni (vedi pubblica.js) -->
+    <div class="pubblica-barra no-print">
+      <button class="btn pubblica" id="btnPubblicaSostituzioni">📤 Pubblica sostituzioni</button>
+      <span class="hint" id="statoPubblicaSostituzioni">Salva assenze e sostituzioni su Google Drive: l'app Orario DADA le mostra nella tabella dell'orario su tutti i dispositivi.</span>
     </div>
     <div id="sostituzioniApp"><p class="hint">Caricamento…</p></div>
   </section>
@@ -3657,5 +3673,8 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') chiudiModal(); 
 })();
 
 </script>
+<!-- Tasti «Pubblica orario» e «Pubblica sostituzioni»: salvano su Google Drive (app/js/pubblica-drive.js) -->
+<script src="../app/js/pubblica-drive.js"></script>
+<script src="pubblica.js"></script>
 </body>
 </html>

@@ -1,0 +1,90 @@
+/*
+  pubblica.js – i tasti «📤 Pubblica orario» (scheda Orario) e «📤 Pubblica sostituzioni» (scheda Sostituzioni).
+
+  Salvano su Google Drive, nella cartella CONFIG.cartellaPubblicazione, i file che l'app Orario DADA legge
+  (il lavoro su Drive lo fa app/js/pubblica-drive.js):
+  - Pubblica orario: orario-pubblicato.json (lo stesso contenuto di «Scarica orario.json») e il backup completo
+    del giorno "backup orario GG-MM-AAAA.json" nella cartella «backup orario» (lo stesso giorno si sostituisce);
+  - Pubblica sostituzioni: sostituzioni-pubblicate.json con le assenze e le sostituzioni delle ultime due settimane
+    e di quelle future, SOLO con i dati che l'app mostra (giorno, ore, classe, codici dei docenti: niente permessi,
+    niente nomi veri).
+  Usa S, avvisa() e chiedi() di Orario Facile (index.html) e Archivio di sostituzioni/js/archivio.js.
+*/
+(() => {
+  const $id = id => document.getElementById(id);
+  // email di chi ha fatto l'accesso: Google propone subito quell'account
+  const email = () => {
+    const s = typeof Accesso !== 'undefined' && Accesso.sessione ? Accesso.sessione() : null;
+    return s ? s.email : '';
+  };
+  const oggi = () => new Date().toISOString().slice(0, 10);
+
+  // Messaggio finale: se il file è nuovo (o non ancora collegato) spiega come collegarlo all'app
+  function esito(f, cosa, voceConfig) {
+    let testo = cosa + ' su Google Drive.';
+    if (!f.collegato) {
+      testo += ` L'app non legge ancora questo file: in app/js/config.js alla voce ${voceConfig} va scritto il codice ${f.id}`;
+      testo += f.condiviso ? '.' : ' e il file va condiviso con «Chiunque abbia il link – Visualizzatore» (Google non ha permesso di farlo in automatico).';
+    }
+    return testo;
+  }
+
+  // Esegue una pubblicazione: tasto spento e messaggio accanto mentre lavora
+  async function lavora(tasto, stato, azione) {
+    // la spiegazione originale accanto al tasto (senza il «✔ Pubblicato» della volta prima)
+    if (!stato.dataset.testo) stato.dataset.testo = stato.textContent;
+    const etichetta = tasto.textContent, spiegazione = stato.dataset.testo;
+    tasto.disabled = true;
+    tasto.textContent = '⏳ Pubblicazione in corso…';
+    try {
+      const messaggio = await azione();
+      stato.textContent = '✔ Pubblicato alle ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }) + '. ' + spiegazione;
+      avvisa(messaggio);
+    } catch (e) {
+      avvisa('Pubblicazione non riuscita: ' + (e && e.message ? e.message : e) + '.');
+    } finally {
+      tasto.disabled = false;
+      tasto.textContent = etichetta;
+    }
+  }
+
+  /* ---------- Pubblica orario ---------- */
+  const tastoOrario = $id('btnPubblicaOrario');
+  if (tastoOrario) tastoOrario.addEventListener('click', () => {
+    if (!PubblicaDrive.configurato()) return avvisa('In app/js/config.js manca la cartella di Drive (cartellaPubblicazione).');
+    // un orario vuoto non si pubblica per errore
+    let lezioni = 0;
+    try { lezioni = Dati.normalizza(S).lezioni.length; } catch (e) { lezioni = 0; }
+    if (!lezioni) return avvisa('L\'orario è vuoto: prima generalo o importalo, poi pubblicalo.');
+    chiedi(`Pubblicare questo orario (${lezioni} lezioni)? Entro pochi minuti l'app Orario DADA lo mostrerà su tutti i dispositivi. ` +
+      'Verrà salvato anche il backup di oggi nella cartella «backup orario».', () =>
+      lavora(tastoOrario, $id('statoPubblicaOrario'), async () => {
+        // stesso contenuto di «Scarica orario.json»: il backup completo con la data di pubblicazione
+        const orario = JSON.stringify(Object.assign({}, S, { pubblicato: oggi() }), null, 1);
+        const backup = JSON.stringify(S, null, 1);
+        const f = await PubblicaDrive.pubblicaOrario(orario, backup, email());
+        return esito(f, `Orario pubblicato e backup salvato come «${f.backup}»`, 'fileOrarioPubblicato');
+      }), 'Pubblica');
+  });
+
+  /* ---------- Pubblica sostituzioni ---------- */
+  const tastoSost = $id('btnPubblicaSostituzioni');
+  if (tastoSost) tastoSost.addEventListener('click', () => {
+    if (!PubblicaDrive.configurato()) return avvisa('In app/js/config.js manca la cartella di Drive (cartellaPubblicazione).');
+    // dalle ultime due settimane in poi: il file resta piccolo (l'app mostra solo la settimana in corso)
+    const d = new Date(); d.setDate(d.getDate() - 14);
+    const da = d.toISOString().slice(0, 10);
+    const recenti = x => x && String(x.data || '') >= da;
+    const assenze = Archivio.leggi('assenze', []).filter(recenti)
+      .map(a => ({ data: a.data, docente: a.docente, ore: a.ore }));
+    const registro = Archivio.leggi('registro', []).filter(recenti)
+      .map(s => ({ data: s.data, ora: s.ora, classe: s.classe, assente: s.assente, sostituto: s.sostituto }));
+    chiedi(`Pubblicare ${assenze.length} assenze e ${registro.length} sostituzioni? ` +
+      'L\'app Orario DADA le mostrerà nella tabella dell\'orario su tutti i dispositivi.', () =>
+      lavora(tastoSost, $id('statoPubblicaSostituzioni'), async () => {
+        const testo = JSON.stringify({ pubblicato: new Date().toISOString(), assenze, registro });
+        const f = await PubblicaDrive.pubblicaSostituzioni(testo, email());
+        return esito(f, 'Sostituzioni pubblicate', 'fileSostituzioniPubblicate');
+      }), 'Pubblica');
+  });
+})();
