@@ -4,6 +4,7 @@
   Il foglio ha due fogli (schede in basso):
   - "Autorizzazioni" (va bene anche "Abilitazioni"): nomi ed email di chi può fare le sostituzioni.
     L'email si cerca in qualsiasi cella; nome e cognome si prendono dalle colonne con quei titoli.
+  - "Cambi aula": una riga per ogni cambio d'aula (se il foglio non c'è, l'app lo crea da sola).
   - "Sostituzioni": qui l'app scrive una riga per ogni sostituzione assegnata
     (e la cancella se la sostituzione viene annullata). Se il foglio è vuoto, l'app scrive
     prima la riga di intestazione; se c'è già, riempie le colonne con lo stesso nome.
@@ -17,9 +18,24 @@ const RegistroDrive = (() => {
   const PERMESSO_FOGLI = 'https://www.googleapis.com/auth/spreadsheets';
   // Nomi accettati per i due fogli (senza badare a maiuscole, spazi e accenti)
   const FOGLIO_AUTORIZZAZIONI = ['autorizzazioni', 'abilitazioni', 'autorizzati', 'abilitati'];
-  const FOGLIO_SOSTITUZIONI = ['sostituzioni', 'registro', 'registrosostituzioni'];
-  // Colonne che l'app scrive nel foglio "Sostituzioni" (se il foglio è vuoto, questa è l'intestazione)
-  const COLONNE = ['Data', 'Giorno', 'Ora', 'Classe', 'Aula', 'Materia', 'Docente assente', 'Docente sostituto', 'Inserita da', 'Inserita il', 'ID'];
+  /*
+    I registri che l'app scrive nel file, uno per foglio (scheda):
+    - nomi: i nomi accettati per il foglio (senza badare a maiuscole, spazi e accenti)
+    - colonne: l'intestazione che l'app scrive se il foglio è vuoto
+    - nuovo: se il foglio non c'è, l'app lo crea con questo nome (null = errore)
+  */
+  const REGISTRI = {
+    sostituzioni: {
+      nomi: ['sostituzioni', 'registro', 'registrosostituzioni'],
+      colonne: ['Data', 'Giorno', 'Ora', 'Classe', 'Aula', 'Materia', 'Docente assente', 'Docente sostituto', 'Inserita da', 'Inserita il', 'ID'],
+      nuovo: null
+    },
+    cambi: {
+      nomi: ['cambiaula', 'cambidaula', 'cambiaule', 'cambi'],
+      colonne: ['Data', 'Giorno', 'Ora', 'Classe', 'Materia', 'Docente', 'Aula prevista', 'Nuova aula', 'Motivo', 'Inserito da', 'Inserito il', 'ID'],
+      nuovo: 'Cambi aula'
+    }
+  };
 
   const permessi = () => [NomiDocenti.PERMESSO_DRIVE, PERMESSO_FOGLI];
   const id = () => (typeof CONFIG !== 'undefined' && CONFIG.fileSostituzioni) || '';
@@ -61,10 +77,18 @@ const RegistroDrive = (() => {
     }
     return fogliRicordati;
   }
-  // Trova il foglio con uno dei nomi accettati; se non c'è, l'errore elenca i fogli che ci sono davvero
-  async function trova(nomi, email) {
+  // Trova il foglio con uno dei nomi accettati. Se non c'è: lo crea con il nome "nuovo" (se indicato),
+  // altrimenti l'errore elenca i fogli che ci sono davvero
+  async function trova(nomi, email, nuovo) {
     const tutti = await fogli(email);
     const f = tutti.find(x => nomi.includes(semplice(x.titolo)));
+    if (!f && nuovo) {
+      const r = await chiama(':batchUpdate', { metodo: 'POST', email, corpo: { requests: [{ addSheet: { properties: { title: nuovo } } }] } });
+      const p = r.replies[0].addSheet.properties;
+      const creato = { titolo: p.title, idFoglio: p.sheetId };
+      tutti.push(creato);
+      return creato;
+    }
     if (!f) {
       const primo = nomi[0].charAt(0).toUpperCase() + nomi[0].slice(1);
       throw new Error(`nel file delle sostituzioni manca il foglio "${primo}" (ci sono: ${tutti.map(x => '«' + x.titolo + '»').join(', ')})`);
@@ -104,24 +128,25 @@ const RegistroDrive = (() => {
     return { abilitato: true, nome };
   }
 
-  // Intestazione del foglio "Sostituzioni": se è vuota scrive quella dell'app. Restituisce l'elenco delle colonne
-  async function intestazione(f, email) {
+  // Intestazione di un foglio registro: se è vuota scrive quella dell'app. Restituisce l'elenco delle colonne
+  async function intestazione(f, email, colonneApp) {
     const r = await chiama('/values/' + encodeURIComponent(tra(f.titolo) + '!1:1'), { email });
     const esistente = ((r.values || [])[0] || []).map(x => String(x || '').trim());
     if (esistente.some(Boolean)) return esistente;
     await chiama('/values/' + encodeURIComponent(tra(f.titolo) + '!A1') + '?valueInputOption=RAW',
-      { metodo: 'PUT', corpo: { values: [COLONNE] }, email });
-    return COLONNE.slice();
+      { metodo: 'PUT', corpo: { values: [colonneApp] }, email });
+    return colonneApp.slice();
   }
 
   /*
-    Aggiunge una riga al foglio "Sostituzioni".
-    dati = { Data, Giorno, Ora, Classe, Aula, Materia, 'Docente assente', 'Docente sostituto', 'Inserita da', 'Inserita il', ID }
-    Ogni valore va nella colonna con lo stesso nome (senza badare a maiuscole e spazi).
+    Aggiunge una riga a un registro: tipo 'sostituzioni' (foglio «Sostituzioni») oppure 'cambi' (foglio «Cambi aula»).
+    dati = { Data, Giorno, Ora, Classe, …, ID }: ogni valore va nella colonna con lo stesso nome
+    (senza badare a maiuscole e spazi).
   */
-  async function aggiungi(dati, email) {
-    const f = await trova(FOGLIO_SOSTITUZIONI, email);
-    const colonne = await intestazione(f, email);
+  async function aggiungi(dati, email, tipo) {
+    const reg = REGISTRI[tipo || 'sostituzioni'];
+    const f = await trova(reg.nomi, email, reg.nuovo);
+    const colonne = await intestazione(f, email, reg.colonne);
     const perNome = new Map(Object.entries(dati).map(([k, v]) => [semplice(k), v]));
     const riga = colonne.map(c => { const v = perNome.get(semplice(c)); return v === undefined ? '' : String(v); });
     // Se qualche dato non ha una colonna con lo stesso nome, lo mettiamo in fondo (così non si perde)
@@ -130,9 +155,10 @@ const RegistroDrive = (() => {
       { metodo: 'POST', corpo: { values: [riga] }, email });
   }
 
-  // Cancella dal foglio "Sostituzioni" la riga con questo ID (colonna "ID"). Restituisce true se l'ha trovata
-  async function togli(idSostituzione, email) {
-    const f = await trova(FOGLIO_SOSTITUZIONI, email);
+  // Cancella da un registro (tipo come in aggiungi) la riga con questo ID (colonna "ID"). Restituisce true se l'ha trovata
+  async function togli(idSostituzione, email, tipo) {
+    const reg = REGISTRI[tipo || 'sostituzioni'];
+    const f = await trova(reg.nomi, email, reg.nuovo);
     const righe = (await chiama('/values/' + encodeURIComponent(tra(f.titolo)), { email })).values || [];
     const cId = (righe[0] || []).findIndex(x => semplice(x) === 'id');
     if (cId < 0) return false;

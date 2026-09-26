@@ -67,6 +67,19 @@ body.smart-aperta .controlli, body.smart-aperta #contenuto { display: none; }
 .saldo-smart.debito { color: var(--errore); }
 .saldo-smart.credito { color: var(--credito-smart); }
 
+/* ---------- Cambi d'aula (sostituzioni/js/cambi-aula.js, stile 'smart') ---------- */
+.vista-smart .ca-blocco { grid-column: 1 / -1; }
+.vista-smart .ca-etichetta { font-size: .85rem; color: var(--testo-tenue); margin-top: 4px; }
+.vista-smart .ca-ore { border: 0; padding: 0; margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.vista-smart .ca-ore legend { font-size: .85rem; color: var(--testo-tenue); margin-bottom: 6px; padding: 0; }
+.vista-smart .ca-blocco input[type="text"] { min-height: 44px; padding: 8px 12px; border: 1px solid var(--bordo); border-radius: 10px; background: var(--superficie); }
+.vista-smart .ca-blocco .pulsante { justify-self: start; border-radius: 999px; }
+.vista-smart .ca-blocco .pulsante.primario { font-weight: 700; }
+.vista-smart .ca-elenco { list-style: none; margin: 6px 0 0; padding: 8px 0 0; display: grid; gap: 6px; border-top: 1px solid var(--bordo); }
+.vista-smart .ca-elenco li { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.vista-smart .ca-elenco .pulsante { min-height: 36px; padding: 4px 12px; }
+.solo-stampa-smart caption { text-align: left; font-weight: 700; padding: 10px 0 4px; }
+
 /* ---------- Stampa ---------- */
 .stampa-smart-pulsante { padding: 4px 16px 0; }
 .stampa-smart-pulsante .pulsante { border-radius: 999px; }

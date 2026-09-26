@@ -17,7 +17,7 @@ const Sostituzioni = (() => {
   const PROPOSTE_VISIBILI = 4;
   // Versione della scheda, mostrata in cima: serve a capire se la pagina aperta è quella aggiornata
   // (va cambiata a ogni modifica importante del modo in cui la scheda scrive nei fogli)
-  const VERSIONE = '26/09/2026 · 5 (assenze per più giorni della settimana)';
+  const VERSIONE = '26/09/2026 · 6 (assenze per più giorni e cambi d\'aula)';
   const NOMI_GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
   // Dove si trovano i facsimili del foglio, rispetto alla pagina di Orario Facile
   const CARTELLA_ESEMPI = '../sostituzioni/esempio/';
@@ -876,8 +876,11 @@ const Sostituzioni = (() => {
   function disegnaStampa(elenco) {
     const box = $('stampaGiorno');
     box.replaceChildren();
+    // anche i cambi d'aula del giorno finiscono nella stampa (tabella preparata da js/cambi-aula.js)
+    const cambi = typeof CambiAula !== 'undefined' ? CambiAula.tabellaStampa(dataScelta) : '';
+    if (cambi) { const d = el('div', { class: 'tablewrap' }); d.innerHTML = cambi; box.append(d); }
     if (!elenco.length) return;
-    box.append(el('div', { class: 'tablewrap' }, el('table', { class: 'sost-tabella' },
+    box.prepend(el('div', { class: 'tablewrap' }, el('table', { class: 'sost-tabella' },
       el('caption', {}, 'Sostituzioni di ' + dataLunga(dataScelta)),
       el('thead', {}, el('tr', {}, ['Ora', 'Classe', 'Aula', 'Materia', 'Assente', 'Sostituto']
         .map(t => el('th', { scope: 'col' }, t)))),
@@ -966,6 +969,8 @@ const Sostituzioni = (() => {
     disegnaDati();
     disegnaGiorno();
     disegnaCoprire();
+    // Cambi d'aula dello stesso giorno (modulo separato, js/cambi-aula.js)
+    if (typeof CambiAula !== 'undefined') CambiAula.disegna($('cambiAula'), dataScelta, 'scheda');
     disegnaSaldi();
     disegnaRiportare();
   }
@@ -1110,6 +1115,13 @@ const Sostituzioni = (() => {
     </div>
 
     <div class="card">
+      <h3>Cambi d'aula</h3>
+      <p class="hint">Per spostare una classe in un'altra aula <b>solo in questo giorno</b> (l'orario base non cambia).
+        Vengono proposte solo le aule libere in tutte le ore scelte.</p>
+      <div id="sost-cambiAula"></div>
+    </div>
+
+    <div class="card">
       <h3>Saldo ore dei docenti</h3>
       <div id="sost-saldi"></div>
     </div>
@@ -1128,7 +1140,8 @@ const Sostituzioni = (() => {
 
   // Stampa solo la tabella del giorno: durante la stampa il resto della pagina viene nascosto
   function stampa() {
-    if (!oreDaCoprire(dataScelta).length) { avvisa('Nessuna sostituzione da stampare in questo giorno.'); return; }
+    const conCambi = typeof CambiAula !== 'undefined' && CambiAula.cambiDel(dataScelta).length;
+    if (!oreDaCoprire(dataScelta).length && !conCambi) { avvisa('Nessuna sostituzione né cambio d\'aula da stampare in questo giorno.'); return; }
     document.body.classList.add('sost-in-stampa');
     window.addEventListener('afterprint', () => document.body.classList.remove('sost-in-stampa'), { once: true });
     window.print();
@@ -1254,8 +1267,13 @@ const Sostituzioni = (() => {
     giorniSettimana, altriGiorniDi, contaGiorno, dataCorta,
     oreDaCoprire, sostituzioneDi, candidati, saldoDi, TESTI_POSIZIONE,
     inCorso: id => inCorso.has(id),
-    registraAssenza: registraAssenzaDi, togliAssenza, assegna, annulla
+    registraAssenza: registraAssenzaDi, togliAssenza, assegna, annulla,
+    // servono anche al modulo «Cambi d'aula» (js/cambi-aula.js)
+    avvisa, ridisegna: () => disegnaTutto(), email: emailUtente, preparaNomiVeri, nomeVero
   };
 
-  return { monta, collega };
+  // Le funzioni del motore senza collegare un'altra pagina (le usa il modulo «Cambi d'aula» dentro la scheda)
+  const motore = () => API;
+
+  return { monta, collega, motore };
 })();

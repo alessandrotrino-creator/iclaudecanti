@@ -52,6 +52,23 @@ restano i codici DOC01, DOC02…: non scrivere mai nomi veri nei file del reposi
 Serve la Google Sheets API attiva e, per chi assegna, il permesso di **modifica** sul foglio delle sostituzioni:
 è Google stesso a impedire di scrivere a chi non ce l'ha. Codice: `js/registro-drive.js`.
 
+## Cambi d'aula
+
+Nella stessa scheda, sotto "Ore da coprire", il riquadro **"Cambi d'aula"** sposta una classe in un'altra aula
+**solo in quel giorno** (l'orario base non cambia). C'è anche nella pagina **«⚡ Sostituzioni smart»** dell'app.
+
+1. Si sceglie la **classe** e si toccano le **ore** da spostare (ognuna con la sua aula prevista).
+2. Vengono proposte solo le **aule libere in tutte le ore scelte**, tenendo conto delle lezioni e degli altri cambi
+   di quel giorno (un'aula lasciata da una classe spostata diventa disponibile).
+3. **Motivo** facoltativo, poi **Registra il cambio d'aula**. Sotto c'è l'elenco dei cambi del giorno, con *Annulla*.
+
+- Solo per gli autorizzati del foglio «Autorizzazioni», come le sostituzioni.
+- Ogni cambio viene scritto nel foglio **«Cambi aula»** del Foglio Google delle sostituzioni (se non c'è, l'app lo crea),
+  con il nome vero del docente; annullandolo la riga si cancella.
+- I cambi del giorno sono anche nella **stampa** delle sostituzioni.
+- Dati nella memoria del browser (chiave `sostituzioni.cambiAula`), condivisi tra Orario Facile e l'app.
+  Codice: `js/cambi-aula.js`.
+
 ## Come si usa
 
 1. **Carica il foglio** del conteggio ore (.ods, .xlsx oppure .csv, anche scaricato da Fogli Google).
@@ -121,7 +138,8 @@ sostituzioni/
   js/archivio.js          salvataggio nella memoria del browser (chiavi "sostituzioni.")
   js/abbinamenti.js       collegamento tra docenti dell'orario e righe del foglio
   js/drive.js             foglio del conteggio ore su Google Drive (+1 / -1 al sostituto)
-  js/registro-drive.js    Foglio Google delle sostituzioni: foglio «Autorizzazioni» e registro «Sostituzioni»
+  js/registro-drive.js    Foglio Google delle sostituzioni: foglio «Autorizzazioni», registri «Sostituzioni» e «Cambi aula»
+  js/cambi-aula.js        modulo «Cambi d'aula» (scheda Sostituzioni e pagina «Sostituzioni smart» dell'app)
   js/sostituzioni.js      la scheda: assenze, proposte, saldi, esportazioni (Sostituzioni.monta)
   esempio/                facsimili del foglio con nomi inventati
 ```

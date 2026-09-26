@@ -17,7 +17,7 @@ const Smart = (() => {
   const esc = s => Viste.esc(s);
   // Chi il foglio «Autorizzazioni» ha già rifiutato su questo dispositivo: gli nascondiamo la voce del menu
   const CHIAVE_NEGATO = 'orariodada.sostNegato';
-  const MOTORE = ['foglio.js', 'drive.js', 'archivio.js', 'abbinamenti.js', 'registro-drive.js', 'sostituzioni.js']
+  const MOTORE = ['foglio.js', 'drive.js', 'archivio.js', 'abbinamenti.js', 'registro-drive.js', 'sostituzioni.js', 'cambi-aula.js']
     .map(f => '../sostituzioni/js/' + f);
   const PROPOSTE = 3;   // quanti docenti proporre per ogni ora prima di «Mostra tutti»
   const ICONA_AULA = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
@@ -48,7 +48,7 @@ const Smart = (() => {
     });
   }
   function caricaMotore() {
-    if (typeof Sostituzioni !== 'undefined' && Sostituzioni.collega) return Promise.resolve();
+    if (typeof Sostituzioni !== 'undefined' && Sostituzioni.collega && typeof CambiAula !== 'undefined') return Promise.resolve();
     if (!caricamento) {
       caricamento = MOTORE.reduce((prima, src) => prima.then(() => caricaScript(src)), Promise.resolve())
         .catch(e => { caricamento = null; throw e; });
@@ -99,7 +99,10 @@ const Smart = (() => {
 
     // Ricordo il campo che aveva il focus, per rimetterlo dopo il nuovo disegno
     const focus = document.activeElement && box.contains(document.activeElement) ? document.activeElement.id : '';
-    zona.innerHTML = testataHtml(D, st) + `<div class="schede-breve">${schedaAssenze(D)}</div>` + oreHtml(D) + stampaHtml(D);
+    zona.innerHTML = testataHtml(D, st) + `<div class="schede-breve">${schedaAssenze(D)}</div>` + oreHtml(D) +
+      '<h3 class="titoletto-breve">Cambi d\'aula</h3><div class="schede-breve" id="smartCambi"></div>' + stampaHtml(D);
+    // 3. Cambi d'aula: li disegna il modulo condiviso con Orario Facile (sostituzioni/js/cambi-aula.js)
+    if (typeof CambiAula !== 'undefined') CambiAula.disegna(zona.querySelector('#smartCambi'), iso, 'smart');
     if (focus && document.getElementById(focus)) document.getElementById(focus).focus();
   }
 
@@ -243,7 +246,8 @@ const Smart = (() => {
   // 3. Stampa: la tabella del giorno (si vede solo in stampa) e il pulsante
   function stampaHtml(D) {
     const elenco = motore.oreDaCoprire(iso);
-    if (!elenco.length) return '';
+    const cambi = typeof CambiAula !== 'undefined' ? CambiAula.tabellaStampa(iso) : '';
+    if (!elenco.length && !cambi) return '';
     const righe = elenco.map(l => {
       const s = motore.sostituzioneDi(iso, l);
       return `<tr><th scope="row">${esc(motore.testoOra(l.ora))}</th><td>${esc(motore.nome('classe', l.classe))}</td>
@@ -251,10 +255,11 @@ const Smart = (() => {
         <td>${esc(motore.nomeDocente(l.assente))}</td><td>${s ? esc(motore.nomeDocente(s.sostituto)) : '—'}</td></tr>`;
     }).join('');
     const scelto = Breve.giorniDiScuola(D).find(g => g.iso === iso);
-    return `<div class="stampa-smart-pulsante"><button type="button" class="pulsante" data-azione="stampa">🖨️ Stampa le sostituzioni del giorno</button></div>
+    return `<div class="stampa-smart-pulsante"><button type="button" class="pulsante" data-azione="stampa">🖨️ Stampa le sostituzioni e i cambi d'aula del giorno</button></div>
       <div class="solo-stampa-smart"><h2>Sostituzioni · ${esc(scelto ? scelto.testo : iso)}</h2>
-        <table><thead><tr><th scope="col">Ora</th><th scope="col">Classe</th><th scope="col">Aula</th><th scope="col">Materia</th>
-          <th scope="col">Assente</th><th scope="col">Sostituisce</th></tr></thead><tbody>${righe}</tbody></table></div>`;
+        ${elenco.length ? `<table><thead><tr><th scope="col">Ora</th><th scope="col">Classe</th><th scope="col">Aula</th><th scope="col">Materia</th>
+          <th scope="col">Assente</th><th scope="col">Sostituisce</th></tr></thead><tbody>${righe}</tbody></table>` : ''}
+        ${cambi}</div>`;
   }
 
   /* ---------- azioni ---------- */
