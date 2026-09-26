@@ -112,8 +112,23 @@ const PubblicaDrive = (() => {
     return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
   }
 
-  // Scrive un file pubblicato e, finché il suo ID non è in config.js, si assicura che sia condiviso con link
+  // Cambia il contenuto di un file già esistente, dato il suo ID (il proprietario e la condivisione non cambiano)
+  async function aggiornaFile(id, testo, email) {
+    await chiama(CARICA + '/' + encodeURIComponent(id) + '?uploadType=media&supportsAllDrives=true', {
+      metodo: 'PATCH', tipo: 'application/json; charset=UTF-8', corpo: testo, email
+    });
+    return { id, nuovo: false, condiviso: true, collegato: true };
+  }
+
+  /*
+    Scrive un file pubblicato:
+    - se il suo ID è già in config.js aggiorna SEMPRE quel file (è quello che l'app legge). Così il file resta del suo
+      proprietario (per esempio un Drive personale, dove la condivisione con link è permessa) anche se pubblica
+      un account della scuola che ha solo il permesso di modifica;
+    - altrimenti lo cerca per nome nella cartella (o lo crea) e prova a condividerlo con link.
+  */
   async function pubblica(nome, testo, idInConfig, email) {
+    if (idInConfig) return aggiornaFile(idInConfig, testo, email);
     const f = await scriviFile(nome, cartella(), testo, email);
     f.condiviso = f.id === idInConfig ? true : await condividiConLink(f.id, email);
     f.collegato = f.id === idInConfig;   // false = l'app non legge ancora questo file: l'ID va scritto in config.js
