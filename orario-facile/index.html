@@ -378,8 +378,9 @@ td input[type=number]{width:64px}
       <h2>Orario</h2>
       <p>Genera una proposta, poi correggila a mano: trascina una lezione in un'altra casella per spostarla o scambiarla, oppure clicca una casella per assegnarla. Il lucchetto protegge una casella dalle rigenerazioni.</p>
     </div>
-    <!-- Pubblicazione su Google Drive: l'app Orario DADA legge questo orario (vedi pubblica.js) -->
-    <div class="pubblica-barra no-print">
+    <!-- Pubblicazione su Google Drive (vedi pubblica.js): NASCOSTA per scelta, perché l'app legge l'orario da GitHub
+         (dati/orario.json, fileOrarioPubblicato vuoto in config.js). Per riattivarla togliere "hidden" qui sotto. -->
+    <div class="pubblica-barra no-print" hidden>
       <button class="btn pubblica" id="btnPubblicaOrario">📤 Pubblica orario</button>
       <span class="hint" id="statoPubblicaOrario">Salva l'orario su Google Drive: l'app Orario DADA lo mostra a tutti entro pochi minuti. Viene salvato anche il backup del giorno nella cartella «backup orario».</span>
     </div>
@@ -439,8 +440,6 @@ td input[type=number]{width:64px}
     </div>
     <div class="card">
       <h3>Pubblica nell'app Orario DADA</h3>
-      <p class="hint"><b>Metodo consigliato:</b> nella scheda <b>Orario</b> premi «📤 Pubblica orario»: l'orario va su Google Drive e l'app lo legge da lì.
-        Il metodo qui sotto (file su GitHub) resta come riserva.</p>
       <p class="hint">Su questo dispositivo l'app <a href="../app/" target="orariodada">Orario DADA</a> mostra già questo orario e si aggiorna mentre lo modifichi.
         Per farlo vedere a <b>tutti</b> (telefoni, tablet, monitor di classe):</p>
       <ol class="hint">
