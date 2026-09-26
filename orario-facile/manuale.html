@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orario Facile</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg:#F2EEE7; --surface:#FFFFFF; --surface-2:#EAE2D2;
+    --ink:#241C10; --ink-soft:#6B5E48; --line:#DCD0B6;
+    --accent:#A85D12; --accent-ink:#FFFFFF; --accent-soft:#F3E1CB;
+    --good:#2E7D52; --good-bg:#E4F3EA;
+    --warn-bg:#FBE3D8; --warn-ink:#8A3B12;
+    --hi:#FFE07A; --hi-ink:#5B4300;
+    --font-display:"Newsreader", Georgia, serif;
+    --font-body:"Source Sans 3", system-ui, sans-serif;
+    --font-mono:"IBM Plex Mono", ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#171310; --surface:#1F1A15; --surface-2:#2A231B;
+      --ink:#F1E9DC; --ink-soft:#B8A98F; --line:#3A3123;
+      --accent:#E3A24D; --accent-ink:#241300; --accent-soft:#3A2A16;
+      --good:#6ED3A0; --good-bg:#173226;
+      --warn-bg:#3A2314; --warn-ink:#F2A96A;
+      --hi:#7A6420; --hi-ink:#FFE07A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#171310; --surface:#1F1A15; --surface-2:#2A231B;
+    --ink:#F1E9DC; --ink-soft:#B8A98F; --line:#3A3123;
+    --accent:#E3A24D; --accent-ink:#241300; --accent-soft:#3A2A16;
+    --good:#6ED3A0; --good-bg:#173226;
+    --warn-bg:#3A2314; --warn-ink:#F2A96A;
+    --hi:#7A6420; --hi-ink:#FFE07A;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-body);
+    font-size:16px; line-height:1.55; padding-inline:20px;
+  }
+  .page{max-width:820px; margin:0 auto; padding-block:32px 64px;}
+
+  code, .mono{font-family:var(--font-mono); font-size:0.88em;}
+  .mono-tag{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--line);
+    border-radius:5px; padding:1px 6px; font-family:var(--font-mono); font-size:0.85em;
+  }
+  a{color:var(--accent);}
+
+  .hero{
+    display:flex; flex-direction:column; gap:14px;
+    padding-block:8px 28px; border-bottom:1px solid var(--line); margin-bottom:28px;
+  }
+  .team-logo{display:flex; align-items:center; gap:10px; margin-bottom:2px;}
+  .team-text{display:flex; flex-direction:column; line-height:1.15;}
+  .team-name{
+    font-family:var(--font-display); font-weight:700; font-size:15px;
+    letter-spacing:.09em; text-transform:uppercase; color:var(--ink);
+  }
+  .team-tag{font-size:11px; color:var(--ink-soft); font-style:italic;}
+  .chip{
+    display:inline-flex; align-items:center; gap:6px; width:fit-content;
+    background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent);
+    font-size:12.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+    padding:4px 11px; border-radius:99px;
+  }
+  h1{
+    font-family:var(--font-display); font-weight:600; font-size:clamp(2rem, 5vw, 2.7rem);
+    margin:0; text-wrap:balance; letter-spacing:-0.01em;
+  }
+  .lede{font-size:1.08rem; color:var(--ink-soft); max-width:62ch; margin:0;}
+  .meta{display:flex; flex-wrap:wrap; gap:8px 20px; font-size:13.5px; color:var(--ink-soft);}
+  .meta b{color:var(--ink); font-weight:600;}
+
+  .quick{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:22px 24px 24px; margin-bottom:32px;
+  }
+  .quick h2{font-family:var(--font-display); font-size:1.3rem; margin:0 0 4px; font-weight:600;}
+  .quick p.sub{margin:0 0 16px; color:var(--ink-soft); font-size:14.5px;}
+  .quick ol{margin:0; padding-left:0; list-style:none; display:grid; gap:10px;}
+  .quick li{display:grid; grid-template-columns:28px 1fr; gap:12px; align-items:start;}
+  .quick li .n{
+    background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:13px;
+    width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-body);
+  }
+  .quick li .t{padding-top:2px;}
+  .quick li b{font-weight:600;}
+
+  nav.toc{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:40px;}
+  nav.toc a{
+    font-size:13.5px; color:var(--ink-soft); text-decoration:none;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:99px;
+    padding:5px 13px;
+  }
+  nav.toc a:hover{color:var(--accent); border-color:var(--accent);}
+
+  section{margin-bottom:40px; scroll-margin-top:16px;}
+  section h2{
+    font-family:var(--font-display); font-weight:600; font-size:1.5rem;
+    margin:0 0 6px; border-top:1px solid var(--line); padding-top:20px;
+  }
+  section > h2:first-child{padding-top:0; border-top:none;}
+  h3{font-family:var(--font-body); font-weight:700; font-size:1.02rem; margin:22px 0 8px;}
+  p{margin:0 0 12px;}
+  ul, ol{margin:0 0 14px; padding-left:22px;}
+  li{margin-bottom:6px;}
+
+  .tablewrap{overflow-x:auto; margin:14px 0 18px; border:1px solid var(--line); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; font-size:14.5px; min-width:480px;}
+  th, td{text-align:left; padding:9px 13px; border-bottom:1px solid var(--line); vertical-align:top;}
+  thead th{background:var(--surface-2); font-weight:600;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody{background:var(--surface);}
+  td.num{font-family:var(--font-mono); color:var(--ink-soft); width:28px;}
+
+  .box{border-radius:10px; padding:14px 16px; margin:16px 0; font-size:14.5px; border:1px solid var(--line);}
+  .box.nota{background:var(--surface-2);}
+  .box.attenzione{background:var(--warn-bg); color:var(--warn-ink); border-color:transparent;}
+  .box.attenzione b{color:var(--warn-ink);}
+  .box.ok{background:var(--good-bg); color:var(--good); border-color:transparent;}
+  .box.ok b{color:var(--good);}
+  .box p:last-child{margin-bottom:0;}
+  .box .lbl{font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:5px;}
+
+  .steps{margin:0 0 14px; padding-left:0; list-style:none; counter-reset:step; display:grid; gap:8px;}
+  .steps li{counter-increment:step; display:grid; grid-template-columns:24px 1fr; gap:10px;}
+  .steps li::before{
+    content:counter(step); font-family:var(--font-mono); font-size:12.5px; font-weight:600;
+    color:var(--accent); border:1px solid var(--accent); border-radius:6px;
+    width:22px; height:22px; display:flex; align-items:center; justify-content:center;
+  }
+
+  footer{margin-top:48px; padding-top:18px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft);}
+
+  @media (max-width:520px){ .quick{padding:18px 16px 20px;} }
+</style>
+</head>
+<body>
+
+<main class="page">
+
+  <div class="hero">
+    <div class="team-logo">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true">
+        <polygon points="9,28 21,3 29,29" fill="var(--ink)"/>
+        <polygon points="55,28 43,3 35,29" fill="var(--ink)"/>
+        <circle cx="32" cy="37" r="23" fill="var(--ink)"/>
+        <ellipse cx="32" cy="43" rx="14" ry="11" fill="var(--surface)"/>
+        <circle cx="23" cy="33" r="3.4" fill="var(--ink)"/>
+        <circle cx="41" cy="33" r="3.4" fill="var(--ink)"/>
+        <circle cx="21.8" cy="31.7" r="1.1" fill="var(--surface)"/>
+        <circle cx="39.8" cy="31.7" r="1.1" fill="var(--surface)"/>
+        <ellipse cx="32" cy="41" rx="4.2" ry="3.2" fill="var(--accent)"/>
+        <path d="M25,47 Q32,52 39,47" stroke="var(--ink)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="team-text">
+        <span class="team-name">Wolf</span>
+        <span class="team-tag">risolvo problemi</span>
+      </span>
+    </div>
+    <span class="chip">Modificatori · creazione e sostituzioni</span>
+    <h1>Orario Facile</h1>
+    <p class="lede">Guida per chi costruisce l'orario, lo pubblica e gestisce le sostituzioni dei docenti assenti. Serve il ruolo di <b>modificatore</b>: l'account Google della scuola non basta da solo.</p>
+    <div class="meta">
+      <span>Indirizzo: <a href="https://alessandrotrino-creator.github.io/iclaudecanti/orario-facile/" target="_blank" rel="noopener">.../iclaudecanti/orario-facile</a></span>
+      <span>Sostituzioni: scheda 9 di Orario Facile</span>
+    </div>
+  </div>
+
+  <div class="quick">
+    <h2>In breve</h2>
+    <p class="sub">Per chi è già abilitato e vuole solo i passaggi essenziali.</p>
+    <ol>
+      <li><span class="n">1</span><span class="t">Apri Orario Facile e accedi con l'account della scuola. Se vedi "Solo consultazione", copia il tuo <b>codice</b> e mandalo a chi gestisce le abilitazioni.</span></li>
+      <li><span class="n">2</span><span class="t">Una volta abilitato, lavora sulle schede: <b>Impostazioni</b> → <b>Discipline</b> → <b>Aule</b> → <b>Quadro orario</b> → <b>Docenti e cattedre</b> → <b>Criteri</b> → <b>Orario</b> (genera e correggi a mano) → <b>Salvataggio</b>.</span></li>
+      <li><span class="n">3</span><span class="t">Per pubblicare per tutti: scheda <b>Salvataggio</b> → <b>Scarica orario.json</b> → carica il file nella cartella <code class="mono-tag">dati/</code> del repository su GitHub → <b>Commit changes</b>.</span></li>
+      <li><span class="n">4</span><span class="t">Per le sostituzioni: scheda <b>Sostituzioni</b> → carica il foglio del conteggio ore (o collegalo da Drive) → segna il docente assente → assegna i sostituti proposti.</span></li>
+      <li><span class="n">5</span><span class="t">Per registrare le sostituzioni sul Foglio Google condiviso serve essere nell'elenco <b>Abilitazioni</b> di quel foglio (email, non codice).</span></li>
+    </ol>
+  </div>
+
+  <nav class="toc">
+    <a href="#ruoli">Ruoli e abilitazione</a>
+    <a href="#permessi">I due livelli di permesso</a>
+    <a href="#schede">Le schede di Orario Facile</a>
+    <a href="#pubblicare">Pubblicare l'orario</a>
+    <a href="#nomi">Vedere i nomi veri</a>
+    <a href="#sostituzioni">Sostituzioni docenti</a>
+    <a href="#collaborazione">Lavorare in gruppo</a>
+    <a href="#limiti">Limiti e attenzioni</a>
+    <a href="#faq">Domande frequenti</a>
+  </nav>
+
+  <section id="ruoli">
+    <h2>Ruoli: fruitori e modificatori</h2>
+    <p>Tutti quelli della scuola possono <b>consultare</b> l'orario nell'app Orario DADA (i "fruitori"). Solo i <b>modificatori</b> possono aprire <b>Orario Facile</b> per costruire l'orario e fare le sostituzioni.</p>
+    <ol class="steps">
+      <li>Chi apre Orario Facile per la prima volta accede con l'account Google della scuola (se è già entrato nell'app, non glielo richiede di nuovo).</li>
+      <li>Se non è ancora un modificatore vede la schermata <b>"Solo consultazione"</b>, con il link all'orario e un <b>codice di 16 caratteri</b> da copiare.</li>
+      <li>Manda quel codice a chi gestisce le abilitazioni (uno del gruppo con accesso al repository).</li>
+      <li>Chi gestisce aggiunge il codice all'elenco <code class="mono-tag">editori</code> in <code class="mono-tag">app/js/config.js</code> e pubblica la modifica su GitHub.</li>
+      <li>Da quel momento, con lo stesso account, la persona entra direttamente in Orario Facile.</li>
+    </ol>
+    <div class="box nota">
+      <span class="lbl">Perché un codice e non l'email</span>
+      <p>Il repository è pubblico, quindi non si possono scrivere le email dei colleghi nei file. Il codice si ricava dall'email con un calcolo a senso unico: non permette di risalire all'indirizzo, ma identifica sempre la stessa persona.</p>
+    </div>
+    <div class="box nota">
+      <span class="lbl">Se l'elenco è vuoto</span>
+      <p>Finché <code class="mono-tag">editori</code> è vuoto, <b>chiunque della scuola</b> può usare Orario Facile. La lista serve a restringere l'accesso solo quando il gruppo decide di farlo.</p>
+    </div>
+  </section>
+
+  <section id="permessi">
+    <h2>I due livelli di permesso da tenere distinti</h2>
+    <p>Essere "modificatore" nell'app e poter <b>pubblicare</b> le modifiche per tutti sono due cose diverse:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Permesso</th><th>Cosa permette</th><th>Chi lo concede</th></tr></thead>
+        <tbody>
+          <tr><td><b>Modificatore</b> (ruolo nell'app)</td><td>aprire Orario Facile, modificare l'orario <i>nel proprio browser</i>, fare sostituzioni</td><td>chi modifica <code class="mono-tag">editori</code> in <code class="mono-tag">config.js</code></td></tr>
+          <tr><td><b>Collaboratore del repository GitHub</b></td><td>caricare (commit) i file su GitHub, cioè <b>pubblicare per tutti</b> l'orario aggiornato</td><td>chi amministra il repository su GitHub (Impostazioni → Collaborators)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Un modificatore che non è anche collaboratore del repository può preparare l'orario e le sostituzioni, ma per farle vedere a tutti deve passare il file a chi ha accesso a GitHub (o farsi aggiungere come collaboratore).</p>
+  </section>
+
+  <section id="schede">
+    <h2>Le schede di Orario Facile</h2>
+    <p>Orario Facile è organizzato in 9 schede, da compilare in ordine la prima volta:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>Scheda</th><th>A cosa serve</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>Impostazioni e classi</td><td>giorni di lezione, ore al mattino/pomeriggio, elenco classi</td></tr>
+          <tr><td class="num">2</td><td>Discipline</td><td>sigla e colore di ogni materia, per le caselle dell'orario</td></tr>
+          <tr><td class="num">3</td><td>Aule</td><td>elenco aule, quali sono condivisibili da più classi insieme (palestra, laboratorio)</td></tr>
+          <tr><td class="num">4</td><td>Quadro orario settimanale</td><td>quante ore di ogni materia per ogni classe</td></tr>
+          <tr><td class="num">5</td><td>Docenti e cattedre</td><td>materie, classi, ore e aule di ogni docente, eventuali indisponibilità</td></tr>
+          <tr><td class="num">6</td><td>Criteri e vincoli</td><td>vincoli rigidi (mai violati) e preferenze (pesate) per la generazione automatica</td></tr>
+          <tr><td class="num">7</td><td>Orario</td><td>genera una proposta, poi si corregge a mano: si trascina una lezione, si blocca con il lucchetto, si vede per classe/docente/aula</td></tr>
+          <tr><td class="num">8</td><td>Salvataggio ed esportazione</td><td>pubblicare nell'app, backup completo, tabelle CSV, importazione da Excel</td></tr>
+          <tr><td class="num">9</td><td>Sostituzioni docenti</td><td>gestire l'assenza di un docente e le proposte di sostituzione</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Costruire e correggere l'orario (scheda 7)</h3>
+    <ul>
+      <li><b>Genera orario</b> crea una proposta automatica; <b>✨ Ottimizza</b> la migliora ulteriormente; si può scegliere la qualità (Veloce, Normale, Accurata).</li>
+      <li>Per correggere a mano: <b>trascina</b> una lezione in un'altra casella per spostarla o scambiarla, oppure clicca una casella e poi la destinazione.</li>
+      <li>Il <b>lucchetto 🔒</b> protegge una casella dalle rigenerazioni: diventa un'<b>assegnazione fissa</b>, elencata più sotto e modificabile da lì.</li>
+      <li>In alto si vedono i numeri: ore collocate, caselle vuote, ore non collocate, conflitti; sotto, l'elenco dettagliato di ogni problema (es. "blocchi obbligatori non rispettati").</li>
+      <li><b>Controlla fattibilità</b> verifica se l'orario è risolvibile prima di generare.</li>
+      <li>Si può cambiare vista: <b>Per classe</b>, <b>Per docente</b>, <b>Per aula</b>, <b>Quadro generale</b>; da lì anche <b>Stampa / PDF</b>.</li>
+    </ul>
+  </section>
+
+  <section id="pubblicare">
+    <h2>Pubblicare l'orario per tutti</h2>
+    <p>Il lavoro si salva da solo nel browser mentre lo si fa. Per farlo vedere a <b>tutti</b> (telefoni dei docenti, monitor di classe, schermo all'ingresso):</p>
+    <ol class="steps">
+      <li>Scheda <b>Salvataggio ed esportazione</b> → pulsante <b>Scarica orario.json</b>.</li>
+      <li>Apri la <a href="https://github.com/alessandrotrino-creator/iclaudecanti/upload/main/dati" target="_blank" rel="noopener">cartella <code class="mono-tag">dati</code> del repository su GitHub</a>.</li>
+      <li>Trascina il file scaricato (sostituisce quello vecchio) e premi <b>Commit changes</b>.</li>
+      <li>Dopo un paio di minuti tutti i dispositivi vedono il nuovo orario (l'app si aggiorna da sola ogni 15 minuti).</li>
+    </ol>
+    <div class="box ok">
+      <span class="lbl">Anteprima prima di pubblicare</span>
+      <p>Sullo stesso computer, mentre lavori in Orario Facile, l'app Orario DADA (aperta in un'altra scheda del browser) mostra già la tua bozza e si aggiorna da sola: pulsante <b>📱 Vedi nell'app</b> in Orario Facile.</p>
+    </div>
+    <p>Nella stessa scheda ci sono anche: <b>backup completo</b> (.json, per spostare il lavoro su un altro computer), le <b>tabelle CSV</b> (orario classi, orario docenti, elenco cattedre) e l'<b>importazione</b> da modelli Excel (.csv/.xlsx) o da un orario .xlsm già esistente.</p>
+  </section>
+
+  <section id="nomi">
+    <h2>Vedere i nomi veri dei docenti</h2>
+    <p>Nell'orario i docenti compaiono come codici (<code class="mono-tag">DOC01</code>, <code class="mono-tag">DOC02</code>…) perché il repository è pubblico. Il pulsante <b>👁 Nomi</b> in alto collega ogni codice al nome vero, leggendolo da un Foglio Google riservato (serve il permesso su quel file, con l'account della scuola).</p>
+    <div class="box attenzione">
+      <span class="lbl">Regola da rispettare sempre</span>
+      <p>I nomi restano <b>solo in memoria</b> nel browser: non vanno mai salvati in file scaricati, backup, CSV o altri documenti che potrebbero finire nel repository pubblico su GitHub.</p>
+    </div>
+  </section>
+
+  <section id="sostituzioni">
+    <h2>Sostituzioni docenti</h2>
+    <p>È la scheda 9 di Orario Facile, per organizzare la sostituzione dei docenti assenti usando il foglio del conteggio ore (chi è a debito e chi è a credito).</p>
+
+    <h3>Privacy: il foglio non va mai su GitHub</h3>
+    <p>Il foglio del conteggio ore ha i nomi completi dei docenti. Due modi per usarlo, entrambi senza pubblicarlo:</p>
+    <ul>
+      <li><b>Foglio su Google Drive</b> (consigliato): si legge da solo con <b>👁 Nomi</b> o con <b>☁️ Carica dal Drive</b>. Ogni sostituzione assegnata scrive <b>+1</b> nella cella del sostituto, nella colonna della settimana giusta; annullandola toglie 1.</li>
+      <li><b>Carica il foglio</b> (.ods, .xlsx, .csv): viene letto solo nel browser di quel computer, non è inviato a nessuno.</li>
+    </ul>
+    <p>Assenze, sostituzioni e foglio restano salvati solo sul dispositivo usato (si possono cancellare con l'apposito pulsante).</p>
+
+    <h3>Chi può registrare le sostituzioni</h3>
+    <p>C'è un Foglio Google dedicato alle sostituzioni, con due schede:</p>
+    <ul>
+      <li><b>Abilitazioni</b>: nomi ed <b>email</b> di chi può registrare sostituzioni. In cima alla scheda, <b>🔐 Verifica la mia abilitazione</b> controlla l'email di chi è entrato. Chi non è nell'elenco può solo consultare, non registrare assenze o assegnare sostituzioni. Per abilitare qualcuno si aggiunge una riga nel foglio.</li>
+      <li><b>Sostituzioni</b>: ogni sostituzione assegnata diventa una riga (data, ora, classe, docente assente, sostituto, chi l'ha inserita…), con i <b>nomi veri</b>, presi dal file riservato e mai scritti su GitHub o nel dispositivo.</li>
+    </ul>
+
+    <h3>Come si usa</h3>
+    <ol class="steps">
+      <li>Carica il foglio del conteggio ore (.ods, .xlsx o .csv).</li>
+      <li>Controlla gli abbinamenti: premi <b>👁 Nomi</b> (serve il permesso sul file riservato); se un abbinamento manca o è dubbio, scegli dall'elenco a mano.</li>
+      <li>Scegli il giorno e spunta le ore in cui il docente è assente.</li>
+      <li>In "Ore da coprire", per ogni ora scoperta premi <b>Assegna</b> sul docente proposto.</li>
+      <li>A fine settimana copia nel foglio le ore di "Da aggiungere nel foglio", poi premi <b>"Segna come già riportate"</b> e ricarica il foglio.</li>
+    </ol>
+    <p>Si possono anche stampare le sostituzioni del giorno e scaricare il registro in CSV.</p>
+
+    <h3>Come vengono proposti i docenti</h3>
+    <p>Per ogni ora scoperta, la scheda cerca i docenti senza lezione in quell'ora, non assenti e non già impegnati altrove, e li ordina così:</p>
+    <ol>
+      <li>prima chi è <b>a scuola quel giorno</b> (ha almeno una lezione);</li>
+      <li>poi chi ha <b>più ore a debito</b> (saldo più basso);</li>
+      <li>a parità: chi ha un'ora buca, poi chi ha lezione subito prima o dopo;</li>
+      <li>poi chi conosce già la classe.</li>
+    </ol>
+    <p>Il saldo usato è: totale del foglio + sostituzioni già fatte ma non ancora riportate. Se in classe c'è già un altro docente (compresenza), la scheda lo segnala.</p>
+  </section>
+
+  <section id="collaborazione">
+    <h2>Lavorare in gruppo sul codice</h2>
+    <p>Il gruppo lavora tutti insieme direttamente su <code class="mono-tag">main</code>, quindi qualche accortezza evita i conflitti (vale per chi tocca anche il codice del sito, non solo l'orario):</p>
+    <ul>
+      <li>Prima di iniziare a modificare: <code class="mono-tag">git pull --rebase</code>.</li>
+      <li>Commit piccoli e frequenti, un argomento per commit.</li>
+      <li>Per consegnare: <code class="mono-tag">./sync.sh "cosa ho fatto"</code> (fa commit, pull --rebase e push in un colpo solo).</li>
+      <li>Configurazione consigliata una volta sola: <code class="mono-tag">git config pull.rebase true</code> e <code class="mono-tag">git config rebase.autoStash true</code>.</li>
+    </ul>
+  </section>
+
+  <section id="limiti">
+    <h2>Limiti e attenzioni</h2>
+    <div class="box attenzione">
+      <span class="lbl">Il controllo dei ruoli è lato browser</span>
+      <p>Orario Facile è fatto di file pubblici: il controllo "modificatore / solo consultazione" avviene nel browser di chi guarda, e separa bene i ruoli nell'uso normale — ma una persona molto esperta potrebbe aggirarlo sul proprio computer. Anche in quel caso, però, non potrebbe cambiare l'orario di tutti: le modifiche restano nel suo browser finché non vengono caricate su GitHub, e per farlo serve essere collaboratori del repository.</p>
+    </div>
+    <div class="box attenzione">
+      <span class="lbl">Il file dell'orario resta scaricabile</span>
+      <p>L'accesso Google impedisce di usare l'app a chi non è della scuola, ma <code class="mono-tag">dati/orario.json</code> resta scaricabile da chi conosce l'indirizzo esatto: GitHub Pages pubblica tutto. Va bene per un orario scolastico (senza nomi reali); se in futuro servisse più riservatezza, i dati andrebbero serviti da un servizio con controllo d'accesso.</p>
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>Domande frequenti</h2>
+    <h3>Ho aperto Orario Facile ma vedo "Solo consultazione"</h3>
+    <p>Copia il codice mostrato in quella schermata e mandalo a chi gestisce le abilitazioni: verrà aggiunto all'elenco <code class="mono-tag">editori</code>.</p>
+    <h3>Ho pubblicato l'orario.json ma l'app non lo mostra</h3>
+    <p>Aspetta qualche minuto: l'app lo ricontrolla ogni 15 minuti. Controlla anche di aver caricato il file nella cartella <code class="mono-tag">dati/</code> giusta e di aver premuto "Commit changes" su GitHub.</p>
+    <h3>Non vedo i nomi veri dei docenti</h3>
+    <p>Serve il permesso di lettura sul Foglio Google riservato dei nomi, con l'account della scuola: se il pulsante "👁 Nomi" non funziona, chiedi l'accesso a chi gestisce quel foglio.</p>
+    <h3>Non riesco a registrare una sostituzione</h3>
+    <p>Serve essere nell'elenco <b>Abilitazioni</b> del Foglio Google delle sostituzioni (per email, non per codice): controlla con "🔐 Verifica la mia abilitazione".</p>
+  </section>
+
+  <footer>
+    Guida basata sulla documentazione del progetto <span class="mono">iclaudecanti</span> (repository GitHub, aggiornata al 25/09/2026). Dettagli tecnici: <code class="mono-tag">CLAUDE.md</code> e <code class="mono-tag">sostituzioni/LEGGIMI.md</code> nel repository.
+  </footer>
+
+</main>
+</body>
+</html>
