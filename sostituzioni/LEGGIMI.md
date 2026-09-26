@@ -63,7 +63,14 @@ Serve la Google Sheets API attiva e, per chi assegna, il permesso di **modifica*
    del conteggio su Drive la scheda legge la cella della settimana e **toglie 1 per ogni ora** (cella vuota → −1).
    Se si cambiano le ore o si toglie la spunta, corregge solo la differenza; togliendo l'assenza restituisce le ore.
    Se il foglio non è su Drive o il docente non è abbinato, un avviso dice quante ore togliere a mano.
+   **Assente più giorni?** Sotto le ore compaiono gli altri giorni della **stessa settimana** in cui il docente ha
+   lezione: spuntandoli, l'assenza viene registrata anche in quei giorni, per tutte le sue ore (una sola volta).
+   Le correzioni del foglio del conteggio si fanno una alla volta, in fila, così la stessa cella non viene sbagliata.
 4. In **"Ore da coprire"**, per ogni ora compare l'elenco dei docenti liberi: premi **Assegna**.
+   In cima ci sono i **pulsanti dei giorni della settimana** con quante ore restano da coprire: servono per
+   passare da un giorno all'altro e sistemare tutta la settimana.
+   Le sostituzioni assegnate si vedono anche nella **tabella dell'orario** dell'app, sullo stesso dispositivo
+   (vedi *Sostituzioni nella tabella* in `app/LEGGIMI.md`).
 5. A fine settimana copia nel foglio le ore della tabella **"Da aggiungere nel foglio"** (+1 per ogni ora
    di sostituzione, nella colonna della settimana), poi premi **"Segna come già riportate"** e ricarica il foglio.
 

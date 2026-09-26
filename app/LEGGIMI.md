@@ -39,6 +39,10 @@ Nel menu (tondo con le iniziali), sotto **"📋 Sostituzioni docenti"**, c'è **
 di Orario Facile in versione **semplice e rapida**, dentro l'app, con lo stile a schede di «In breve». Contiene solo:
 
 - **Assenze del giorno**: tendina *Giorno*, scelta del docente assente, ore da toccare (tutte spuntate), casella **Permesso** (spuntata) e *Registra l'assenza*; sotto, gli assenti già registrati con *Togli*.
+  Se il docente manca **più giorni**, si toccano anche gli altri giorni della stessa settimana (*Assente anche in altri giorni?*):
+  in quei giorni è assente per tutte le sue ore.
+- **Giorni della settimana**: sotto la tendina, un pulsante per ogni giorno con quante ore restano **da coprire**
+  (bordo rosso se ne manca qualcuna): si tocca per passare a quel giorno.
 - **Ore da coprire**: una scheda per ogni ora con i primi 3 docenti proposti (prima chi ha più ore a debito); si tocca il nome per assegnare, *Mostra tutti* per gli altri, *Annulla la sostituzione* per toglierla.
 - **🖨️ Stampa le sostituzioni del giorno**.
 
@@ -192,6 +196,21 @@ Ci sono due tipi di utenti, tutti con l'account della scuola:
 
 Su **iPhone/iPad** l'app si installa da Safari: *Condividi → Aggiungi alla schermata Home*.
 
+## Sostituzioni nella tabella
+
+Le assenze e le sostituzioni della **settimana in corso** (di sabato e domenica, quella che viene) compaiono
+nella tabella dell'orario, ben evidenti:
+
+- **cornice arancione** ed etichetta **🔄 Sostituzione**: il docente assente (barrato) e, in grassetto, chi lo sostituisce;
+- **cornice rossa tratteggiata** ed etichetta **⚠ Docente assente**: il sostituto non è ancora stato scelto;
+- nell'orario del **docente che sostituisce** (colonne *Docenti* o filtro sul docente) compare l'ora in più,
+  con la scritta *al posto di …*;
+- sopra la tabella, un avviso spiega i colori.
+
+Le assenze e le sostituzioni si leggono dalla memoria del browser (chiavi `sostituzioni.assenze` e
+`sostituzioni.registro`, le stesse della scheda Sostituzioni e di «Sostituzioni smart»): per ora quindi si vedono
+**solo sul dispositivo dove sono state registrate**. Codice: `js/supplenze.js` (e `cella()` in `js/viste.js`).
+
 ## Modifiche dell'ultimo minuto
 
 Quando l'orario pubblicato cambia (per esempio un'aula spostata o una sostituzione), l'app lo segnala in modo ben visibile:
@@ -340,6 +359,7 @@ app/
   js/accesso.js         accesso con Google
   js/ruoli.js           chi può modificare l'orario (modificatori) e chi può solo consultarlo
   js/viste.js           disegno della tabella
+  js/supplenze.js       assenze e sostituzioni della settimana da evidenziare nella tabella
   js/brief.js           vista "In breve" (la giornata a schede)
   js/campanella.js      tasto campanella: suoni agli orari di dati/campanella.json
   css/campanella.css    stile del tasto e del pannello della campanella

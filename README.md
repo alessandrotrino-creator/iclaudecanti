@@ -4,6 +4,16 @@ Repo collaborativo del gruppo **iclaudecanti**.
 
 ## Ultimi aggiornamenti
 
+**26/09/2026 – Sostituzioni ben visibili nella tabella e assenze per tutta la settimana** (Chiara)
+
+- nella **tabella dell'orario** le sostituzioni della settimana si vedono subito: **cornice arancione** con
+  l'etichetta *🔄 Sostituzione*, il docente assente barrato e il nome di chi sostituisce; **cornice rossa
+  tratteggiata** se il sostituto manca ancora. Nell'orario del docente che sostituisce compare l'ora in più;
+- nella scheda Sostituzioni e in «Sostituzioni smart» un'assenza si può registrare **per più giorni della stessa
+  settimana** in un colpo solo, e i **pulsanti dei giorni** mostrano quante ore restano da coprire in ogni giorno;
+- per ora le sostituzioni nella tabella si vedono sul dispositivo dove sono state registrate;
+- dettagli in [app/LEGGIMI.md](app/LEGGIMI.md#sostituzioni-nella-tabella) e [sostituzioni/LEGGIMI.md](sostituzioni/LEGGIMI.md).
+
 **25/09/2026 – Icona nuova: il robottino a pixel** (Chiara)
 
 - la mascotte è stata ridisegnata a **quadrettoni**, nello stile di Claude Code ma tutta nostra: un robottino bianco

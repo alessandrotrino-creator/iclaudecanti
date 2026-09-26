@@ -45,6 +45,8 @@ Le parti del progetto:
   `sostituzioni.`; nel repo solo facsimili con nomi inventati in `sostituzioni/esempio/`. `sostituzioni/index.html`
   rimanda a `orario-facile/#sostituzioni`. Dettagli in `sostituzioni/LEGGIMI.md`.
   Copie di file riservati vanno in `privato/` (esclusa da git).
+  Anche l'app legge `sostituzioni.assenze` e `sostituzioni.registro` (`app/js/supplenze.js`) per evidenziare nella tabella
+  le sostituzioni della settimana: se cambi il formato di assenze o registro, aggiorna anche quel file.
   Il foglio del conteggio può stare su Google Drive (`CONFIG.fileConteggioOre`): `sostituzioni/js/drive.js` lo legge e
   scrive +1/-1 nella settimana del sostituto quando si assegna o si annulla una sostituzione (`segnaNelFoglio()`).
   **Chi può fare le sostituzioni** lo decide il Foglio Google `CONFIG.fileSostituzioni` (`sostituzioni/js/registro-drive.js`):
