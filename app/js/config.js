@@ -8,7 +8,7 @@ window.CONFIG = {
 
   // Versione dell'app, scritta in fondo alla pagina. Quando si pubblicano modifiche importanti conviene
   // cambiarla qui E nel nome CACHE di sw.js: così tutti i dispositivi scaricano l'app da capo.
-  versioneApp: '2026-09-26.4',
+  versioneApp: '2026-09-26.5',
 
   // Solo gli account di questo dominio possono entrare
   dominio: 'comprensivoalmese.it',
@@ -57,7 +57,9 @@ window.CONFIG = {
   cartellaOrario: '',
   // - fileOrarioPubblicato / fileSostituzioniPubblicate: ID dei file che l'app legge. Li mostra Orario Facile
   //   dopo la prima pubblicazione. Finché sono vuoti l'app continua a leggere urlDati da GitHub.
-  fileOrarioPubblicato: '18OB3AMivfH-T9-tXU3v2za2Ladzd3-fo',
+  // Vuoto per scelta: l'app legge l'orario da GitHub (urlDati). Per tornare a leggerlo da Drive rimettere
+  // l'ID del file orario-pubblicato.json sul Drive della scuola: '18OB3AMivfH-T9-tXU3v2za2Ladzd3-fo'.
+  fileOrarioPubblicato: '',
   fileSostituzioniPubblicate: '',
   // - googleApiKey: "chiave API" di Google (non segreta, limitata al sito github.io e alla Google Drive API).
   //   Permetterebbe anche alle LIM di leggere i due file senza accedere a Google, ma solo se sono condivisi con
