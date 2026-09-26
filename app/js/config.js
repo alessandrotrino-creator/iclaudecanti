@@ -17,7 +17,8 @@ window.CONFIG = {
   // Un codice per persona, ricavato dalla sua email (vedi js/ruoli.js): chi non è abilitato
   // lo vede nella schermata di Orario Facile. Esempio: editori: ['3f9a0c1d2e4b5a6f', '0b1c2d3e4f5a6b7c'],
   // Lista vuota = per ora chiunque della scuola può modificare.
-  editori: [],
+  // (niente nomi accanto ai codici: il repository è pubblico)
+  editori: ['45aa91989fb595e7', 'aa2c03c9e7c12d25', '50a35ca7700865d9', 'a924a1ef335c2fb7', '12b16d331ac9ebc8'],
 
   // ID client OAuth di Google (lo crea l'amministratore Google Workspace della scuola,
   // vedi app/LEGGIMI.md). Non è un dato segreto: può stare nel repository pubblico.
