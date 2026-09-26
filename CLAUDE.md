@@ -67,10 +67,10 @@ Le parti del progetto:
   si vede nella scheda e serve a capire se una pagina aperta è aggiornata.
 
 ## Licenza
-© 2026 Gruppo Wolf – Istituto Comprensivo di Almese (www.comprensivoalmese.it), licenza **CC BY 4.0**
-(`LICENZA.md` in italiano, `LICENSE` per GitHub). Non togliere gli avvisi nel piè di pagina (pagina iniziale, app in
+© 2026 Istituto Comprensivo di Almese (www.comprensivoalmese.it), realizzato dal Gruppo Wolf: **tutti i diritti
+riservati**, permessi d'uso solo scritti e decisi dalla scuola (`LICENZA.md` in italiano, `LICENSE` per GitHub). Non togliere gli avvisi nel piè di pagina (pagina iniziale, app in
 `$('#piede')` di app.js, Orario Facile) né i commenti in cima alle pagine HTML. I dati della scuola (`dati/`, nomi)
-sono esclusi dalla licenza. Se si aggiunge codice di altri, controllare che la sua licenza lo permetta e citarlo.
+non si concedono mai a terzi. Se si aggiunge codice di altri, controllare che la sua licenza lo permetta e citarlo.
 
 ## Il gruppo
 - Gruppo **Wolf** (il repository si chiama ancora `iclaudecanti`), studenti **principianti** in programmazione e git.

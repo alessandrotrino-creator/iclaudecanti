@@ -2,16 +2,17 @@
 
 Repo collaborativo del gruppo **iclaudecanti**.
 
-© 2026 Gruppo Wolf – Istituto Comprensivo di Almese ([www.comprensivoalmese.it](https://www.comprensivoalmese.it)).
-Il codice si può riutilizzare, anche in parte, **citandone la provenienza**: licenza CC BY 4.0, condizioni e testo
-pronto da copiare in [LICENZA.md](LICENZA.md). I dati della scuola (orari, codici dei docenti) non sono coperti dalla licenza.
+© 2026 Istituto Comprensivo di Almese ([www.comprensivoalmese.it](https://www.comprensivoalmese.it)) – realizzato dal Gruppo Wolf.
+**Tutti i diritti riservati**: il codice, anche in parte, si può usare solo con il permesso scritto della scuola,
+che decide caso per caso se concederlo e a quali condizioni. Dettagli in [LICENZA.md](LICENZA.md).
 
 ## Ultimi aggiornamenti
 
 **26/09/2026 – Copyright e condizioni d'uso**
 
-- nuovo file [LICENZA.md](LICENZA.md) (e `LICENSE`, letto da GitHub): licenza **CC BY 4.0**, cioè chi riusa il codice
-  deve citare il gruppo Wolf, l'Istituto Comprensivo di Almese e il sito www.comprensivoalmese.it;
+- nuovo file [LICENZA.md](LICENZA.md) (e `LICENSE`, letto da GitHub): **tutti i diritti riservati** all'Istituto
+  Comprensivo di Almese; chi vuole usare il codice deve chiedere il permesso alla scuola, che decide se concederlo,
+  a quali condizioni e con quale eventuale compenso (per poche ore il 26/09 era stata usata la licenza CC BY 4.0);
 - l'avviso compare anche in fondo alla pagina iniziale, all'app Orario DADA e a Orario Facile.
 
 **26/09/2026 – Sostituzioni ben visibili nella tabella e assenze per tutta la settimana** (Chiara)

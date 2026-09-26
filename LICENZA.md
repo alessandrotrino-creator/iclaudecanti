@@ -1,49 +1,45 @@
 # Licenza e condizioni d'uso
 
-© 2026 **Gruppo Wolf – Istituto Comprensivo di Almese**
-([www.comprensivoalmese.it](https://www.comprensivoalmese.it))
+© 2026 **Istituto Comprensivo di Almese** ([www.comprensivoalmese.it](https://www.comprensivoalmese.it))
+Realizzato dal **Gruppo Wolf**.
+
+**Tutti i diritti riservati.**
 
 Il codice e la documentazione di questo progetto (Orario DADA, Orario Facile, Sostituzioni docenti e tutti gli altri
-file del repository, salvo quanto indicato più sotto) sono distribuiti con la licenza
-**Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)**:
-<https://creativecommons.org/licenses/by/4.0/deed.it> (testo legale completo:
-<https://creativecommons.org/licenses/by/4.0/legalcode.it>).
+file del repository) sono protetti dal diritto d'autore (legge 633/1941). Il fatto che siano visibili su internet
+**non dà alcun diritto** di usarli.
 
-## In parole semplici
+## Cosa non si può fare senza permesso
 
-Puoi **usare, copiare, modificare e ridistribuire** il codice o parti di esso, anche in altri progetti,
-**a condizione di citarne la provenienza**:
+Senza un'autorizzazione **scritta** dell'Istituto Comprensivo di Almese non è permesso:
 
-1. indica l'autore: *Gruppo Wolf – Istituto Comprensivo di Almese*;
-2. indica il sito della scuola: *www.comprensivoalmese.it*;
-3. indica la licenza, con il link: *CC BY 4.0*;
-4. se hai modificato il codice, **dillo** (es. «modificato da …»).
+- copiare, scaricare o installare il codice, o parti di esso, su altri siti o in altri progetti;
+- modificarlo o usarlo come base per altri programmi;
+- distribuirlo, venderlo, darlo in uso o pubblicarlo altrove.
 
-La citazione va messa in un punto dove si vede: nella pagina o nel piè di pagina dell'app, nella documentazione
-o almeno in un commento in cima ai file copiati. Non puoi far credere che la scuola o il gruppo approvino il tuo
-lavoro, né togliere questo avviso dalle copie.
+Sono consentiti soltanto l'**uso dell'app da parte del personale e degli studenti dell'Istituto** e la semplice
+consultazione delle pagine.
 
-## Testo pronto da copiare
+## Come chiedere il permesso
 
-In una pagina web o in un documento:
+Chi vuole usare il codice, o una sua parte, scrive all'**Istituto Comprensivo di Almese** usando i contatti ufficiali
+indicati su [www.comprensivoalmese.it](https://www.comprensivoalmese.it), spiegando:
 
-> Basato su «Orario DADA» del Gruppo Wolf – Istituto Comprensivo di Almese (www.comprensivoalmese.it),
-> licenza CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/deed.it). Modificato da …
+1. chi è (scuola, ente, azienda, privato);
+2. quali parti vuole usare e per che cosa;
+3. se l'uso è gratuito o commerciale, e per quanto tempo.
 
-In cima a un file di codice:
+L'Istituto valuta ogni richiesta e decide **se concedere il permesso, a quali condizioni e con quale eventuale
+compenso**, anche gratuitamente (per esempio per altre scuole). Il permesso vale solo se dato per iscritto e solo per
+quanto indicato. In ogni caso chi riceve il permesso deve citare la provenienza:
+*«Orario DADA – Istituto Comprensivo di Almese (www.comprensivoalmese.it), realizzato dal Gruppo Wolf»*.
 
-```js
-/* Parti di questo file derivano da «Orario DADA» – Gruppo Wolf, Istituto Comprensivo di Almese
-   (www.comprensivoalmese.it) – licenza CC BY 4.0: https://creativecommons.org/licenses/by/4.0/deed.it
-   Modificato da … */
-```
+## Altre informazioni
 
-## Cosa NON è coperto da questa licenza
-
-- **I dati della scuola**: orari, classi, aule, codici dei docenti (cartella `dati/` e dati caricati in Orario Facile),
-  e a maggior ragione i nomi dei docenti e i file su Google Drive. Servono solo all'Istituto Comprensivo di Almese
-  e non si possono riutilizzare.
-- **Nome e logo della scuola**: si possono citare come fonte, ma non usare per presentare un altro progetto.
-- **Servizi di altri**, come l'accesso con Google (caricato dai server di Google), che hanno le proprie condizioni.
-
-Il software è fornito **così com'è**, senza garanzie: chi lo usa lo fa sotto la propria responsabilità.
+- **Dati della scuola** (orari, classi, aule, codici e nomi dei docenti, file su Google Drive): non vengono mai
+  concessi a terzi.
+- **Servizi di altri** usati dall'app, come l'accesso con Google, hanno le proprie condizioni.
+- **Versioni precedenti**: dal 26/09/2026 al passaggio a questa licenza il codice è stato pubblicato per poche ore con
+  licenza CC BY 4.0. Chi l'ha scaricato in quel periodo può usare solo quella versione, alle condizioni di quella
+  licenza (cioè citandone la provenienza). Tutte le versioni successive sono coperte da questa pagina.
+- Il software è fornito **così com'è**, senza garanzie.
