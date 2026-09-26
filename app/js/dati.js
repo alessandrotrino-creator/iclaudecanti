@@ -124,21 +124,49 @@ const Dati = (() => {
     } catch (e) { return null; }
   }
 
-  // Scarica l'orario pubblicato (dati/orario.json); se non c'è rete usa l'ultima copia salvata
+  // Indirizzo per leggere un file di Google Drive condiviso con link, con la chiave API di config.js
+  // ('' se in config.js manca l'ID del file o la chiave): lo usa anche supplenze.js
+  function urlDrive(idFile) {
+    if (!idFile || typeof CONFIG === 'undefined' || !CONFIG.googleApiKey) return '';
+    return 'https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(idFile) +
+      '?alt=media&supportsAllDrives=true&key=' + encodeURIComponent(CONFIG.googleApiKey);
+  }
+
+  // Scarica un file dell'orario e lo controlla; restituisce { P, testo } oppure lancia un errore
+  async function scaricaOrario(url) {
+    const r = await fetch(url, { cache: 'no-cache' });
+    if (!r.ok) throw new Error('Errore ' + r.status);
+    const testo = await r.text();
+    return { P: normalizza(JSON.parse(testo)), testo };
+  }
+
+  /*
+    Scarica l'orario pubblicato:
+    - se in config.js c'è il file su Drive (fileOrarioPubblicato + googleApiKey) legge quello, cioè
+      l'orario salvato con «Pubblica orario» di Orario Facile; se Drive non risponde usa l'ultima copia
+      salvata su questo dispositivo e solo se non c'è nemmeno quella il file su GitHub (dati/orario.json),
+      così un problema di rete non fa ricomparire per errore un orario vecchio;
+    - altrimenti legge dati/orario.json da GitHub, come prima (senza rete: l'ultima copia salvata).
+  */
   async function caricaPubblicato() {
+    const daDrive = urlDrive(CONFIG.fileOrarioPubblicato);
     let P;
     try {
-      const r = await fetch(CONFIG.urlDati, { cache: 'no-cache' });
-      if (!r.ok) throw new Error('Errore ' + r.status);
-      const testo = await r.text();
-      P = normalizza(JSON.parse(testo));
+      const f = await scaricaOrario(daDrive || CONFIG.urlDati);
+      P = f.P;
       P.offline = false;
-      try { localStorage.setItem(CHIAVE_COPIA, testo); } catch (e) { /* spazio pieno o bloccato: pazienza */ }
+      try { localStorage.setItem(CHIAVE_COPIA, f.testo); } catch (e) { /* spazio pieno o bloccato: pazienza */ }
     } catch (errore) {
       const copia = leggi(CHIAVE_COPIA);
-      if (!copia) throw errore;
-      P = normalizza(JSON.parse(copia));
-      P.offline = true;
+      if (copia) {
+        P = normalizza(JSON.parse(copia));
+        P.offline = true;
+      } else if (daDrive) {
+        P = (await scaricaOrario(CONFIG.urlDati)).P;   // ultima riserva: il file su GitHub
+        P.offline = true;
+      } else {
+        throw errore;
+      }
     }
     return P;
   }
@@ -178,5 +206,5 @@ const Dati = (() => {
 
   const nome = (tipo, id) => { const e = D && D.mappa[tipo].get(id); return e ? e.nome : id; };
 
-  return { carica, get: () => D, docentePerEmail, nome, emailDaNome, normalizza, fonte, impostaFonte, CHIAVE_BOZZA };
+  return { carica, get: () => D, docentePerEmail, nome, emailDaNome, normalizza, fonte, impostaFonte, urlDrive, CHIAVE_BOZZA };
 })();

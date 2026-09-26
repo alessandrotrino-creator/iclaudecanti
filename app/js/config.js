@@ -8,7 +8,7 @@ window.CONFIG = {
 
   // Versione dell'app, scritta in fondo alla pagina. Quando si pubblicano modifiche importanti conviene
   // cambiarla qui E nel nome CACHE di sw.js: così tutti i dispositivi scaricano l'app da capo.
-  versioneApp: '2026-09-26',
+  versioneApp: '2026-09-26.2',
 
   // Solo gli account di questo dominio possono entrare
   dominio: 'comprensivoalmese.it',
@@ -42,8 +42,22 @@ window.CONFIG = {
   // Se si svuota (''), la scheda Sostituzioni funziona come prima (nessun controllo, niente scrittura nel foglio).
   fileSostituzioni: '1bd_d8oNdxSo8hIC26ONxN_RYUpV8dMzD2Ax78z76BJA',
 
-  // Dove si trova il file con l'orario (formato dell'app oppure backup di Orario Facile)
+  // Dove si trova il file con l'orario (formato dell'app oppure backup di Orario Facile).
+  // Con la pubblicazione su Drive (vedi sotto) serve solo come riserva, se Drive non risponde.
   urlDati: '../dati/orario.json',
+
+  // PUBBLICAZIONE SU GOOGLE DRIVE (tasti «Pubblica orario» e «Pubblica sostituzioni» di Orario Facile,
+  // vedi app/js/pubblica-drive.js). Gli ID non sono segreti: senza i permessi su Drive non servono a niente.
+  // - cartellaPubblicazione: la cartella di Drive dove Orario Facile salva i file (la parte del link dopo /folders/).
+  //   Dentro c'è anche la cartella «backup orario», con un backup per ogni giorno in cui si pubblica.
+  cartellaPubblicazione: '1x3BIvxl3dGcqtGUTr56aCa9xhaSpbSot',
+  // - fileOrarioPubblicato / fileSostituzioniPubblicate: ID dei file che l'app legge. Li mostra Orario Facile
+  //   dopo la prima pubblicazione. Finché sono vuoti l'app continua a leggere urlDati da GitHub.
+  fileOrarioPubblicato: '',
+  fileSostituzioniPubblicate: '',
+  // - googleApiKey: "chiave API" di Google (non segreta, limitata al sito github.io e alla Google Drive API).
+  //   Permette a tutti i dispositivi, anche alle LIM, di leggere i due file (condivisi con link) senza accedere a Google.
+  googleApiKey: '',
 
   // Orari della campanella (tasto con la campanella). Se il file manca, si usano gli orari delle ore
   urlCampanella: '../dati/campanella.json',

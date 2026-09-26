@@ -671,6 +671,7 @@
   async function ricaricaDati(manuale) {
     try {
       const fontePrima = D.fonte, filtri = Object.assign({}, stato.filtri);
+      await Supplenze.scarica();   // le sostituzioni pubblicate su Drive (se configurate in config.js)
       D = await Dati.carica();
       applicaNomi();
       mioDocente = Dati.docentePerEmail(utente.email);
@@ -725,7 +726,8 @@
     utente = s;
     mostraCaricamento();
     try {
-      D = await Dati.carica();
+      // l'orario e (se configurate in config.js) le sostituzioni pubblicate su Drive, insieme
+      [D] = await Promise.all([Dati.carica(), Supplenze.scarica()]);
     } catch (e) {
       mostraErroreAvvio('Impossibile caricare l\'orario. Controlla la connessione.');
       return;
