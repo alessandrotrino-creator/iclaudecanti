@@ -35,10 +35,19 @@
         <li>Apri questa pagina con <strong>Safari</strong> (la fotocamera la apre già lì).</li>
         <li>Tocca il pulsante <strong>Condividi</strong>, il quadrato con la freccia verso l'alto
           (${ipad ? 'in alto a destra, accanto alla barra dell\'indirizzo' : 'in basso al centro'}).</li>
-        <li>Scorri l'elenco e scegli <strong>Aggiungi alla schermata Home</strong>, poi tocca <strong>Aggiungi</strong>.</li>
+        <li><strong>Scorri verso il basso</strong> l'elenco delle azioni e scegli <strong>Aggiungi alla schermata Home</strong>,
+          poi tocca <strong>Aggiungi</strong>.</li>
         <li>Apri l'app dall'icona <strong>Orario</strong> sulla schermata Home ed entra con l'account della scuola
           (la prima volta va fatto anche se eri già entrato in Safari).</li>
-      </ol>`;
+      </ol>
+      <p><strong>Non trovi «Aggiungi alla schermata Home»?</strong></p>
+      <ul>
+        <li>In fondo all'elenco tocca <strong>Modifica azioni…</strong> e attiva <strong>Aggiungi alla schermata Home</strong>.</li>
+        <li>Controlla di essere in <strong>Safari</strong> e non nel browser interno di un'altra app (lettore QR, WhatsApp, Gmail):
+          in quel caso tocca <strong>Apri in Safari</strong>.</li>
+        <li>Esci dalla <strong>navigazione privata</strong> (barra scura con scritto «Privata»).</li>
+        <li>Sugli iPad gestiti dalla scuola la voce può essere bloccata: chiedi a chi gestisce gli iPad.</li>
+      </ul>`;
     }
     if (/Firefox/.test(ua) && !/Android/.test(ua)) {
       return '<p>Firefox per computer non installa le app web. Apri questa pagina con <strong>Chrome</strong> o <strong>Edge</strong> e riprova.</p>';
