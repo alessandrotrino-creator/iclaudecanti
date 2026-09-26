@@ -139,9 +139,22 @@
   footer{margin-top:48px; padding-top:18px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft);}
 
   @media (max-width:520px){ .quick{padding:18px 16px 20px;} }
+  /* Barra con il tasto «Chiudi manuale»: resta sempre in alto anche scorrendo la pagina */
+  .barra-manuale{
+    position:sticky; top:0; z-index:10; display:flex; justify-content:flex-end;
+    margin-inline:-20px; padding:10px 20px; background:var(--bg); border-bottom:1px solid var(--line);
+  }
+  .chiudi-manuale{
+    font-family:var(--font-body); font-size:15px; font-weight:600; min-height:44px;
+    background:var(--accent); color:var(--accent-ink); border:0; border-radius:99px; padding:9px 18px; cursor:pointer;
+  }
+  .chiudi-manuale:focus-visible{outline:3px solid var(--ink); outline-offset:2px;}
 </style>
 </head>
 <body>
+<header class="barra-manuale">
+  <button type="button" class="chiudi-manuale" id="chiudiManuale" aria-label="Chiudi il manuale e torna a Orario Facile">✕ Chiudi manuale</button>
+</header>
 
 <main class="page">
 
@@ -367,5 +380,23 @@
   </footer>
 
 </main>
+<script>
+  /*
+    «Chiudi manuale» (anche con il tasto Esc): torna alla pagina da cui si è arrivati (a Orario Facile).
+    Se il manuale è stato aperto da solo (link diretto o scheda nuova) prova a chiudere la scheda
+    e, se il browser non lo permette, apre la pagina principale.
+  */
+  (() => {
+    function chiudi() {
+      let dalSito = false;
+      try { dalSito = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) { /* indirizzo non valido */ }
+      if (dalSito && history.length > 1) { history.back(); return; }
+      window.close();
+      setTimeout(() => { location.href = './'; }, 300);
+    }
+    document.getElementById('chiudiManuale').addEventListener('click', chiudi);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') chiudi(); });
+  })();
+</script>
 </body>
 </html>
