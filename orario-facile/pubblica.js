@@ -24,7 +24,9 @@
     let testo = cosa + ' su Google Drive.';
     if (!f.collegato) {
       testo += ` L'app non legge ancora questo file: in app/js/config.js alla voce ${voceConfig} va scritto il codice ${f.id}`;
-      testo += f.condiviso ? '.' : ' e il file va condiviso con «Chiunque abbia il link – Visualizzatore» (Google non ha permesso di farlo in automatico).';
+      // La nostra scuola non permette «Chiunque abbia il link»: va bene anche condiviso con l'Istituto,
+      // perché l'app lo legge con l'account di chi ha fatto l'accesso (vedi leggiDrive in app/js/dati.js)
+      testo += f.condiviso ? '.' : ' e il file deve essere condiviso con l\'Istituto (o con «Chiunque abbia il link», se la scuola lo permette).';
     }
     return testo;
   }

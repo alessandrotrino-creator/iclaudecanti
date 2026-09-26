@@ -132,24 +132,61 @@ const Dati = (() => {
       '?alt=media&supportsAllDrives=true&key=' + encodeURIComponent(CONFIG.googleApiKey);
   }
 
-  // Scarica un file dell'orario e lo controlla; restituisce { P, testo } oppure lancia un errore
-  async function scaricaOrario(url) {
-    const r = await fetch(url, { cache: 'no-cache' });
+  /*
+    Lettura di un file pubblicato su Drive. Due strade:
+    1. con la chiave API (googleApiKey): serve un file condiviso con «Chiunque abbia il link»;
+    2. senza chiave, con il permesso Google di chi ha fatto l'accesso (lo stesso che serve per i nomi veri,
+       vedi nomi.js): basta che il file sia condiviso con la scuola («Istituto Comprensivo di Almese»).
+       È la strada che funziona nella nostra scuola, dove la condivisione con chiunque è bloccata.
+  */
+  const API_FILE = id => 'https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(id) + '?alt=media&supportsAllDrives=true';
+  function gettoneDrive() {
+    return typeof NomiDocenti !== 'undefined' ? NomiDocenti.gettoneDisponibile([NomiDocenti.PERMESSO_DRIVE]) : null;
+  }
+  // Vero se in questo momento si può leggere il file da Drive (con la chiave o con il permesso dell'utente)
+  const driveLeggibile = idFile => !!idFile && typeof CONFIG !== 'undefined' && !!(CONFIG.googleApiKey || gettoneDrive());
+  // Scarica il testo di un file pubblicato su Drive; lancia un errore se non ci riesce
+  async function leggiDrive(idFile) {
+    const url = urlDrive(idFile);
+    const gettone = url ? null : gettoneDrive();
+    if (!url && !gettone) throw new Error('Drive non raggiungibile: manca il permesso di Google');
+    const r = await fetch(url || API_FILE(idFile),
+      Object.assign({ cache: 'no-cache' }, gettone ? { headers: { Authorization: 'Bearer ' + gettone } } : {}));
     if (!r.ok) throw new Error('Errore ' + r.status);
-    const testo = await r.text();
+    return r.text();
+  }
+
+  // Scarica un file dell'orario e lo controlla; restituisce { P, testo } oppure lancia un errore.
+  // origine = { drive: idFile } per un file su Drive, altrimenti l'indirizzo (es. dati/orario.json su GitHub)
+  async function scaricaOrario(origine) {
+    let testo;
+    if (origine && origine.drive) testo = await leggiDrive(origine.drive);
+    else {
+      const r = await fetch(origine, { cache: 'no-cache' });
+      if (!r.ok) throw new Error('Errore ' + r.status);
+      testo = await r.text();
+    }
     return { P: normalizza(JSON.parse(testo)), testo };
   }
 
   /*
     Scarica l'orario pubblicato:
-    - se in config.js c'è il file su Drive (fileOrarioPubblicato + googleApiKey) legge quello, cioè
+    - se in config.js c'è il file su Drive (fileOrarioPubblicato) e lo si può leggere (chiave API oppure
+      permesso Google di chi ha fatto l'accesso, vedi leggiDrive) legge quello, cioè
       l'orario salvato con «Pubblica orario» di Orario Facile; se Drive non risponde usa l'ultima copia
       salvata su questo dispositivo e solo se non c'è nemmeno quella il file su GitHub (dati/orario.json),
       così un problema di rete non fa ricomparire per errore un orario vecchio;
     - altrimenti legge dati/orario.json da GitHub, come prima (senza rete: l'ultima copia salvata).
   */
   async function caricaPubblicato() {
-    const daDrive = urlDrive(CONFIG.fileOrarioPubblicato);
+    const daDrive = driveLeggibile(CONFIG.fileOrarioPubblicato) ? { drive: CONFIG.fileOrarioPubblicato } : null;
+    // C'è il file su Drive ma adesso non lo si può leggere (per esempio il permesso di Google è scaduto dopo un'ora):
+    // meglio l'ultima copia scaricata (di solito proprio quella di Drive) che l'orario di GitHub, forse vecchio
+    if (!daDrive && CONFIG.fileOrarioPubblicato) {
+      const copia = leggi(CHIAVE_COPIA);
+      try { if (copia) { const C = normalizza(JSON.parse(copia)); C.offline = false; return C; } }
+      catch (e) { /* copia rovinata: si prosegue con GitHub */ }
+    }
     let P;
     try {
       const f = await scaricaOrario(daDrive || CONFIG.urlDati);
@@ -206,5 +243,5 @@ const Dati = (() => {
 
   const nome = (tipo, id) => { const e = D && D.mappa[tipo].get(id); return e ? e.nome : id; };
 
-  return { carica, get: () => D, docentePerEmail, nome, emailDaNome, normalizza, fonte, impostaFonte, urlDrive, CHIAVE_BOZZA };
+  return { carica, get: () => D, docentePerEmail, nome, emailDaNome, normalizza, fonte, impostaFonte, urlDrive, leggiDrive, driveLeggibile, CHIAVE_BOZZA };
 })();

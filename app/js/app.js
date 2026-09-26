@@ -201,6 +201,8 @@
     mioDocente = Dati.docentePerEmail(utente.email);
     preparaControlli();
     aggiorna();
+    // Adesso c'è il permesso di Google: si possono leggere orario e sostituzioni pubblicati su Drive
+    if (CONFIG.fileOrarioPubblicato || CONFIG.fileSostituzioniPubblicate) ricaricaDati(false);
   }
 
   /* ---------- costruzione dei controlli ---------- */

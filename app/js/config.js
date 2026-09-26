@@ -53,10 +53,12 @@ window.CONFIG = {
   cartellaPubblicazione: '1x3BIvxl3dGcqtGUTr56aCa9xhaSpbSot',
   // - fileOrarioPubblicato / fileSostituzioniPubblicate: ID dei file che l'app legge. Li mostra Orario Facile
   //   dopo la prima pubblicazione. Finché sono vuoti l'app continua a leggere urlDati da GitHub.
-  fileOrarioPubblicato: '',
+  fileOrarioPubblicato: '18OB3AMivfH-T9-tXU3v2za2Ladzd3-fo',
   fileSostituzioniPubblicate: '',
   // - googleApiKey: "chiave API" di Google (non segreta, limitata al sito github.io e alla Google Drive API).
-  //   Permette a tutti i dispositivi, anche alle LIM, di leggere i due file (condivisi con link) senza accedere a Google.
+  //   Permetterebbe anche alle LIM di leggere i due file senza accedere a Google, ma solo se sono condivisi con
+  //   «Chiunque abbia il link», cosa che la nostra scuola blocca. Per questo resta vuota: l'app legge i file con
+  //   il permesso Google di chi ha fatto l'accesso (basta la condivisione con l'Istituto, vedi leggiDrive in dati.js).
   googleApiKey: '',
 
   // Orari della campanella (tasto con la campanella). Se il file manca, si usano gli orari delle ore

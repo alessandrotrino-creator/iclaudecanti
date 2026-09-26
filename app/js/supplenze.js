@@ -25,13 +25,11 @@ const Supplenze = (() => {
 
   // Scarica le sostituzioni pubblicate; restituisce true se sono cambiate (non lancia mai errori)
   async function scarica() {
-    const url = typeof Dati !== 'undefined' ? Dati.urlDrive(CONFIG.fileSostituzioniPubblicate) : '';
-    if (!url) return false;
+    // con la chiave API o con il permesso Google di chi ha fatto l'accesso (vedi Dati.leggiDrive)
+    if (typeof Dati === 'undefined' || !Dati.driveLeggibile(CONFIG.fileSostituzioniPubblicate)) return false;
     const prima = JSON.stringify(pubblicate);
     try {
-      const r = await fetch(url, { cache: 'no-cache' });
-      if (!r.ok) throw new Error('Errore ' + r.status);
-      const testo = await r.text();
+      const testo = await Dati.leggiDrive(CONFIG.fileSostituzioniPubblicate);
       pubblicate = elenchi(JSON.parse(testo));
       try { localStorage.setItem(CHIAVE_COPIA, testo); } catch (e) { /* spazio pieno o bloccato: pazienza */ }
     } catch (e) {
