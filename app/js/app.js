@@ -183,14 +183,17 @@
     if (nomi || !utente || aulaMonitor || secondiIngresso) return;
     if (typeof NomiDocenti === 'undefined' || !CONFIG.fileNomiDocenti || !CONFIG.googleClientId) return;
     const scelta = leggi(CHIAVE_NOMI);
-    if (scelta === 'codici' || scelta === 'negato:' + utente.email.toLowerCase()) return;
+    // Senza nomi veri serve comunque il permesso di Google per le sostituzioni pubblicate su Drive
+    if (scelta === 'codici' || scelta === 'negato:' + utente.email.toLowerCase()) { permessoDrive(); return; }
     try {
       nomi = await NomiDocenti.carica(utente.email);
     } catch (e) {
       const msg = String(e && e.message || '');
       // Solo se Google dice che QUESTO ACCOUNT non può aprire il file (messaggi di nomi.js) smettiamo di riprovare
-      if (/il tuo account non ha il permesso|file non trovato/i.test(msg)) scrivi(CHIAVE_NOMI, 'negato:' + utente.email.toLowerCase());
-      else if (/bloccato la finestra|popup/i.test(msg) && !attesaTocco) {
+      if (/il tuo account non ha il permesso|file non trovato/i.test(msg)) {
+        scrivi(CHIAVE_NOMI, 'negato:' + utente.email.toLowerCase());
+        permessoDrive();   // il permesso di Google c'è già (il file dei nomi no): leggiamo le sostituzioni
+      } else if (/bloccato la finestra|popup/i.test(msg) && !attesaTocco) {
         // Il browser apre la finestra di Google solo dopo un tocco: riproviamo al primo tocco sullo schermo
         attesaTocco = true;
         document.addEventListener('pointerdown', () => { attesaTocco = false; caricaNomiDaSoli(); }, { once: true, capture: true });
@@ -203,6 +206,28 @@
     aggiorna();
     // Adesso c'è il permesso di Google: si possono leggere orario e sostituzioni pubblicati su Drive
     if (CONFIG.fileOrarioPubblicato || CONFIG.fileSostituzioniPubblicate) ricaricaDati(false);
+  }
+
+  /*
+    Permesso di Google per leggere da Drive le sostituzioni (e l'orario) pubblicati, anche per chi NON vede i nomi veri
+    (non può aprire il file dei nomi, oppure ha scelto «Codici»): basta un account della scuola, perché i file
+    pubblicati sono condivisi con l'Istituto. Se il permesso c'è già si rileggono subito i dati; se il browser blocca
+    la finestra di Google si riprova al primo tocco sullo schermo. Monitor e schermo all'ingresso non lo chiedono.
+  */
+  let attesaToccoDrive = false;
+  async function permessoDrive() {
+    if (!utente || aulaMonitor || secondiIngresso || typeof NomiDocenti === 'undefined' || !CONFIG.googleClientId) return;
+    if (!(CONFIG.fileOrarioPubblicato || CONFIG.fileSostituzioniPubblicate)) return;
+    try {
+      await NomiDocenti.gettone([NomiDocenti.PERMESSO_DRIVE], utente.email);   // se c'è già non apre niente
+      ricaricaDati(false);
+    } catch (e) {
+      ricaricaDati(false);   // intanto si aggiorna il resto (orario da GitHub, ultima copia delle sostituzioni)
+      if (/bloccato la finestra|popup/i.test(String(e && e.message || '')) && !attesaToccoDrive) {
+        attesaToccoDrive = true;
+        document.addEventListener('pointerdown', () => { attesaToccoDrive = false; permessoDrive(); }, { once: true, capture: true });
+      }
+    }
   }
 
   /* ---------- costruzione dei controlli ---------- */
@@ -700,7 +725,12 @@
   function avviaTimer() {
     // Ogni 20 secondi: se è cambiato il minuto ridisegno (per spostare l'evidenziazione dell'ora)
     setInterval(() => { if (adesso().minuto !== ultimoMinuto) aggiorna(); }, 20000);
-    setInterval(() => ricaricaDati(false), CONFIG.minutiAggiornamentoDati * 60000);
+    setInterval(() => {
+      // il permesso di Google dura un'ora: se è scaduto lo si richiede (permessoDrive rilegge poi i dati)
+      const scaduto = CONFIG.fileSostituzioniPubblicate && typeof NomiDocenti !== 'undefined' &&
+        !NomiDocenti.gettoneDisponibile([NomiDocenti.PERMESSO_DRIVE]);
+      if (scaduto && !aulaMonitor && !secondiIngresso) permessoDrive(); else ricaricaDati(false);
+    }, CONFIG.minutiAggiornamentoDati * 60000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) aggiorna(); });
   }
 
