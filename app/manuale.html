@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orario DADA</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg:#EEF1F6; --surface:#FFFFFF; --surface-2:#E3E8F0;
+    --ink:#1B2333; --ink-soft:#535E72; --line:#D4DAE6;
+    --accent:#2158A6; --accent-ink:#FFFFFF; --accent-soft:#DCE7F7;
+    --good:#2E7D52; --good-bg:#E4F3EA;
+    --warn-bg:#FFF4D6; --warn-ink:#7A5B00;
+    --hi:#FFE07A; --hi-ink:#5B4300;
+    --font-display:"Newsreader", Georgia, serif;
+    --font-body:"Source Sans 3", system-ui, sans-serif;
+    --font-mono:"IBM Plex Mono", ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10141D; --surface:#181E2A; --surface-2:#212938;
+      --ink:#E7EAF2; --ink-soft:#9AA3B7; --line:#2B3345;
+      --accent:#7FB0EE; --accent-ink:#0B1220; --accent-soft:#1E2B41;
+      --good:#6ED3A0; --good-bg:#173226;
+      --warn-bg:#3A2F12; --warn-ink:#F2C94C;
+      --hi:#7A6420; --hi-ink:#FFE07A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10141D; --surface:#181E2A; --surface-2:#212938;
+    --ink:#E7EAF2; --ink-soft:#9AA3B7; --line:#2B3345;
+    --accent:#7FB0EE; --accent-ink:#0B1220; --accent-soft:#1E2B41;
+    --good:#6ED3A0; --good-bg:#173226;
+    --warn-bg:#3A2F12; --warn-ink:#F2C94C;
+    --hi:#7A6420; --hi-ink:#FFE07A;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-body);
+    font-size:16px; line-height:1.55; padding-inline:20px;
+  }
+  .page{max-width:820px; margin:0 auto; padding-block:32px 64px;}
+
+  code, .mono{font-family:var(--font-mono); font-size:0.88em;}
+  .mono-tag{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--line);
+    border-radius:5px; padding:1px 6px; font-family:var(--font-mono); font-size:0.85em;
+  }
+
+  a{color:var(--accent);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    display:flex; flex-direction:column; gap:14px;
+    padding-block:8px 28px; border-bottom:1px solid var(--line); margin-bottom:28px;
+  }
+  .team-logo{display:flex; align-items:center; gap:10px; margin-bottom:2px;}
+  .team-text{display:flex; flex-direction:column; line-height:1.15;}
+  .team-name{
+    font-family:var(--font-display); font-weight:700; font-size:15px;
+    letter-spacing:.09em; text-transform:uppercase; color:var(--ink);
+  }
+  .team-tag{font-size:11px; color:var(--ink-soft); font-style:italic;}
+  .chip{
+    display:inline-flex; align-items:center; gap:6px; width:fit-content;
+    background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent);
+    font-size:12.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+    padding:4px 11px; border-radius:99px;
+  }
+  h1{
+    font-family:var(--font-display); font-weight:600; font-size:clamp(2rem, 5vw, 2.7rem);
+    margin:0; text-wrap:balance; letter-spacing:-0.01em;
+  }
+  .lede{font-size:1.08rem; color:var(--ink-soft); max-width:60ch; margin:0;}
+  .meta{
+    display:flex; flex-wrap:wrap; gap:8px 20px; font-size:13.5px; color:var(--ink-soft);
+  }
+  .meta b{color:var(--ink); font-weight:600;}
+
+  /* ---------- Quick box ---------- */
+  .quick{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:22px 24px 24px; margin-bottom:32px;
+  }
+  .quick h2{
+    font-family:var(--font-display); font-size:1.3rem; margin:0 0 4px; font-weight:600;
+  }
+  .quick p.sub{margin:0 0 16px; color:var(--ink-soft); font-size:14.5px;}
+  .quick ol{margin:0; padding-left:0; list-style:none; display:grid; gap:10px;}
+  .quick li{
+    display:grid; grid-template-columns:28px 1fr; gap:12px; align-items:start;
+  }
+  .quick li .n{
+    background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:13px;
+    width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-body);
+  }
+  .quick li .t{padding-top:2px;}
+  .quick li b{font-weight:600;}
+
+  /* ---------- TOC ---------- */
+  nav.toc{
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:40px;
+  }
+  nav.toc a{
+    font-size:13.5px; color:var(--ink-soft); text-decoration:none;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:99px;
+    padding:5px 13px;
+  }
+  nav.toc a:hover{color:var(--accent); border-color:var(--accent);}
+
+  /* ---------- Sections ---------- */
+  section{margin-bottom:40px; scroll-margin-top:16px;}
+  section h2{
+    font-family:var(--font-display); font-weight:600; font-size:1.5rem;
+    margin:0 0 6px; padding-top:6px; border-top:1px solid var(--line);
+    padding-top:20px;
+  }
+  section > h2:first-child{padding-top:0; border-top:none;}
+  h3{font-family:var(--font-body); font-weight:700; font-size:1.02rem; margin:22px 0 8px;}
+  p{margin:0 0 12px;}
+  ul, ol{margin:0 0 14px; padding-left:22px;}
+  li{margin-bottom:6px;}
+
+  .tablewrap{overflow-x:auto; margin:14px 0 18px; border:1px solid var(--line); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; font-size:14.5px; min-width:480px;}
+  th, td{text-align:left; padding:9px 13px; border-bottom:1px solid var(--line); vertical-align:top;}
+  thead th{background:var(--surface-2); font-weight:600;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody{background:var(--surface);}
+
+  .box{
+    border-radius:10px; padding:14px 16px; margin:16px 0; font-size:14.5px;
+    border:1px solid var(--line);
+  }
+  .box.nota{background:var(--surface-2);}
+  .box.attenzione{background:var(--warn-bg); color:var(--warn-ink); border-color:transparent;}
+  .box.attenzione b{color:var(--warn-ink);}
+  .box p:last-child{margin-bottom:0;}
+  .box .lbl{font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:5px;}
+
+  .swatch{
+    display:inline-block; background:var(--hi); color:var(--hi-ink); border-radius:4px;
+    padding:0 5px; font-weight:600;
+  }
+
+  footer{
+    margin-top:48px; padding-top:18px; border-top:1px solid var(--line);
+    font-size:12.5px; color:var(--ink-soft);
+  }
+
+  @media (max-width:520px){
+    .quick{padding:18px 16px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<main class="page">
+
+  <div class="hero">
+    <div class="team-logo">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true">
+        <polygon points="9,28 21,3 29,29" fill="var(--ink)"/>
+        <polygon points="55,28 43,3 35,29" fill="var(--ink)"/>
+        <circle cx="32" cy="37" r="23" fill="var(--ink)"/>
+        <ellipse cx="32" cy="43" rx="14" ry="11" fill="var(--surface)"/>
+        <circle cx="23" cy="33" r="3.4" fill="var(--ink)"/>
+        <circle cx="41" cy="33" r="3.4" fill="var(--ink)"/>
+        <circle cx="21.8" cy="31.7" r="1.1" fill="var(--surface)"/>
+        <circle cx="39.8" cy="31.7" r="1.1" fill="var(--surface)"/>
+        <ellipse cx="32" cy="41" rx="4.2" ry="3.2" fill="var(--accent)"/>
+        <path d="M25,47 Q32,52 39,47" stroke="var(--ink)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="team-text">
+        <span class="team-name">Wolf</span>
+        <span class="team-tag">risolvo problemi</span>
+      </span>
+    </div>
+    <span class="chip">Fruitori · consultazione</span>
+    <h1>Orario DADA</h1>
+    <p class="lede">Guida per chi consulta l'orario delle lezioni: docenti, famiglie, monitor di classe e schermo all'ingresso. Non serve nessuna abilitazione speciale: basta l'account Google della scuola.</p>
+    <div class="meta">
+      <span>Indirizzo: <a href="https://alessandrotrino-creator.github.io/iclaudecanti/app/" target="_blank" rel="noopener">alessandrotrino-creator.github.io/iclaudecanti/app</a></span>
+      <span>Accesso: <b>@comprensivoalmese.it</b></span>
+    </div>
+  </div>
+
+  <div class="quick">
+    <h2>In breve</h2>
+    <p class="sub">Per chi ha già installato l'app o vuole solo l'essenziale.</p>
+    <ol>
+      <li><span class="n">1</span><span class="t">Apri l'indirizzo dell'app e accedi con <b>"Accedi con Google"</b> (account della scuola).</span></li>
+      <li><span class="n">2</span><span class="t">Vedi subito l'<b>orario di oggi</b>: se sei un docente riconosciuto, vedi già il tuo; sui monitor di classe si vede l'aula.</span></li>
+      <li><span class="n">3</span><span class="t">Tocca <b>In breve</b> in alto per la vista a schede (comoda sul telefono): Adesso, Dopo, il resto della giornata.</span></li>
+      <li><span class="n">4</span><span class="t">Usa i filtri (Classe, Docente, Aula) e il cambio colonna per vedere l'orario di qualcun altro o la settimana intera.</span></li>
+      <li><span class="n">5</span><span class="t">Dal menu in alto a destra, <b>📲 Installa l'app</b> per averla come un'app vera sulla schermata Home.</span></li>
+      <li><span class="n">6</span><span class="t">Se cambia qualcosa all'ultimo momento, compare un riquadro giallo in alto con le modifiche del giorno.</span></li>
+    </ol>
+  </div>
+
+  <nav class="toc">
+    <a href="#accesso">Accesso</a>
+    <a href="#apertura">Cosa vedi appena apri</a>
+    <a href="#breve">Vista "In breve"</a>
+    <a href="#viste">Cambiare vista e filtri</a>
+    <a href="#installare">Installare e condividere</a>
+    <a href="#tema">Tema</a>
+    <a href="#campanella">Campanella</a>
+    <a href="#modifiche">Modifiche dell'ultimo minuto</a>
+    <a href="#dispositivi">Monitor e schermo all'ingresso</a>
+    <a href="#faq">Domande frequenti</a>
+  </nav>
+
+  <section id="accesso">
+    <h2>Come accedere</h2>
+    <p>L'app si apre nel browser (Chrome, Edge, Safari…), non serve installare nulla per usarla la prima volta. Si entra con <b>"Accedi con Google"</b>: sono accettati solo gli account <b>@comprensivoalmese.it</b>, perché la scuola usa Google Workspace. La password la vede solo Google, l'app non la riceve mai.</p>
+    <p>Spuntando <b>"Ricordami su questo dispositivo"</b> l'accesso resta memorizzato per 30 giorni, comodo su telefono personale o sul monitor di un'aula.</p>
+  </section>
+
+  <section id="apertura">
+    <h2>Cosa vedi appena apri l'app</h2>
+    <p>L'app riconosce da sola chi sta guardando e mostra la cosa più utile per quella persona o quel dispositivo:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Chi apre l'app</th><th>Cosa vede</th></tr></thead>
+        <tbody>
+          <tr><td>Monitor di classe</td><td>l'orario di oggi della <b>sua aula</b>, a caratteri grandi, con "Adesso / Dopo"</td></tr>
+          <tr><td>Schermo all'ingresso</td><td>l'orario di oggi con le viste <b>Classi → Docenti → Aule</b> che cambiano da sole</td></tr>
+          <tr><td>Docente (riconosciuto dall'email)</td><td>il <b>suo orario di oggi</b>, con "Adesso / Dopo"</td></tr>
+          <tr><td>Tutti gli altri</td><td>l'<b>orario di oggi</b>: ore in riga, classi in colonna</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>L'ora in corso è sempre evidenziata in <span class="swatch">giallo</span>. Nel weekend, o a lezioni finite, compare già il giorno di scuola successivo.</p>
+  </section>
+
+  <section id="breve">
+    <h2>La vista "In breve" (a schede)</h2>
+    <p>Il tasto <b>In breve</b> nella barra in alto apre la giornata a schede, pensata per il telefono. Il tasto <b>Tabella</b> torna alla vista classica.</p>
+    <ul>
+      <li><b>Adesso</b>: la lezione in corso, con l'aula in grande e quanto manca alla fine dell'ora.</li>
+      <li><b>Dopo</b>: la lezione successiva; se cambia l'aula lo dice: <i>"si cambia aula: Aula 1 → Aula 4"</i>.</li>
+      <li><b>Il resto della giornata</b>: una scheda per ogni ora, con l'ora in corso gialla e le ore già fatte più chiare.</li>
+      <li><b>Giornata di</b>: si sceglie classe, docente o aula; la scelta resta memorizzata sul dispositivo.</li>
+    </ul>
+    <p>Sui monitor di classe questo tasto non c'è: lì resta sempre la tabella a caratteri grandi.</p>
+  </section>
+
+  <section id="viste">
+    <h2>Cambiare visualizzazione e usare i filtri</h2>
+    <p>Si può mettere <b>in colonna</b>: Classi, Docenti, Aule oppure Settimana (i giorni in colonna). Si possono combinare i filtri <b>Classe</b>, <b>Docente</b> e <b>Aula</b>. Qualche esempio:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Combinazione</th><th>Risultato</th></tr></thead>
+        <tbody>
+          <tr><td>Docenti in colonna + classe 2B</td><td>tutti i docenti che entrano in 2B quel giorno</td></tr>
+          <tr><td>Settimana + docente Rossi</td><td>la settimana intera della prof.ssa Rossi</td></tr>
+          <tr><td>Classi in colonna + aula Palestra</td><td>quali classi vanno in palestra e quando</td></tr>
+          <tr><td>Settimana + classe 1A + docente Costa</td><td>le ore di Costa nella 1A</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>I pulsanti dei giorni cambiano il giorno mostrato; <b>Oggi</b> torna sempre al giorno corrente.</p>
+  </section>
+
+  <section id="installare">
+    <h2>Installare l'app e condividerla</h2>
+    <p>Dal menu in alto a destra (il tondo con le iniziali):</p>
+    <ul>
+      <li><b>📲 Installa l'app su questo dispositivo</b> — su Chrome/Edge parte subito l'installazione; su iPhone/iPad compaiono le istruzioni passo passo (Safari → Condividi → Aggiungi alla schermata Home). Una volta installata funziona come un'app vera, anche offline con l'ultimo orario scaricato.</li>
+      <li><b>🔗 Condividi l'app con i colleghi</b> — mostra un QR code grande da far inquadrare, con i pulsanti per condividere via WhatsApp/email o copiare il link.</li>
+    </ul>
+  </section>
+
+  <section id="tema">
+    <h2>Il tema</h2>
+    <p>Sempre dal menu si sceglie: <b>Come il dispositivo</b>, <b>Chiaro</b>, <b>Scuro</b> oppure <b>Secondo l'ora</b> (scuro dalle 19 alle 7). La scelta resta memorizzata su quel dispositivo.</p>
+  </section>
+
+  <section id="campanella">
+    <h2>La campanella 🔔</h2>
+    <p>Il tasto con la campanella fa suonare il dispositivo agli orari della campanella. Quando è attiva il tasto resta acceso e oscilla mentre suona.</p>
+    <ul>
+      <li>Si sceglie <b>quando suonare</b>: al cambio d'ora, qualche minuto prima (1, 2, 3, 5 o 10 minuti) oppure entrambi.</li>
+      <li>Suono diverso per il cambio d'ora ("din-don") e per il preavviso (bip leggeri); su Android vibra anche.</li>
+      <li>Il pannello mostra il prossimo suono in arrivo.</li>
+    </ul>
+    <div class="box attenzione">
+      <span class="lbl">Limite dei siti web</span>
+      <p>Suona solo con l'app <b>aperta sullo schermo</b> e il volume alzato (su iPhone va tolto anche il silenzioso). Con telefono bloccato o app chiusa non può suonare: per questo c'è l'opzione <i>Tieni acceso lo schermo</i>. Dopo aver riaperto l'app va toccato lo schermo una volta per riattivare il suono.</p>
+    </div>
+  </section>
+
+  <section id="modifiche">
+    <h2>Modifiche dell'ultimo minuto</h2>
+    <p>Quando l'orario pubblicato cambia (un'aula spostata, una sostituzione), l'app lo segnala bene in vista: l'app ricontrola l'orario ogni 5 minuti.</p>
+    <ul>
+      <li>Se sono cambiate lezioni della giornata compare in alto un riquadro giallo <b>"⚠️ Modifiche all'orario di oggi"</b>.</li>
+      <li>Le modifiche si vedono <b>in stile storie</b> (come Instagram): cerchi colorati in alto, grigi quando già visti. Chi riguarda direttamente il docente ha l'anello arancione. Toccando un cerchio la modifica si apre a tutto schermo, con com'era prima (barrato) e com'è adesso.</li>
+      <li>Nella tabella le lezioni cambiate hanno il bordo evidenziato e l'etichetta <b>CAMBIATA</b>.</li>
+      <li><b>Segna tutte come viste</b> ingrigisce i cerchi; il riquadro resta più discreto per tutta la giornata.</li>
+      <li>Con <b>🔔 Avvisami anche con una notifica</b> (sui dispositivi personali) arriva anche la notifica del telefono/PC, se l'app resta aperta almeno in secondo piano.</li>
+    </ul>
+  </section>
+
+  <section id="dispositivi">
+    <h2>Monitor di classe e schermo all'ingresso</h2>
+    <p>Chi gestisce questi dispositivi (di solito il gruppo che si occupa del sito) apre l'app con un indirizzo dedicato:</p>
+    <ul>
+      <li><b>Monitor di un'aula</b>: <code class="mono-tag">.../app/?monitor=Aula%203</code> (oppure menu → "Uso di questo dispositivo" → l'aula). Torna da solo all'orario dell'aula dopo 2 minuti senza tocchi e si aggiorna ogni 15 minuti.</li>
+      <li><b>Schermo all'ingresso</b>: <code class="mono-tag">.../app/?ingresso</code>, cambia vista da solo ogni tot secondi (Classi → Docenti → Aule); il numero di secondi si regola dal menu.</li>
+    </ul>
+    <p>Sulle LIM, durante gli intervalli (9:55–10:05 e 11:50–12:05) l'app mostra a tutto schermo dove va ogni classe nell'ora successiva. L'apertura automatica della pagina sulle LIM Windows richiede uno script apposito: chi se ne occupa trova le istruzioni tecniche nel repository, cartella <code class="mono-tag">app/lim/</code>.</p>
+  </section>
+
+  <section id="faq">
+    <h2>Domande frequenti</h2>
+    <h3>Non riesco ad accedere</h3>
+    <p>Controlla di usare l'account Google della scuola (<code class="mono-tag">@comprensivoalmese.it</code>), non uno personale.</p>
+    <h3>Vedo un orario diverso da quello vero</h3>
+    <p>L'app si aggiorna da sola ogni 15 minuti: aspetta qualche minuto o ricarica la pagina. Se il problema resta, segnalalo a chi gestisce il sito.</p>
+    <h3>Non sento la campanella</h3>
+    <p>Controlla che l'app sia aperta sullo schermo, il volume alzato e (su iPhone) il silenzioso disattivato: è un limite dei siti web, non un guasto.</p>
+    <h3>Voglio modificare l'orario o fare una sostituzione</h3>
+    <p>Serve il ruolo di <b>modificatore</b> e l'app <b>Orario Facile</b>: vedi la guida dedicata ai modificatori.</p>
+  </section>
+
+  <footer>
+    Guida basata sulla documentazione del progetto <span class="mono">iclaudecanti</span> (repository GitHub, aggiornata al 25/09/2026). Per i dettagli tecnici più fini: <code class="mono-tag">app/LEGGIMI.md</code> nel repository.
+  </footer>
+
+</main>
+</body>
+</html>
