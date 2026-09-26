@@ -196,7 +196,7 @@ Ci sono due tipi di utenti, tutti con l'account della scuola:
 3. Installare l'app:
    - **Android di bordo** (Chrome): menu ⋮ → *Installa app* / *Aggiungi a schermata Home*
    - **OPS Windows 10/11** (Edge): icona "Installa" nella barra degli indirizzi, oppure menu … → *App → Installa questo sito come app*. Per aprirla all'avvio: *edge://apps* → clic destro sull'app → *Avvia all'accesso*.
-4. Il monitor torna da solo all'orario dell'aula dopo 2 minuti senza tocchi e si aggiorna ogni 15 minuti.
+4. Il monitor torna da solo all'orario dell'aula dopo 2 minuti senza tocchi e si aggiorna ogni 5 minuti.
 
 Su **iPhone/iPad** l'app si installa da Safari: *Condividi → Aggiungi alla schermata Home*.
 L'indirizzo **`.../app/?installa`** apre l'app con le **istruzioni di installazione già sullo schermo** (anche prima

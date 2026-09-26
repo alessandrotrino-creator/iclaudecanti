@@ -114,7 +114,7 @@ Le istruzioni tecniche per l'apertura automatica sono in `app/lim/` nel reposito
 
 **Non riesco ad accedere.** Controlla di usare l'account Google della scuola (`@comprensivoalmese.it`), non uno personale.
 
-**Vedo un orario diverso da quello vero.** L'app si aggiorna da sola ogni 15 minuti: aspetta qualche minuto o ricarica
+**Vedo un orario diverso da quello vero.** L'app si aggiorna da sola ogni 5 minuti: aspetta qualche minuto o ricarica
 la pagina. Se il problema resta, segnalalo a chi gestisce il sito.
 
 **Non sento la campanella.** Controlla che l'app sia aperta sullo schermo, il volume alzato e (su iPhone) il

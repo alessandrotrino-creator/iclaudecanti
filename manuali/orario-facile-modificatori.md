@@ -186,7 +186,7 @@ abilitazioni: verrà aggiunto all'elenco `editori`.
 **Ho premuto «Pubblica orario» ma l'app non lo mostra.** Aspetta 5 minuti o ricarica l'app; se Orario Facile ha scritto
 «L'app non legge ancora questo file», il codice del file va inserito in `app/js/config.js` (`fileOrarioPubblicato`).
 
-**Ho pubblicato l'orario.json ma l'app non lo mostra.** Aspetta qualche minuto (si aggiorna ogni 15 minuti);
+**Ho pubblicato l'orario.json ma l'app non lo mostra.** Aspetta qualche minuto (si aggiorna ogni 5 minuti);
 controlla di aver caricato il file nella cartella `dati/` giusta e premuto "Commit changes".
 
 **Non vedo i nomi veri dei docenti.** Serve il permesso di lettura sul Foglio Google riservato dei nomi: se il
