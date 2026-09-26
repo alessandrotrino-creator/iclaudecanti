@@ -302,7 +302,9 @@
       D.aggiornato ? 'Orario aggiornato al ' + Viste.esc(new Date(D.aggiornato).toLocaleDateString('it-IT')) : '',
       D.offline ? '<strong>Senza connessione: stai vedendo l\'ultima copia salvata.</strong>' : '',
       utente.metodo === 'demo' ? '<strong>Modalità dimostrativa: accesso non verificato.</strong>' : '',
-      D.fonte === 'bozza' ? 'Stai vedendo l’orario di <a href="../orario-facile/" target="orariofacile">Orario Facile</a> salvato su questo dispositivo: si aggiorna da solo mentre lo modifichi.' : ''
+      D.fonte === 'bozza' ? 'Stai vedendo l’orario di <a href="../orario-facile/" target="orariofacile">Orario Facile</a> salvato su questo dispositivo: si aggiorna da solo mentre lo modifichi.' : '',
+      // versione dell'app: serve a capire se il dispositivo ha l'ultima (vedi versioneApp in config.js)
+      CONFIG.versioneApp ? 'Versione app ' + Viste.esc(CONFIG.versioneApp) : ''
     ].filter(Boolean).join(' · ');
     if (breveAperta) disegnaBreve();
     if (smartAperta) Smart.aggiorna();
@@ -777,7 +779,19 @@
 
   // Service worker: permette di installare l'app e di usarla senza connessione
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    navigator.serviceWorker.register('sw.js').catch(() => { /* l'app funziona anche senza */ });
+    // Se la pagina era già gestita da una versione precedente, quando arriva quella nuova si ricarica
+    // una volta da sola: così chi apre l'app (anche installata) vede sempre l'ultima versione
+    const cUnaVersionePrima = !!navigator.serviceWorker.controller;
+    let ricaricata = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!cUnaVersionePrima || ricaricata) return;
+      ricaricata = true;
+      location.reload();
+    });
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      // Ricontrolla se c'è una versione nuova ogni volta che si torna sull'app (es. riaperta dalla schermata Home)
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) reg.update().catch(() => {}); });
+    }).catch(() => { /* l'app funziona anche senza */ });
   }
 
   // Se bisogna fare l'accesso, il robot lascia il posto alla schermata di accesso;

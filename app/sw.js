@@ -2,7 +2,9 @@
   sw.js – "service worker": permette di installare l'app e di aprirla anche senza connessione.
   Strategia: prima prova la rete (così si vedono subito le modifiche), se non c'è usa la copia salvata.
 */
-const CACHE = 'orario-dada';
+// Nome della memoria dell'app: cambiandolo (per esempio con la data) i dispositivi buttano la copia vecchia
+// e scaricano tutto da capo. Tenerlo uguale a "versioneApp" in js/config.js.
+const CACHE = 'orario-dada-2026-09-26';
 const FILE_APP = [
   './', 'index.html', 'css/app.css', 'css/brief.css', 'css/campanella.css', 'css/barra.css', 'css/smart.css', 'css/menu.css','manifest.webmanifest',
   'js/config.js', 'js/tema.js', 'js/dati.js', 'js/accesso.js', 'js/ruoli.js', 'js/nomi.js', 'js/supplenze.js', 'js/viste.js', 'js/brief.js', 'js/smart.js', 'js/ingresso.js', 'js/intervallo.js', 'js/modifiche.js', 'js/storie.js', 'js/campanella.js', 'js/installa.js', 'js/condividi.js', 'js/app.js',
@@ -14,7 +16,13 @@ const FILE_APP = [
 self.addEventListener('install', evento => {
   evento.waitUntil(caches.open(CACHE).then(c => c.addAll(FILE_APP)).then(() => self.skipWaiting()));
 });
-self.addEventListener('activate', evento => evento.waitUntil(self.clients.claim()));
+// Quando la versione nuova prende il posto di quella vecchia: si cancellano le memorie vecchie
+// e si prendono subito in carico le pagine aperte (che poi si ricaricano da sole, vedi app.js)
+self.addEventListener('activate', evento => evento.waitUntil(
+  caches.keys()
+    .then(nomi => Promise.all(nomi.filter(n => n.startsWith('orario-dada') && n !== CACHE).map(n => caches.delete(n))))
+    .then(() => self.clients.claim())
+));
 
 self.addEventListener('fetch', evento => {
   const richiesta = evento.request;
